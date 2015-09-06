@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
+using ColossalFramework.Plugins;
 using ColossalFramework.UI;
 using ICities;
 using UnityEngine;
@@ -40,7 +42,7 @@ namespace NaturalResourcesBrush
                 if (SetUpResourcesToolbar())
                 {
                     SetUpNaturalResourcesTool(ref toolController, ref extraTools);
-                    SetUpWaterTool(ref toolController, ref extraTools);  
+                    SetUpWaterTool(ref toolController, ref extraTools);
                 }
             }
             return extraTools.Count > 0;
@@ -80,17 +82,18 @@ namespace NaturalResourcesBrush
         public static void LoadResources()
         {
             var defaultAtlas = UIView.GetAView().defaultAtlas;
-            CopySprite("ToolbarIconGroup6Normal", "ToolbarIconBaseNormal", defaultAtlas);
-            CopySprite("ToolbarIconGroup6Disabled", "ToolbarIconBaseDisabled", defaultAtlas);
-            CopySprite("ToolbarIconGroup6Focused", "ToolbarIconBaseFocused", defaultAtlas);
-            CopySprite("ToolbarIconGroup6Hovered", "ToolbarIconBaseHovered", defaultAtlas);
-            CopySprite("ToolbarIconGroup6Pressed", "ToolbarIconBasePressed", defaultAtlas);
 
             CopySprite("InfoIconResources", "ToolbarIconResource", defaultAtlas);
             CopySprite("InfoIconResourcesDisabled", "ToolbarIconResourceDisabled", defaultAtlas);
             CopySprite("InfoIconResourcesFocused", "ToolbarIconResourceFocused", defaultAtlas);
             CopySprite("InfoIconResourcesHovered", "ToolbarIconResourceHovered", defaultAtlas);
             CopySprite("InfoIconResourcesPressed", "ToolbarIconResourcePressed", defaultAtlas);
+
+            CopySprite("ToolbarIconGroup6Normal", "ToolbarIconBaseNormal", defaultAtlas);
+            CopySprite("ToolbarIconGroup6Disabled", "ToolbarIconBaseDisabled", defaultAtlas);
+            CopySprite("ToolbarIconGroup6Focused", "ToolbarIconBaseFocused", defaultAtlas);
+            CopySprite("ToolbarIconGroup6Hovered", "ToolbarIconBaseHovered", defaultAtlas);
+            CopySprite("ToolbarIconGroup6Pressed", "ToolbarIconBasePressed", defaultAtlas);
         }
 
         public static void CopySprite(string originalName, string newName, UITextureAtlas destAtlas)
@@ -185,30 +188,24 @@ namespace NaturalResourcesBrush
                 Debug.LogError("ExtraTools#SetUpResourcesToolbar(): strip is null");
                 return false;
             }
-            AdjustMainToolbarObjectIndex(mainToolbar, "TerrainButton"); //for Terraform Tool compatibility
-            AdjustMainToolbarObjectIndex(mainToolbar, "RoadCustomizer"); //for Traffic++ compatibility
-            AdjustMainToolbarObjectIndex(mainToolbar, "FavCimsMenuPanel"); //for Favorite Cims compatibility (works?)
             var defaultAtlas = UIView.GetAView().defaultAtlas;
             try
             {
-                var spawnSubEntryMethod = mainToolbar.GetType()
-                    .GetMethod("SpawnSubEntry", BindingFlags.NonPublic | BindingFlags.Instance);
-                spawnSubEntryMethod
-                    .Invoke(mainToolbar,
-                        new object[] { strip, "Resource", "MAPEDITOR_TOOL", null, "ToolbarIcon", true });
+                ToolbarButtonSpawner.SpawnSubEntry(strip, "Resource", "MAPEDITOR_TOOL", null, "ToolbarIcon", true,
+                    mainToolbar.m_OptionsBar, mainToolbar.m_DefaultInfoTooltipAtlas);
+                ToolbarButtonSpawner.SpawnSubEntry(strip, "Water", "MAPEDITOR_TOOL", null, "ToolbarIcon", true,
+                    mainToolbar.m_OptionsBar, mainToolbar.m_DefaultInfoTooltipAtlas);
+
+
                 ((UIButton)UIView.FindObjectOfType<ResourcePanel>().Find("Ore")).atlas = defaultAtlas;
                 ((UIButton)UIView.FindObjectOfType<ResourcePanel>().Find("Oil")).atlas = defaultAtlas;
                 ((UIButton)UIView.FindObjectOfType<ResourcePanel>().Find("Fertility")).atlas = defaultAtlas;
-
-                spawnSubEntryMethod
-                    .Invoke(mainToolbar,
-                        new object[] { strip, "Water", "MAPEDITOR_TOOL", null, "ToolbarIcon", true });
                 ((UIButton)UIView.FindObjectOfType<WaterPanel>().Find("PlaceWater")).atlas =
-    ResourceUtils.CreateAtlas("Water", "PlaceWater");
+                                        ResourceUtils.CreateAtlas(new List<string> { "WaterPlaceWater" });
                 ((UIButton)UIView.FindObjectOfType<WaterPanel>().Find("MoveSeaLevel")).atlas =
-                    ResourceUtils.CreateAtlas("Water", "MoveSeaLevel");
+                                        ResourceUtils.CreateAtlas(new List<string> { "WaterMoveSeaLevel" });
                 ((UIButton)UIView.FindObjectOfType<GameMainToolbar>().Find("Water")).atlas =
-        ResourceUtils.CreateAtlas("ToolbarIcon", "Water");
+                    ResourceUtils.CreateAtlas(new List<string> { "ToolbarIconWater", "ToolbarIconBase" });
                 return true;
             }
             catch (Exception e)
@@ -216,17 +213,6 @@ namespace NaturalResourcesBrush
                 UnityEngine.Debug.LogException(e);
             }
             return false;
-        }
-
-        public static void AdjustMainToolbarObjectIndex(GameMainToolbar mainToolbar, string uiElementName)
-        {
-            if (GameObject.Find(uiElementName) == null)
-            {
-                return;
-            }
-            var objectIndexField = typeof(MainToolbar).GetField("m_ObjectIndex",
-                BindingFlags.NonPublic | BindingFlags.Instance);
-            objectIndexField.SetValue(mainToolbar, ((int)objectIndexField.GetValue(mainToolbar)) + 1);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using ColossalFramework.UI;
 using UnityEngine;
 
@@ -33,19 +34,23 @@ namespace NaturalResourcesBrush
             return ts.ToArray();
         }
 
-        public static UITextureAtlas CreateAtlas(string type, string name)
+        public static UITextureAtlas CreateAtlas(List<string> baseIconNames)
         {
-            string baseIconName = type + name;
-            return ResourceUtils.CreateAtlas(new string[] {
-                baseIconName,
-                baseIconName + "Focused",
-                baseIconName + "Hovered",
-                baseIconName + "Pressed",
-                baseIconName + "Disabled"
-            });
+            var names = new string[baseIconNames.Count * 5];
+            var i = 0;
+            foreach (var baseIconName in baseIconNames)
+            {
+                names[i * 5] = baseIconName;
+                names[i * 5 + 1] = baseIconName + "Focused";
+                names[i * 5 + 2] = baseIconName + "Hovered";
+                names[i * 5 + 3] = baseIconName + "Pressed";
+                names[i * 5 + 4] = baseIconName + "Disabled";
+                i++;
+            }
+            return ResourceUtils.CreateAtlas(names);
         }
 
-        public static UITextureAtlas CreateAtlas(string[] names)
+        private static UITextureAtlas CreateAtlas(string[] names)
         {
             Texture2D[] sprites = ResourceUtils.Load<Texture2D>(names);
 
