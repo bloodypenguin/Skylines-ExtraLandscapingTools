@@ -36,33 +36,30 @@ namespace NaturalResourcesBrush
 
         public static void Revert()
         {
-            RedirectionHelper.RevertRedirect(typeof(TreeTool).GetMethod("OnToolGUI", BindingFlags.NonPublic | BindingFlags.Instance),_state);
+            RedirectionHelper.RevertRedirect(typeof(TreeTool).GetMethod("OnToolGUI", BindingFlags.NonPublic | BindingFlags.Instance), _state);
         }
 
         protected override void OnToolGUI()
         {
 
             Event current = Event.current;
-            if (!this.m_toolController.IsInsideUI)
+            if (!this.m_toolController.IsInsideUI &&
+                current.type == EventType.MouseDown || (current.type == EventType.MouseDrag && this.m_mode == TreeTool.Mode.Single))
             {
                 if (current.button == 0)
                 {
-                    if (current.type == EventType.MouseDown || current.type == EventType.MouseDrag)
-                    {
-                        mouseLeftDownField.SetValue(this, true);
-                        if (this.m_mode != TreeTool.Mode.Single)
-                            return;
-                        Singleton<SimulationManager>.instance.AddAction((IEnumerator)createTreeMethodInfo.Invoke(this, new object[]{}));
-                    }
+
+                    mouseLeftDownField.SetValue(this, true);
+                    if (this.m_mode != TreeTool.Mode.Single)
+                        return;
+                    Singleton<SimulationManager>.instance.AddAction((IEnumerator)createTreeMethodInfo.Invoke(this, new object[] { }));
+
                 }
                 else
                 {
-                    if (current.type == EventType.MouseDown)
-                    {
-                        if (current.button != 1)
-                            return;
-                        mouseRightDownField.SetValue(this, true);
-                    }
+                    if (current.button != 1)
+                        return;
+                    mouseRightDownField.SetValue(this, true);
                 }
             }
             else
