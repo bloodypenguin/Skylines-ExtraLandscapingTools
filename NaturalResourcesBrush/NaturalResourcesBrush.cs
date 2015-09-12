@@ -25,6 +25,7 @@ namespace NaturalResourcesBrush
 
         public override void OnCreated(ILoading lodaing)
         {
+            TreeToolDetour.Deploy();
             _state = RedirectionHelper.RedirectCalls
                 (
                     typeof(BeautificationPanel).GetMethod("OnButtonClicked",
@@ -36,6 +37,7 @@ namespace NaturalResourcesBrush
 
         public override void OnReleased()
         {
+            TreeToolDetour.Revert();
             RedirectionHelper.RevertRedirect(
                     typeof(BeautificationPanel).GetMethod("OnButtonClicked",
                         BindingFlags.Instance | BindingFlags.NonPublic),
@@ -66,8 +68,6 @@ namespace NaturalResourcesBrush
                         BindingFlags.Instance | BindingFlags.NonPublic)
                 );
             }
-            
-            
             var toolController = Object.FindObjectOfType<ToolController>();
             if (toolController == null)
             {
