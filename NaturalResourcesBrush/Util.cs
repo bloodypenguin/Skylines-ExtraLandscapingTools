@@ -191,6 +191,7 @@ namespace NaturalResourcesBrush
             var defaultAtlas = UIView.GetAView().defaultAtlas;
             try
             {
+             
                 ToolbarButtonSpawner.SpawnSubEntry(strip, "Resource", "MAPEDITOR_TOOL", null, "ToolbarIcon", true,
                     mainToolbar.m_OptionsBar, mainToolbar.m_DefaultInfoTooltipAtlas);
                 ToolbarButtonSpawner.SpawnSubEntry(strip, "Water", "MAPEDITOR_TOOL", null, "ToolbarIcon", true,

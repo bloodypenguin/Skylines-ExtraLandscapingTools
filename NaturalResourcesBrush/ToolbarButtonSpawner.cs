@@ -7,7 +7,7 @@ using Object = UnityEngine.Object;
 
 namespace NaturalResourcesBrush
 {
-    public class ToolbarButtonSpawner 
+    public class ToolbarButtonSpawner
     {
         private static readonly string kScrollableSubPanelTemplate = "ScrollableSubPanelTemplate";
         private static readonly string kMainToolbarButtonTemplate = "MainToolbarButtonTemplate";
@@ -15,6 +15,11 @@ namespace NaturalResourcesBrush
         public static UIButton SpawnSubEntry(UITabstrip strip, string name, string localeID, string unlockText, string spriteBase, bool enabled,
             UIComponent m_OptionsBar, UITextureAtlas m_DefaultInfoTooltipAtlas)
         {
+            if (strip.Find<UIButton>(name) != null)
+            {
+                return null;
+            }
+
             Type type1 = FindType(name + "Group" + "Panel");
             if (type1 != null && !type1.IsSubclassOf(typeof(GeneratedGroupPanel)))
                 type1 = (Type)null;
