@@ -10,6 +10,7 @@ namespace NaturalResourcesBrush
     {
 
         private static RedirectCallsState _state;
+        private static bool _deployed;
 
         private static FieldInfo mouseLeftDownField = typeof(TreeTool).GetField("m_mouseLeftDown",
             BindingFlags.NonPublic | BindingFlags.Instance);
@@ -21,6 +22,10 @@ namespace NaturalResourcesBrush
 
         public static void Deploy()
         {
+            if (_deployed)
+            {
+                return;
+            }
             try
             {
                 _state = RedirectionHelper.RedirectCalls(
@@ -32,11 +37,17 @@ namespace NaturalResourcesBrush
             {
                 UnityEngine.Debug.LogException(e);
             }
+            _deployed = true;
         }
 
         public static void Revert()
         {
+            if (!_deployed)
+            {
+                return;
+            }
             RedirectionHelper.RevertRedirect(typeof(TreeTool).GetMethod("OnToolGUI", BindingFlags.NonPublic | BindingFlags.Instance), _state);
+            _deployed = false;
         }
 
         protected override void OnToolGUI()

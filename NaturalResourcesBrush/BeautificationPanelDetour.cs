@@ -7,6 +7,54 @@ namespace NaturalResourcesBrush
 {
     public class BeautificationPanelDetour : GeneratedScrollPanel
     {
+        private static RedirectCallsState _state;
+        private static bool _deployed;
+
+        public static void Deploy()
+        {
+            if (_deployed)
+            {
+                return;
+            }
+            try
+            {
+                _state = RedirectionHelper.RedirectCalls
+                    (
+                        typeof(BeautificationPanel).GetMethod("OnButtonClicked",
+                            BindingFlags.Instance | BindingFlags.NonPublic),
+                        typeof(BeautificationPanelDetour).GetMethod("OnButtonClicked",
+                            BindingFlags.Instance | BindingFlags.NonPublic)
+                    );
+            }
+            catch (Exception e)
+            {
+                UnityEngine.Debug.LogException(e);
+            }
+            _deployed = true;
+        }
+
+        public static void Revert()
+        {
+            if (!_deployed)
+            {
+                return;
+            }
+            try
+            {
+                RedirectionHelper.RevertRedirect(
+                    typeof(BeautificationPanel).GetMethod("OnButtonClicked",
+                        BindingFlags.Instance | BindingFlags.NonPublic),
+                    _state
+                    );
+
+            }
+            catch (Exception e)
+            {
+                UnityEngine.Debug.LogException(e);
+            }
+            _deployed = false;
+        }
+
         public override ItemClass.Service service
         {
             get { throw new NotImplementedException(); }

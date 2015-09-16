@@ -1,101 +1,106 @@
-﻿
-using System;
-using System.Collections.Generic;
-using System.Reflection;
+﻿using System;
 using ICities;
-using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace NaturalResourcesBrush
 {
-    public class NaturalResourcesBrush : LoadingExtensionBase, IUserMod
+    [Flags]
+    public enum ModOptions : long
     {
-        private static RedirectCallsState _state;
-        private static LoadMode loadMode;
+        None = 0,
+        ResourcesTool = 1,
+        WaterTool = 2,
+        TerrainTool = 4,
+        TreeBrush = 8,
+        TreePencil = 16
+    }
+    
+    public class NaturalResourcesBrush : IUserMod
+    {
+        public static ModOptions Options = ModOptions.None;
 
         public string Name
         {
-            get { return "In-game Natural Resources Tool + Tree Brush + Water Tool"; }
+            get
+            {
+                OptionsLoader.LoadOptions();
+                return "In-game Natural Resources Tool + Tree Brush & Pencil + Water Tool + Terrain Tool";
+            }
         }
 
         public string Description
         {
-            get { return "Allows to place natural resources in-game"; }
+            get { return "Provides some Map Editor tools in-game"; }
         }
 
-        public override void OnCreated(ILoading lodaing)
+        public void OnSettingsUI(UIHelperBase helper)
         {
-            TreeToolDetour.Deploy();
-            _state = RedirectionHelper.RedirectCalls
-                (
-                    typeof(BeautificationPanel).GetMethod("OnButtonClicked",
-                        BindingFlags.Instance | BindingFlags.NonPublic),
-                    typeof(BeautificationPanelDetour).GetMethod("OnButtonClicked",
-                        BindingFlags.Instance | BindingFlags.NonPublic)
-                );
-        }
-
-        public override void OnReleased()
-        {
-            TreeToolDetour.Revert();
-            RedirectionHelper.RevertRedirect(
-                    typeof(BeautificationPanel).GetMethod("OnButtonClicked",
-                        BindingFlags.Instance | BindingFlags.NonPublic),
-                    _state
-                );
-            if (loadMode == LoadMode.LoadGame || loadMode == LoadMode.NewGame)
-            {
-                RedirectionHelper.RevertRedirect
-                (
-                    typeof(WaterTool).GetMethod("Awake",
-                        BindingFlags.Instance | BindingFlags.NonPublic),
-                    WaterToolDetour._state
-                );
-            }
-        }
-
-        public override void OnLevelLoaded(LoadMode mode)
-        {
-            loadMode = mode;
-
-            if (loadMode == LoadMode.LoadGame || loadMode == LoadMode.NewGame)
-            {
-                            WaterToolDetour._state = RedirectionHelper.RedirectCalls
-                (
-                    typeof(WaterTool).GetMethod("Awake",
-                        BindingFlags.Instance | BindingFlags.NonPublic),
-                    typeof(WaterToolDetour).GetMethod("Awake",
-                        BindingFlags.Instance | BindingFlags.NonPublic)
-                );
-            }
-            var toolController = Object.FindObjectOfType<ToolController>();
-            if (toolController == null)
-            {
-                Debug.LogError("ExtraTools#OnLevelLoaded(): ToolContoller not found");
-                return;
-            }
-            try
-            {
-                List<ToolBase> extraTools;
-                if (!Util.SetUpExtraTools(mode, ref toolController, out extraTools))
+            UIHelperBase group = helper.AddGroup("Extra Tools Options");
+            group.AddCheckbox("Resources Tool", (Options & ModOptions.ResourcesTool) != 0,
+                (b) =>
                 {
-                    return;
-                }
-                Util.AddExtraToolsToController(ref toolController, extraTools);
-            }
-            catch (Exception e)
-            {
-                Debug.LogError(e);
-            }
-            finally
-            {
-                if (toolController.Tools.Length > 0)
+                    if (b)
+                    {
+                        Options |= ModOptions.ResourcesTool;
+                    }
+                    else
+                    {
+                        Options &= ~ModOptions.ResourcesTool;
+                    }
+                    OptionsLoader.SaveOptions();
+                });
+            group.AddCheckbox("Water Tool", (Options & ModOptions.WaterTool) != 0,
+                (b) =>
                 {
-                    toolController.Tools[0].enabled = true;
-                }
+                    if (b)
+                    {
+                        Options |= ModOptions.WaterTool;
+                    }
+                    else
+                    {
+                        Options &= ~ModOptions.WaterTool;
+                    }
+                    OptionsLoader.SaveOptions();
+                });
+            group.AddCheckbox("Terrain Tool", (Options & ModOptions.TerrainTool) != 0,
+                (b) =>
+                {
+                    if (b)
+                    {
+                        Options |= ModOptions.TerrainTool;
+                    }
+                    else
+                    {
+                        Options &= ~ModOptions.TerrainTool;
+                    }
+                    OptionsLoader.SaveOptions();
+                });
+            group.AddCheckbox("Tree Brush", (Options & ModOptions.TreeBrush) != 0,
+                (b) =>
+                {
+                    if (b)
+                    {
+                        Options |= ModOptions.TreeBrush;
+                    }
+                    else
+                    {
+                        Options &= ~ModOptions.TreeBrush;
+                    }
+                    OptionsLoader.SaveOptions();
+                });
+            group.AddCheckbox("Tree Pencil", (Options & ModOptions.TreePencil) != 0,
+                (b) =>
+                {
+                    if (b)
+                    {
+                        Options |= ModOptions.TreePencil;
+                    }
+                    else
+                    {
+                        Options &= ~ModOptions.TreePencil;
+                    }
+                    OptionsLoader.SaveOptions();
+                });
 
-            }
         }
     }
-
 }

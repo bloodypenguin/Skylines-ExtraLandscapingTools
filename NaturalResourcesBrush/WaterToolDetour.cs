@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 using UnityEngine;
 
 namespace NaturalResourcesBrush
@@ -6,7 +7,50 @@ namespace NaturalResourcesBrush
     public class WaterToolDetour : WaterTool
     {
 
-        public static RedirectCallsState _state;
+        private static RedirectCallsState _state;
+        private static bool _deployed;
+
+        public static void Deploy()
+        {
+            if (_deployed)
+            {
+                return;
+            }
+            try
+            {
+
+                _state = RedirectionHelper.RedirectCalls
+                    (
+                    typeof(WaterTool).GetMethod("Awake",
+                    BindingFlags.Instance | BindingFlags.NonPublic),
+                    typeof(WaterToolDetour).GetMethod("Awake",
+                    BindingFlags.Instance | BindingFlags.NonPublic)
+                    );
+            }
+            catch (Exception e)
+            {
+                UnityEngine.Debug.LogException(e);
+            }
+            _deployed = true;
+        }
+
+        public static void Revert()
+        {
+            if (!_deployed)
+            {
+                return;
+            }
+            try
+            {
+                RedirectionHelper.RevertRedirect(typeof(WaterTool).GetMethod("Awake",
+                        BindingFlags.Instance | BindingFlags.NonPublic), _state);
+            }
+            catch (Exception e)
+            {
+                UnityEngine.Debug.LogException(e);
+            }
+            _deployed = false;
+        }
 
         protected override void Awake()
         {

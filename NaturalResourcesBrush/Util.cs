@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using ColossalFramework;
 using ColossalFramework.Plugins;
 using ColossalFramework.UI;
 using ICities;
@@ -41,13 +42,22 @@ namespace NaturalResourcesBrush
                 LoadResources();
                 if (SetUpResourcesToolbar())
                 {
-                    SetUpWaterTool(ref toolController, ref extraTools);
-                    var optionsPanel = SetupBrushOptionsPanel(true);
+                    if (NaturalResourcesBrush.Options.IsFlagSet(ModOptions.WaterTool))
+                    {
+                        SetUpWaterTool(ref toolController, ref extraTools);
+                    }
+                    var optionsPanel = SetupBrushOptionsPanel(NaturalResourcesBrush.Options.IsFlagSet(ModOptions.TreeBrush));
                     if (optionsPanel != null)
                     {
                         optionsPanel.m_BuiltinBrushes = toolController.m_brushes;
-                        SetUpNaturalResourcesTool(ref toolController, ref extraTools, ref optionsPanel);
-                        SetUpTerrainTool(ref toolController, ref extraTools, ref optionsPanel);
+                        if (NaturalResourcesBrush.Options.IsFlagSet(ModOptions.ResourcesTool))
+                        {
+                            SetUpNaturalResourcesTool(ref toolController, ref extraTools, ref optionsPanel);
+                        }
+                        if (NaturalResourcesBrush.Options.IsFlagSet(ModOptions.TerrainTool))
+                        {
+                            SetUpTerrainTool(ref toolController, ref extraTools, ref optionsPanel);
+                        }
                     }
 
                 }
@@ -129,7 +139,7 @@ namespace NaturalResourcesBrush
         }
 
 
-        public static BrushOptionPanel SetupBrushOptionsPanel(bool treeToolEnabled)
+        public static BrushOptionPanel SetupBrushOptionsPanel(bool treeBrushEnabled)
         {
             var optionsBar = UIView.Find<UIPanel>("OptionsBar");
             if (optionsBar == null)
@@ -150,7 +160,7 @@ namespace NaturalResourcesBrush
             UIUtil.SetupBrushStrengthPanel(brushOptionsPanel);
             UIUtil.SetupBrushSelectPanel(brushOptionsPanel);
 
-            if (treeToolEnabled)
+            if (treeBrushEnabled)
             {
                 var beauPanel = Object.FindObjectOfType<BeautificationPanel>();
                 if (beauPanel == null)
@@ -203,43 +213,47 @@ namespace NaturalResourcesBrush
                 Debug.LogError("ExtraTools#SetUpResourcesToolbar(): strip is null");
                 return false;
             }
-            var defaultAtlas = UIView.GetAView().defaultAtlas;
             try
             {
-             
-                ToolbarButtonSpawner.SpawnSubEntry(strip, "Resource", "MAPEDITOR_TOOL", null, "ToolbarIcon", true,
-                    mainToolbar.m_OptionsBar, mainToolbar.m_DefaultInfoTooltipAtlas);
-                ((UIButton)UIView.FindObjectOfType<ResourcePanel>().Find("Ore")).atlas = defaultAtlas;
-                ((UIButton)UIView.FindObjectOfType<ResourcePanel>().Find("Oil")).atlas = defaultAtlas;
-                ((UIButton)UIView.FindObjectOfType<ResourcePanel>().Find("Fertility")).atlas = defaultAtlas;
-                
-                
-                ToolbarButtonSpawner.SpawnSubEntry(strip, "Water", "MAPEDITOR_TOOL", null, "ToolbarIcon", true,
-                    mainToolbar.m_OptionsBar, mainToolbar.m_DefaultInfoTooltipAtlas);
-                ((UIButton)UIView.FindObjectOfType<WaterPanel>().Find("PlaceWater")).atlas =
-                        ResourceUtils.CreateAtlas(new List<string> { "WaterPlaceWater" });
-                ((UIButton)UIView.FindObjectOfType<WaterPanel>().Find("MoveSeaLevel")).atlas =
-                                        ResourceUtils.CreateAtlas(new List<string> { "WaterMoveSeaLevel" });
-                ((UIButton)UIView.FindObjectOfType<GameMainToolbar>().Find("Water")).atlas =
-                    ResourceUtils.CreateAtlas(new List<string> { "ToolbarIconWater", "ToolbarIconBase" });
-                
-                
-                ToolbarButtonSpawner.SpawnSubEntry(strip, "Terrain", "MAPEDITOR_TOOL", null, "ToolbarIcon", true,
-                    mainToolbar.m_OptionsBar, mainToolbar.m_DefaultInfoTooltipAtlas);
-                ((UIButton)UIView.FindObjectOfType<TerrainPanel>().Find("Shift")).atlas =
-                    ResourceUtils.CreateAtlas(new List<string> { "TerrainShift" });
-                ((UIButton)UIView.FindObjectOfType<TerrainPanel>().Find("Slope")).atlas =
-                    ResourceUtils.CreateAtlas(new List<string> { "TerrainSlope" });
-                ((UIButton)UIView.FindObjectOfType<TerrainPanel>().Find("Level")).atlas =
-                    ResourceUtils.CreateAtlas(new List<string> { "TerrainLevel" });
-                ((UIButton)UIView.FindObjectOfType<TerrainPanel>().Find("Soften")).atlas =
-                    ResourceUtils.CreateAtlas(new List<string> { "TerrainSoften" });
+                var defaultAtlas = UIView.GetAView().defaultAtlas;
+                if (NaturalResourcesBrush.Options.IsFlagSet(ModOptions.ResourcesTool))
+                {
+                    ToolbarButtonSpawner.SpawnSubEntry(strip, "Resource", "MAPEDITOR_TOOL", null, "ToolbarIcon", true,
+                        mainToolbar.m_OptionsBar, mainToolbar.m_DefaultInfoTooltipAtlas);
+                    ((UIButton) UIView.FindObjectOfType<ResourcePanel>().Find("Ore")).atlas = defaultAtlas;
+                    ((UIButton) UIView.FindObjectOfType<ResourcePanel>().Find("Oil")).atlas = defaultAtlas;
+                    ((UIButton) UIView.FindObjectOfType<ResourcePanel>().Find("Fertility")).atlas = defaultAtlas;
 
-                ((UIButton)UIView.FindObjectOfType<GameMainToolbar>().Find("Terrain")).atlas =
-                    ResourceUtils.CreateAtlas(new List<string> { "ToolbarIconTerrain", "ToolbarIconBase" });
+                }
+                if (NaturalResourcesBrush.Options.IsFlagSet(ModOptions.WaterTool))
+                {
+                    ToolbarButtonSpawner.SpawnSubEntry(strip, "Water", "MAPEDITOR_TOOL", null, "ToolbarIcon", true,
+                        mainToolbar.m_OptionsBar, mainToolbar.m_DefaultInfoTooltipAtlas);
+                    ((UIButton) UIView.FindObjectOfType<WaterPanel>().Find("PlaceWater")).atlas =
+                        ResourceUtils.CreateAtlas(new List<string> {"WaterPlaceWater"});
+                    ((UIButton) UIView.FindObjectOfType<WaterPanel>().Find("MoveSeaLevel")).atlas =
+                        ResourceUtils.CreateAtlas(new List<string> {"WaterMoveSeaLevel"});
+                    ((UIButton) UIView.FindObjectOfType<GameMainToolbar>().Find("Water")).atlas =
+                        ResourceUtils.CreateAtlas(new List<string> {"ToolbarIconWater", "ToolbarIconBase"});
+                }
+                if (NaturalResourcesBrush.Options.IsFlagSet(ModOptions.TerrainTool))
+                {
 
 
+                    ToolbarButtonSpawner.SpawnSubEntry(strip, "Terrain", "MAPEDITOR_TOOL", null, "ToolbarIcon", true,
+                        mainToolbar.m_OptionsBar, mainToolbar.m_DefaultInfoTooltipAtlas);
+                    ((UIButton) UIView.FindObjectOfType<TerrainPanel>().Find("Shift")).atlas =
+                        ResourceUtils.CreateAtlas(new List<string> {"TerrainShift"});
+                    ((UIButton) UIView.FindObjectOfType<TerrainPanel>().Find("Slope")).atlas =
+                        ResourceUtils.CreateAtlas(new List<string> {"TerrainSlope"});
+                    ((UIButton) UIView.FindObjectOfType<TerrainPanel>().Find("Level")).atlas =
+                        ResourceUtils.CreateAtlas(new List<string> {"TerrainLevel"});
+                    ((UIButton) UIView.FindObjectOfType<TerrainPanel>().Find("Soften")).atlas =
+                        ResourceUtils.CreateAtlas(new List<string> {"TerrainSoften"});
 
+                    ((UIButton) UIView.FindObjectOfType<GameMainToolbar>().Find("Terrain")).atlas =
+                        ResourceUtils.CreateAtlas(new List<string> {"ToolbarIconTerrain", "ToolbarIconBase"});
+                }
                 return true;
             }
             catch (Exception e)
