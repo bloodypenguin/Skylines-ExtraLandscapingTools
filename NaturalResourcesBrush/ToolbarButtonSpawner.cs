@@ -20,7 +20,7 @@ namespace NaturalResourcesBrush
                 return null;
             }
 
-            Type type1 = FindType(name + "Group" + "Panel");
+            Type type1 = Util.FindType(name + "Group" + "Panel");
             if (type1 != null && !type1.IsSubclassOf(typeof(GeneratedGroupPanel)))
                 type1 = (Type)null;
             if (type1 == null)
@@ -75,14 +75,6 @@ namespace NaturalResourcesBrush
             if (button.atlas[index] != (UITextureAtlas.SpriteInfo)null)
                 return index;
             return str;
-        }
-
-        private static Type FindType(string className)
-        {
-            return (from assembly in AppDomain.CurrentDomain.GetAssemblies()
-                    from type in assembly.GetTypes()
-                    where type.Name == className
-                    select type).FirstOrDefault();
         }
     }
 }
