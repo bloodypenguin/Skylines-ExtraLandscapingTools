@@ -23,7 +23,7 @@ namespace NaturalResourcesBrush
             get
             {
                 OptionsLoader.LoadOptions();
-                return "In-game Natural Resources Tool + Tree Brush & Pencil + Water Tool + Terrain Tool";
+                return "Extra Landscaping Tools";
             }
         }
 
@@ -34,7 +34,7 @@ namespace NaturalResourcesBrush
 
         public void OnSettingsUI(UIHelperBase helper)
         {
-            UIHelperBase group = helper.AddGroup("Extra Tools Options");
+            UIHelperBase group = helper.AddGroup("Extra Landscaping Tools Options");
             group.AddCheckbox("Resources Tool", (Options & ModOptions.ResourcesTool) != 0,
                 (b) =>
                 {
