@@ -23,6 +23,7 @@ namespace NaturalResourcesBrush
             TreeToolDetour.Revert();
             BeautificationPanelDetour.Revert();
             WaterToolDetour.Revert();
+            ResourcePanelDetour.Revert();
         }
 
         public override void OnLevelLoaded(LoadMode mode)
@@ -36,6 +37,10 @@ namespace NaturalResourcesBrush
                 if (NaturalResourcesBrush.Options.IsFlagSet(ModOptions.WaterTool))
                 {
                     WaterToolDetour.Deploy();
+                }
+                if (NaturalResourcesBrush.Options.IsFlagSet(ModOptions.ResourcesTool))
+                {
+                    ResourcePanelDetour.Deploy();
                 }
             }
             var toolController = Object.FindObjectOfType<ToolController>();

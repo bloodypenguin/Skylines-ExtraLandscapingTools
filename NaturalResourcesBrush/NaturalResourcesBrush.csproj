@@ -50,6 +50,7 @@
     <Compile Include="NaturalResourcesBrush.cs" />
     <Compile Include="Options.cs" />
     <Compile Include="RedirectionHelper.cs" />
+    <Compile Include="ResourcePanelDetour.cs" />
     <Compile Include="ToolbarButtonSpawner.cs" />
     <Compile Include="LoadingExtension.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

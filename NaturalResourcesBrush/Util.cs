@@ -243,7 +243,7 @@ namespace NaturalResourcesBrush
                     ((UIButton) UIView.FindObjectOfType<ResourcePanel>().Find("Ore")).atlas = defaultAtlas;
                     ((UIButton) UIView.FindObjectOfType<ResourcePanel>().Find("Oil")).atlas = defaultAtlas;
                     ((UIButton) UIView.FindObjectOfType<ResourcePanel>().Find("Fertility")).atlas = defaultAtlas;
-
+                    ((UIButton) UIView.FindObjectOfType<ResourcePanel>().Find("Sand")).atlas = defaultAtlas;
                 }
                 if (NaturalResourcesBrush.Options.IsFlagSet(ModOptions.WaterTool))
                 {
