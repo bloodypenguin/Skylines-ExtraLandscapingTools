@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Reflection;
 using ColossalFramework;
+using NaturalResourcesBrush.Redirection;
 using UnityEngine;
 
 namespace NaturalResourcesBrush
@@ -16,9 +17,12 @@ namespace NaturalResourcesBrush
             BindingFlags.NonPublic | BindingFlags.Instance);
         private static FieldInfo mouseRightDownField = typeof(TreeTool).GetField("m_mouseRightDown",
     BindingFlags.NonPublic | BindingFlags.Instance);
-
+        private static FieldInfo mousePositionField = typeof(TreeTool).GetField("m_mousePosition",
+BindingFlags.NonPublic | BindingFlags.Instance);
         private static MethodInfo createTreeMethodInfo = typeof(TreeTool).GetMethod("CreateTree",
             BindingFlags.NonPublic | BindingFlags.Instance);
+
+        private static Vector3 lastAllowedMousePosition = Vector3.zero;
 
         public static void Deploy()
         {
@@ -63,8 +67,22 @@ namespace NaturalResourcesBrush
                     mouseLeftDownField.SetValue(this, true);
                     if (this.m_mode != TreeTool.Mode.Single)
                         return;
-                    Singleton<SimulationManager>.instance.AddAction((IEnumerator)createTreeMethodInfo.Invoke(this, new object[] { }));
-
+                    var mousePosition = (Vector3)mousePositionField.GetValue(this);
+                    if (!lastAllowedMousePosition.Equals(Vector3.zero))
+                    {
+                        if (m_strength < 1.0)
+                        {
+                            var distance = 25;
+                            if (Math.Pow(mousePosition.x - lastAllowedMousePosition.x, 2) +
+                                Math.Pow(mousePosition.z - lastAllowedMousePosition.z, 2) < Math.Pow(distance - distance * m_strength, 2))
+                            {
+                                return;
+                            }
+                        }
+                    }
+                    lastAllowedMousePosition = mousePosition;
+                    Singleton<SimulationManager>.instance.AddAction(
+                        (IEnumerator)createTreeMethodInfo.Invoke(this, new object[] { }));
                 }
                 else
                 {
@@ -80,6 +98,7 @@ namespace NaturalResourcesBrush
                 if (current.button == 0)
                 {
                     mouseLeftDownField.SetValue(this, false);
+                    lastAllowedMousePosition = Vector3.zero;
                 }
                 else
                 {
