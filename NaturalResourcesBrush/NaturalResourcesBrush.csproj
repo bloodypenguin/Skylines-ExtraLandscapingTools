@@ -49,8 +49,14 @@
     <Compile Include="BeautificationPanelDetour.cs" />
     <Compile Include="NaturalResourcesBrush.cs" />
     <Compile Include="Options.cs" />
-    <Compile Include="RedirectionHelper.cs" />
+    <Compile Include="Redirection\RedirectionHelper.cs" />
+    <Compile Include="Redirection\RedirectionUtil.cs" />
+    <Compile Include="Redirection\RedirectMethodAttribute.cs" />
+    <Compile Include="Redirection\RedirectReverseAttribute.cs" />
+    <Compile Include="Redirection\TargetTypeAttribute.cs" />
+    <Compile Include="Redirection\Tuple.cs" />
     <Compile Include="ResourcePanelDetour.cs" />
+    <Compile Include="TerrainToolDetour.cs" />
     <Compile Include="ToolbarButtonSpawner.cs" />
     <Compile Include="LoadingExtension.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -60,6 +66,15 @@
     <Compile Include="UIUtil.cs" />
     <Compile Include="Util.cs" />
     <Compile Include="WaterToolDetour.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="resources\TerrainDitchPressed.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="resources\TerrainDitchFocused.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="resources\TerrainDitch.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

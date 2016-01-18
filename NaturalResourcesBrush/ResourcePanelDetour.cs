@@ -3,6 +3,7 @@ using System.Linq;
 using System.Reflection;
 using ColossalFramework;
 using ColossalFramework.UI;
+using NaturalResourcesBrush.Redirection;
 using UnityEngine;
 
 namespace NaturalResourcesBrush

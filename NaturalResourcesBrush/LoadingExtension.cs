@@ -16,6 +16,7 @@ namespace NaturalResourcesBrush
             {
                 TreeToolDetour.Deploy();
             }
+            TerrainToolDetour.Deploy();
         }
 
         public override void OnReleased()
@@ -24,6 +25,7 @@ namespace NaturalResourcesBrush
             BeautificationPanelDetour.Revert();
             WaterToolDetour.Revert();
             ResourcePanelDetour.Revert();
+            TerrainToolDetour.Revert();
         }
 
         public override void OnLevelLoaded(LoadMode mode)

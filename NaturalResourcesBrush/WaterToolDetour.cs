@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using NaturalResourcesBrush.Redirection;
 using UnityEngine;
 
 namespace NaturalResourcesBrush

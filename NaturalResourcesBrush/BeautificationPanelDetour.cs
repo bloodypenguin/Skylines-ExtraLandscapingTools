@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Reflection;
 using ColossalFramework.UI;
+using NaturalResourcesBrush.Redirection;
 using UnityEngine;
 
 namespace NaturalResourcesBrush
