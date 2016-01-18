@@ -14,6 +14,9 @@ using UnityEngine;
 [TargetType(typeof(TerrainTool))]
 public class TerrainToolDetour : TerrainTool
 {
+    private static readonly FieldInfo UndoRequestField = typeof(TerrainTool).GetField("m_undoRequest", BindingFlags.NonPublic | BindingFlags.Instance);
+    private static readonly FieldInfo StartPositionField = typeof(TerrainTool).GetField("m_startPosition", BindingFlags.NonPublic | BindingFlags.Instance);
+
     private static SavedInputKey m_UndoKey = new SavedInputKey(Settings.mapEditorTerrainUndo, Settings.inputSettingsFile, DefaultSettings.mapEditorTerrainUndo, true);
     private static Vector3 m_mousePosition;
     internal static Vector3 m_startPosition;
@@ -34,7 +37,11 @@ public class TerrainToolDetour : TerrainTool
     private static bool m_undoRequest;
 
     private static Dictionary<MethodInfo, RedirectCallsState> _redirects;
-    private static bool isDitch = true; //TODO(earalov): set true only when ditch tool is selected
+    public static bool isDitch = false;
+    public static int ditchMode = 0;
+    public static bool ditchCombineMultipleStrokes = false;
+    private static ushort targetHeightStroke;
+    private static ushort[] ditchHeights;
 
     public static void Deploy()
     {
@@ -67,8 +74,8 @@ public class TerrainToolDetour : TerrainTool
         return false;
     }
 
-    [RedirectMethod]
-    public void Undo()
+    [RedirectMethod] //it gets inlined. Impossible to detour
+    public void Undo() 
     {
         m_undoRequest = true;
     }
@@ -121,8 +128,12 @@ public class TerrainToolDetour : TerrainTool
                 if (m_mode == TerrainTool.Mode.Shift || m_mode == TerrainTool.Mode.Soften || isDitch)
                     //end mod
                     m_mouseRightDown = true;
-                else if (m_mode == TerrainTool.Mode.Level || m_mode == TerrainTool.Mode.Slope)
+                else if (m_mode == TerrainTool.Mode.Level || m_mode == TerrainTool.Mode.Slope) { 
                     m_startPosition = m_mousePosition;
+                    //begin mod
+                    StartPositionField.SetValue(this, m_startPosition);
+                    //end mod
+                }
             }
         }
         else if (current.type == UnityEngine.EventType.MouseUp)
@@ -247,17 +258,21 @@ public class TerrainToolDetour : TerrainTool
         m_toolController.SetBrush(m_brush, m_mousePosition, m_brushSize);
     }
 
-    private static int ditchMode = 0;
-    private static bool ditchCombineMultipleStrokes = true;
-
     [RedirectMethod]
     public override void SimulationStep()
     {
+
+        //begin mod
+        m_undoRequest = (bool) UndoRequestField.GetValue(this);
+        m_startPosition = (Vector3) StartPositionField.GetValue(this);
+        //end mod
         ToolBase.RaycastInput input = new ToolBase.RaycastInput(m_mouseRay, m_mouseRayLength);
         if (m_undoRequest && !m_strokeInProgress)
         {
             ApplyUndo();
-            m_undoRequest = false;
+            //begin mod
+            UndoRequestField.SetValue(this, false);
+            //end mod
         }
         else if (m_strokeEnded)
         {
@@ -293,19 +308,17 @@ public class TerrainToolDetour : TerrainTool
                     var from = originalHeight * 1.0f / 64.0f;
                     switch (ditchMode)
                     {
-                        case 0: //True ditch
+                        case 0: //Ditch
                             ditchHeights[i++] = (ushort)Math.Max(0, from + finalStrength);
                             break;
                         case 1: //Ditch & Level
                             ditchHeights[i++] = (ushort)Math.Max(0, startTargetHeight + finalStrength);
                             break;
-                        case 2: //Ditch & Level (gentle)
+                        case 2: //Ditch & Level (Gentle)
                             var proposed = Math.Max(0, startTargetHeight + finalStrength);
                             ditchHeights[i++] = (ushort)(m_mouseLeftDown ? Math.Max(proposed, from) : Math.Min(proposed, from));
                             break;
                     }
-
-
                 }
             }
             //end mod
@@ -415,9 +428,6 @@ public class TerrainToolDetour : TerrainTool
         m_strokeZmax = 0;
     }
 
-    private static ushort targetHeightStroke;
-    private static ushort[] ditchHeights;
-
     [RedirectMethod]
     private void ApplyBrush()
     {
@@ -508,9 +518,7 @@ public class TerrainToolDetour : TerrainTool
                     float num21 = ((float)val2_1 - (float)b * 0.5f) * num2;
                     to = Mathf.Lerp(m_startPosition.y, m_endPosition.y, (float)(((double)num20 - (double)m_startPosition.x) * (double)vector3_2.x + ((double)num21 - (double)m_startPosition.z) * (double)vector3_2.z) * num7);
                 }
-                //begin mod
-                float num26 = Mathf.Lerp(from, to, isDitch ? (Math.Abs(num19) < 0.001 ? 0.0f : 1.0f) : num3 * num19);
-                //end mod
+                float num26 = Mathf.Lerp(from, to, num3 * num19);
                 rawHeights[val2_1 * (b + 1) + val2_2] = (ushort)Mathf.Clamp(Mathf.RoundToInt(num26 * num6), 0, (int)ushort.MaxValue);
                 m_strokeXmin = Math.Min(m_strokeXmin, val2_2);
                 m_strokeXmax = Math.Max(m_strokeXmax, val2_2);

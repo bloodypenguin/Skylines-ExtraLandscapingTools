@@ -56,6 +56,7 @@
     <Compile Include="Redirection\TargetTypeAttribute.cs" />
     <Compile Include="Redirection\Tuple.cs" />
     <Compile Include="ResourcePanelDetour.cs" />
+    <Compile Include="TerrainPanelDetour.cs" />
     <Compile Include="TerrainToolDetour.cs" />
     <Compile Include="ToolbarButtonSpawner.cs" />
     <Compile Include="LoadingExtension.cs" />
@@ -75,6 +76,12 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="resources\TerrainDitch.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="resources\TerrainDitchHovered.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="resources\TerrainDitchDisabled.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

@@ -1,7 +1,9 @@
 ﻿
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using ColossalFramework;
+using ColossalFramework.Globalization;
 using ICities;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -12,11 +14,16 @@ namespace NaturalResourcesBrush
     {
         public override void OnCreated(ILoading lodaing)
         {
+            //to allow to work in MapEditor
             if (NaturalResourcesBrush.Options.IsFlagSet(ModOptions.TreePencil))
             {
                 TreeToolDetour.Deploy();
             }
-            TerrainToolDetour.Deploy();
+            if (NaturalResourcesBrush.Options.IsFlagSet(ModOptions.TerrainTool))
+            {
+                TerrainToolDetour.Deploy();
+                TerrainPanelDetour.Deploy();
+            }
         }
 
         public override void OnReleased()
@@ -26,6 +33,7 @@ namespace NaturalResourcesBrush
             WaterToolDetour.Revert();
             ResourcePanelDetour.Revert();
             TerrainToolDetour.Revert();
+            TerrainPanelDetour.Revert();
         }
 
         public override void OnLevelLoaded(LoadMode mode)
@@ -42,8 +50,16 @@ namespace NaturalResourcesBrush
                 }
                 if (NaturalResourcesBrush.Options.IsFlagSet(ModOptions.ResourcesTool))
                 {
+                    Util.AddLocale("RESOURCE", "Sand", "Sand",
+                        "Use the primary mouse button to place decorative sand to the area under the brush\n" +
+                            "Use secondary mouse button to remove decorative sand from the area under the brush");
                     ResourcePanelDetour.Deploy();
                 }
+            }
+            if (NaturalResourcesBrush.Options.IsFlagSet(ModOptions.TerrainTool))
+            {
+                Util.AddLocale("TERRAIN", "Ditch", "Ditch tool",
+                    "Provides fixed level terraforming");
             }
             var toolController = Object.FindObjectOfType<ToolController>();
             if (toolController == null)
