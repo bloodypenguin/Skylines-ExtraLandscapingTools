@@ -121,6 +121,11 @@ namespace NaturalResourcesBrush
             {
                 locale.AddLocalizedString(localeKey, description);
             }
+            localeKey = new Locale.Key() { m_Identifier = $"{idBase}", m_Key = key };
+            if (!locale.Exists(localeKey))
+            {
+                locale.AddLocalizedString(localeKey, description);
+            }
         }
 
         public static Type FindType(string className)

@@ -55,11 +55,14 @@ namespace NaturalResourcesBrush
                             "Use secondary mouse button to remove decorative sand from the area under the brush");
                     ResourcePanelDetour.Deploy();
                 }
+                Util.AddLocale("TUTORIAL_ADVISER", "Terrain", "Terrain Tool", "");
+                Util.AddLocale("TUTORIAL_ADVISER", "Water", "Water Tool", "");
+                Util.AddLocale("TUTORIAL_ADVISER", "Resource", "Ground Resources Tool", "");
             }
             if (NaturalResourcesBrush.Options.IsFlagSet(ModOptions.TerrainTool))
             {
                 Util.AddLocale("TERRAIN", "Ditch", "Ditch tool",
-                    "Provides fixed level terraforming");
+                    "");
             }
             var toolController = Object.FindObjectOfType<ToolController>();
             if (toolController == null)

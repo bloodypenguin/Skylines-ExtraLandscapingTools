@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using ColossalFramework;
 using NaturalResourcesBrush.Redirection;
 using UnityEngine;
 
@@ -57,6 +58,7 @@ namespace NaturalResourcesBrush
         {
             this.m_levelMaterial = new Material(Shader.Find("Custom/Overlay/WaterLevel"));
             this.m_sourceMaterial = new Material(Shader.Find("Custom/Tools/WaterSource"));
+            m_sourceMaterial.color = new Color(48.0f / 255.0f, 140.0f / 255, 1.0f, 54.0f / 255.0f);
             this.m_sourceMesh = ResourceUtils.Load<Mesh>("Cylinder01");
             RedirectionHelper.RevertRedirect(
                     typeof(WaterTool).GetMethod("Awake",

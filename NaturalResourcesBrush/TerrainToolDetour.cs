@@ -38,7 +38,6 @@ public class TerrainToolDetour : TerrainTool
 
     private static Dictionary<MethodInfo, RedirectCallsState> _redirects;
     public static bool isDitch = false;
-    public static int ditchMode = 0;
     public static bool ditchCombineMultipleStrokes = false;
     private static ushort targetHeightStroke;
     private static ushort[] ditchHeights;
@@ -75,7 +74,7 @@ public class TerrainToolDetour : TerrainTool
     }
 
     [RedirectMethod] //it gets inlined. Impossible to detour
-    public void Undo() 
+    public void Undo()
     {
         m_undoRequest = true;
     }
@@ -128,7 +127,8 @@ public class TerrainToolDetour : TerrainTool
                 if (m_mode == TerrainTool.Mode.Shift || m_mode == TerrainTool.Mode.Soften || isDitch)
                     //end mod
                     m_mouseRightDown = true;
-                else if (m_mode == TerrainTool.Mode.Level || m_mode == TerrainTool.Mode.Slope) { 
+                else if (m_mode == TerrainTool.Mode.Level || m_mode == TerrainTool.Mode.Slope)
+                {
                     m_startPosition = m_mousePosition;
                     //begin mod
                     StartPositionField.SetValue(this, m_startPosition);
@@ -263,8 +263,8 @@ public class TerrainToolDetour : TerrainTool
     {
 
         //begin mod
-        m_undoRequest = (bool) UndoRequestField.GetValue(this);
-        m_startPosition = (Vector3) StartPositionField.GetValue(this);
+        m_undoRequest = (bool)UndoRequestField.GetValue(this);
+        m_startPosition = (Vector3)StartPositionField.GetValue(this);
         //end mod
         ToolBase.RaycastInput input = new ToolBase.RaycastInput(m_mouseRay, m_mouseRayLength);
         if (m_undoRequest && !m_strokeInProgress)
@@ -302,23 +302,10 @@ public class TerrainToolDetour : TerrainTool
                 var diff = m_mouseLeftDown ? trenchDepth : -trenchDepth;
                 var finalStrength = m_strength * diff;
                 var i = 0;
-                var startTargetHeight = m_mousePosition.y;
                 foreach (var originalHeight in TerrainManager.instance.FinalHeights)
                 {
                     var from = originalHeight * 1.0f / 64.0f;
-                    switch (ditchMode)
-                    {
-                        case 0: //Ditch
-                            ditchHeights[i++] = (ushort)Math.Max(0, from + finalStrength);
-                            break;
-                        case 1: //Ditch & Level
-                            ditchHeights[i++] = (ushort)Math.Max(0, startTargetHeight + finalStrength);
-                            break;
-                        case 2: //Ditch & Level (Gentle)
-                            var proposed = Math.Max(0, startTargetHeight + finalStrength);
-                            ditchHeights[i++] = (ushort)(m_mouseLeftDown ? Math.Max(proposed, from) : Math.Min(proposed, from));
-                            break;
-                    }
+                    ditchHeights[i++] = (ushort)Math.Max(0, from + finalStrength);
                 }
             }
             //end mod
