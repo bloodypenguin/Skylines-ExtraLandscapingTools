@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace NaturalResourcesBrush
 {
-    public static class UIUtil
+    public static class UI
     {
 
         public static void SetupTitle(string text, UIComponent parentPanel)
@@ -203,6 +203,70 @@ namespace NaturalResourcesBrush
             scrollbar.isVisible = true;
             scrollbar.isEnabled = true;
             return scrollbar;
+        }
+
+        public static void SetUpUndoModififcationPanel(UIComponent optionsBar)
+        {
+            var undoPanel = optionsBar.AddUIComponent<UIPanel>();
+            undoPanel.name = "UndoTerrainPanel";
+            undoPanel.backgroundSprite = "MenuPanel2";
+            undoPanel.size = new Vector2(231, 106);
+            undoPanel.isVisible = false;
+            undoPanel.relativePosition = new Vector3(-256, -594);
+            SetupTitle("", undoPanel);
+            var applyButton = undoPanel.AddUIComponent<UIButton>();
+            applyButton.name = "Apply";
+            applyButton.text = "Undo Terrain Modification";
+            applyButton.size = new Vector2(191, 38);
+            applyButton.relativePosition = new Vector3(20, 54);
+            applyButton.normalBgSprite = "ButtonMenu";
+            applyButton.hoveredBgSprite = "ButtonMenuHovered";
+            applyButton.pressedBgSprite = "ButtonMenuPressed";
+            applyButton.disabledBgSprite = "ButtonMenuDisabled";
+            applyButton.canFocus = false;
+            var utoPanel = undoPanel.gameObject.AddComponent<UndoTerrainOptionPanel>();
+            applyButton.eventClick += (component, eventParam) => { utoPanel.UndoTerrain(); };
+        }
+
+        public static void SetupLevelHeightPanel(UIComponent optionsBar)
+        {
+            var levelHeightPanel = optionsBar.AddUIComponent<UIPanel>();
+            levelHeightPanel.backgroundSprite = "MenuPanel2";
+            levelHeightPanel.isVisible = false;
+            levelHeightPanel.size = new Vector2(231, 108);
+            levelHeightPanel.relativePosition = new Vector2(-256, -702);
+            levelHeightPanel.name = "LevelHeightPanel";
+            SetupTitle("", levelHeightPanel);
+            var heightLabel = levelHeightPanel.AddUIComponent<UILabel>();
+            heightLabel.name = "HeightLabel";
+            heightLabel.text = "Terrain Height";
+            heightLabel.size = new Vector2(134, 18);
+            heightLabel.relativePosition = new Vector3(13, 56);
+            var heightText = levelHeightPanel.AddUIComponent<UITextField>();
+            heightText.name = "Height";
+            heightText.size = new Vector2(52, 18);
+            heightText.normalBgSprite = "TextFieldPanel";
+            heightText.relativePosition = new Vector3(150, 56);
+            heightText.builtinKeyNavigation = true;
+            heightText.isInteractive = true;
+            heightText.readOnly = false;
+            heightText.selectionSprite = "EmptySprite";
+            heightText.selectionBackgroundColor = new Color32(0, 172, 234, 255);
+            
+            var heightSlider = levelHeightPanel.AddUIComponent<UISlider>();
+            heightSlider.name = "Height";
+            heightSlider.relativePosition = new Vector3(28, 79);
+            heightSlider.backgroundSprite = "ScrollbarTrack";
+            heightSlider.size = new Vector2(174, 12);
+            heightSlider.minValue = 0.0f;
+            heightSlider.maxValue = 1024.0f;
+            heightSlider.stepSize = 0.01f;
+            var heightSliderThumb = heightSlider.AddUIComponent<UISlicedSprite>();
+            heightSliderThumb.spriteName = "ScrollbarThumb";
+            heightSliderThumb.size = new Vector2(10, 20);
+            heightSlider.thumbObject = heightSliderThumb;
+
+            levelHeightPanel.gameObject.AddComponent<LevelHeightOptionPanel>();
         }
     }
 }

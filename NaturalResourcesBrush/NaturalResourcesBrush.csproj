@@ -64,7 +64,7 @@
     <Compile Include="ResourceUtils.cs" />
     <Compile Include="TreeInfoDetour.cs" />
     <Compile Include="TreeToolDetour.cs" />
-    <Compile Include="UIUtil.cs" />
+    <Compile Include="UI.cs" />
     <Compile Include="Util.cs" />
     <Compile Include="WaterToolDetour.cs" />
   </ItemGroup>

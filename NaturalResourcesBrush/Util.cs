@@ -233,8 +233,20 @@ namespace NaturalResourcesBrush
             {
                 terrainTool = toolController.gameObject.AddComponent<TerrainTool>();
                 extraTools.Add(terrainTool);
+
+                var optionsBar = UIView.Find<UIPanel>("OptionsBar");
+                if (optionsBar == null)
+                {
+                    Debug.LogError("ExtraTools#SetupBrushOptionsPanel(): options bar not found");
+                    return;
+                }
+                UI.SetUpUndoModififcationPanel(optionsBar);
+                UI.SetupLevelHeightPanel(optionsBar);
+                var utoPanel = Object.FindObjectOfType<UndoTerrainOptionPanel>();
+                var toolField = typeof (UndoTerrainOptionPanel).GetField("m_TerrainTool", BindingFlags.Instance | BindingFlags.NonPublic);
+                toolField.SetValue(utoPanel, terrainTool);
+                terrainTool.m_brush = toolController.m_brushes[0];
             }
-            terrainTool.m_brush = toolController.m_brushes[0];
         }
         public static void LoadResources()
         {
@@ -290,10 +302,10 @@ namespace NaturalResourcesBrush
             brushOptionsPanel.isVisible = false;
             brushOptionsPanel.relativePosition = new Vector3(-256, -488);
 
-            UIUtil.SetupTitle("Brush Options", brushOptionsPanel);
-            UIUtil.SetupBrushSizePanel(brushOptionsPanel);
-            UIUtil.SetupBrushStrengthPanel(brushOptionsPanel);
-            UIUtil.SetupBrushSelectPanel(brushOptionsPanel);
+            UI.SetupTitle("Brush Options", brushOptionsPanel);
+            UI.SetupBrushSizePanel(brushOptionsPanel);
+            UI.SetupBrushStrengthPanel(brushOptionsPanel);
+            UI.SetupBrushSelectPanel(brushOptionsPanel);
 
             if (treeBrushEnabled)
             {
@@ -329,8 +341,8 @@ namespace NaturalResourcesBrush
             waterPanel.isVisible = false;
             waterPanel.relativePosition = new Vector3(-256, -166);
 
-            UIUtil.SetupTitle("Water Options", waterPanel);
-            UIUtil.SetupWaterCapacityPanel(waterPanel);
+            UI.SetupTitle("Water Options", waterPanel);
+            UI.SetupWaterCapacityPanel(waterPanel);
             return waterPanel.gameObject.AddComponent<WaterOptionPanel>();
         }
 
