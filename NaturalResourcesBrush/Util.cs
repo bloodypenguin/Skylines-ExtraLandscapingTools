@@ -67,7 +67,7 @@ namespace NaturalResourcesBrush
 
         public static UITextureAtlas CreateAtlas(Texture2D[] sprites)
         {
-            UITextureAtlas atlas = new UITextureAtlas();
+            UITextureAtlas atlas = ScriptableObject.CreateInstance<UITextureAtlas>();
             atlas.material = new Material(GetUIAtlasShader());
 
             Texture2D texture = new Texture2D(0, 0);

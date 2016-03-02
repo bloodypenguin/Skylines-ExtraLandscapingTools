@@ -54,14 +54,12 @@ BindingFlags.NonPublic | BindingFlags.Instance);
             _deployed = false;
         }
 
-        protected override void OnToolGUI()
+        protected override void OnToolGUI(Event e)
         {
-
-            Event current = Event.current;
             if (!this.m_toolController.IsInsideUI &&
-                current.type == EventType.MouseDown || (current.type == EventType.MouseDrag && this.m_mode == TreeTool.Mode.Single))
+                e.type == EventType.MouseDown || (e.type == EventType.MouseDrag && this.m_mode == TreeTool.Mode.Single))
             {
-                if (current.button == 0)
+                if (e.button == 0)
                 {
 
                     mouseLeftDownField.SetValue(this, true);
@@ -86,23 +84,23 @@ BindingFlags.NonPublic | BindingFlags.Instance);
                 }
                 else
                 {
-                    if (current.button != 1)
+                    if (e.button != 1)
                         return;
                     mouseRightDownField.SetValue(this, true);
                 }
             }
             else
             {
-                if (current.type != EventType.MouseUp)
+                if (e.type != EventType.MouseUp)
                     return;
-                if (current.button == 0)
+                if (e.button == 0)
                 {
                     mouseLeftDownField.SetValue(this, false);
                     lastAllowedMousePosition = Vector3.zero;
                 }
                 else
                 {
-                    if (current.button != 1)
+                    if (e.button != 1)
                         return;
                     mouseRightDownField.SetValue(this, false);
                 }

@@ -111,17 +111,16 @@ public class TerrainToolDetour : TerrainTool
     }
 
     [RedirectMethod]
-    protected override void OnToolGUI()
+    protected override void OnToolGUI(UnityEngine.Event e)
     {
-        UnityEngine.Event current = UnityEngine.Event.current;
-        if (!m_toolController.IsInsideUI && current.type == UnityEngine.EventType.MouseDown)
+        if (!m_toolController.IsInsideUI && e.type == UnityEngine.EventType.MouseDown)
         {
-            if (current.button == 0)
+            if (e.button == 0)
             {
                 m_mouseLeftDown = true;
                 m_endPosition = m_mousePosition;
             }
-            else if (current.button == 1)
+            else if (e.button == 1)
             {
                 //begin mod
                 if (m_mode == TerrainTool.Mode.Shift || m_mode == TerrainTool.Mode.Soften || isDitch)
@@ -136,22 +135,22 @@ public class TerrainToolDetour : TerrainTool
                 }
             }
         }
-        else if (current.type == UnityEngine.EventType.MouseUp)
+        else if (e.type == UnityEngine.EventType.MouseUp)
         {
-            if (current.button == 0)
+            if (e.button == 0)
             {
                 m_mouseLeftDown = false;
                 if (!m_mouseRightDown)
                     m_strokeEnded = true;
             }
-            else if (current.button == 1)
+            else if (e.button == 1)
             {
                 m_mouseRightDown = false;
                 if (!m_mouseLeftDown)
                     m_strokeEnded = true;
             }
         }
-        if (!m_UndoKey.IsPressed(current) || m_undoRequest || (m_mouseLeftDown || m_mouseRightDown) || !IsUndoAvailable())
+        if (!m_UndoKey.IsPressed(e) || m_undoRequest || (m_mouseLeftDown || m_mouseRightDown) || !IsUndoAvailable())
             return;
         Undo();
     }
