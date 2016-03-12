@@ -14,6 +14,7 @@ namespace NaturalResourcesBrush
 {
     public static class Util
     {
+
         public static Texture2D LoadTextureFromAssembly(string path, string textureName, bool readOnly = true)
         {
             try
@@ -51,15 +52,15 @@ namespace NaturalResourcesBrush
 
         private static string[] GetIconNames(List<string> baseIconNames)
         {
-            var names = new string[baseIconNames.Count*5];
+            var names = new string[baseIconNames.Count * 5];
             var i = 0;
             foreach (var baseIconName in baseIconNames)
             {
-                names[i*5] = baseIconName;
-                names[i*5 + 1] = baseIconName + "Focused";
-                names[i*5 + 2] = baseIconName + "Hovered";
-                names[i*5 + 3] = baseIconName + "Pressed";
-                names[i*5 + 4] = baseIconName + "Disabled";
+                names[i * 5] = baseIconName;
+                names[i * 5 + 1] = baseIconName + "Focused";
+                names[i * 5 + 2] = baseIconName + "Hovered";
+                names[i * 5 + 3] = baseIconName + "Pressed";
+                names[i * 5 + 4] = baseIconName + "Disabled";
                 i++;
             }
             return names;
@@ -231,22 +232,17 @@ namespace NaturalResourcesBrush
             var terrainTool = toolController.gameObject.GetComponent<TerrainTool>();
             if (terrainTool == null)
             {
-                terrainTool = toolController.gameObject.AddComponent<TerrainTool>();
-                extraTools.Add(terrainTool);
-
-                var optionsBar = UIView.Find<UIPanel>("OptionsBar");
-                if (optionsBar == null)
-                {
-                    Debug.LogError("ExtraTools#SetupBrushOptionsPanel(): options bar not found");
-                    return;
-                }
-                UI.SetUpUndoModififcationPanel(optionsBar);
-                UI.SetupLevelHeightPanel(optionsBar);
-                var utoPanel = Object.FindObjectOfType<UndoTerrainOptionPanel>();
-                var toolField = typeof (UndoTerrainOptionPanel).GetField("m_TerrainTool", BindingFlags.Instance | BindingFlags.NonPublic);
-                toolField.SetValue(utoPanel, terrainTool);
-                terrainTool.m_brush = toolController.m_brushes[0];
+                Debug.LogError("ExtraTools#SetupBrushOptionsPanel(): terrain tool not found");
+                return;
             }
+            var optionsBar = UIView.Find<UIPanel>("OptionsBar");
+            if (optionsBar == null)
+            {
+                Debug.LogError("ExtraTools#SetupBrushOptionsPanel(): options bar not found");
+                return;
+            }
+            UI.SetUpUndoModififcationPanel(optionsBar);
+            UI.SetupLevelHeightPanel(optionsBar);
         }
         public static void LoadResources()
         {
@@ -367,21 +363,21 @@ namespace NaturalResourcesBrush
                 {
                     ToolbarButtonSpawner.SpawnSubEntry(strip, "Resource", "MAPEDITOR_TOOL", null, "ToolbarIcon", true,
                         mainToolbar.m_OptionsBar, mainToolbar.m_DefaultInfoTooltipAtlas);
-                    ((UIButton) UIView.FindObjectOfType<ResourcePanel>().Find("Ore")).atlas = defaultAtlas;
-                    ((UIButton) UIView.FindObjectOfType<ResourcePanel>().Find("Oil")).atlas = defaultAtlas;
-                    ((UIButton) UIView.FindObjectOfType<ResourcePanel>().Find("Fertility")).atlas = defaultAtlas;
-                    ((UIButton) UIView.FindObjectOfType<ResourcePanel>().Find("Sand")).atlas = defaultAtlas;
+                    ((UIButton)UIView.FindObjectOfType<ResourcePanel>().Find("Ore")).atlas = defaultAtlas;
+                    ((UIButton)UIView.FindObjectOfType<ResourcePanel>().Find("Oil")).atlas = defaultAtlas;
+                    ((UIButton)UIView.FindObjectOfType<ResourcePanel>().Find("Fertility")).atlas = defaultAtlas;
+                    ((UIButton)UIView.FindObjectOfType<ResourcePanel>().Find("Sand")).atlas = defaultAtlas;
                 }
                 if (NaturalResourcesBrush.Options.IsFlagSet(ModOptions.WaterTool))
                 {
                     ToolbarButtonSpawner.SpawnSubEntry(strip, "Water", "MAPEDITOR_TOOL", null, "ToolbarIcon", true,
                         mainToolbar.m_OptionsBar, mainToolbar.m_DefaultInfoTooltipAtlas);
-                    ((UIButton) UIView.FindObjectOfType<WaterPanel>().Find("PlaceWater")).atlas =
-                        CreateAtlasFromResources(new List<string> {"WaterPlaceWater"});
-                    ((UIButton) UIView.FindObjectOfType<WaterPanel>().Find("MoveSeaLevel")).atlas =
-                        CreateAtlasFromResources(new List<string> {"WaterMoveSeaLevel"});
-                    ((UIButton) UIView.FindObjectOfType<GameMainToolbar>().Find("Water")).atlas =
-                        CreateAtlasFromResources(new List<string> {"ToolbarIconWater", "ToolbarIconBase"});
+                    ((UIButton)UIView.FindObjectOfType<WaterPanel>().Find("PlaceWater")).atlas =
+                        CreateAtlasFromResources(new List<string> { "WaterPlaceWater" });
+                    ((UIButton)UIView.FindObjectOfType<WaterPanel>().Find("MoveSeaLevel")).atlas =
+                        CreateAtlasFromResources(new List<string> { "WaterMoveSeaLevel" });
+                    ((UIButton)UIView.FindObjectOfType<GameMainToolbar>().Find("Water")).atlas =
+                        CreateAtlasFromResources(new List<string> { "ToolbarIconWater", "ToolbarIconBase" });
                 }
                 if (NaturalResourcesBrush.Options.IsFlagSet(ModOptions.TerrainTool))
                 {
@@ -389,16 +385,16 @@ namespace NaturalResourcesBrush
 
                     ToolbarButtonSpawner.SpawnSubEntry(strip, "Terrain", "MAPEDITOR_TOOL", null, "ToolbarIcon", true,
                         mainToolbar.m_OptionsBar, mainToolbar.m_DefaultInfoTooltipAtlas);
-                    ((UIButton) UIView.FindObjectOfType<TerrainPanel>().Find("Shift")).atlas =
-                        CreateAtlasFromResources(new List<string> {"TerrainShift"});
-                    ((UIButton) UIView.FindObjectOfType<TerrainPanel>().Find("Slope")).atlas =
-                        CreateAtlasFromResources(new List<string> {"TerrainSlope"});
-                    ((UIButton) UIView.FindObjectOfType<TerrainPanel>().Find("Level")).atlas =
-                        CreateAtlasFromResources(new List<string> {"TerrainLevel"});
-                    ((UIButton) UIView.FindObjectOfType<TerrainPanel>().Find("Soften")).atlas =
-                        CreateAtlasFromResources(new List<string> {"TerrainSoften"});
-                    ((UIButton) UIView.FindObjectOfType<GameMainToolbar>().Find("Terrain")).atlas =
-                        CreateAtlasFromResources(new List<string> {"ToolbarIconTerrain", "ToolbarIconBase"});
+                    ((UIButton)UIView.FindObjectOfType<TerrainPanel>().Find("Shift")).atlas =
+                        CreateAtlasFromResources(new List<string> { "TerrainShift" });
+                    ((UIButton)UIView.FindObjectOfType<TerrainPanel>().Find("Slope")).atlas =
+                        CreateAtlasFromResources(new List<string> { "TerrainSlope" });
+                    ((UIButton)UIView.FindObjectOfType<TerrainPanel>().Find("Level")).atlas =
+                        CreateAtlasFromResources(new List<string> { "TerrainLevel" });
+                    ((UIButton)UIView.FindObjectOfType<TerrainPanel>().Find("Soften")).atlas =
+                        CreateAtlasFromResources(new List<string> { "TerrainSoften" });
+                    ((UIButton)UIView.FindObjectOfType<GameMainToolbar>().Find("Terrain")).atlas =
+                        CreateAtlasFromResources(new List<string> { "ToolbarIconTerrain", "ToolbarIconBase" });
                 }
                 return true;
             }

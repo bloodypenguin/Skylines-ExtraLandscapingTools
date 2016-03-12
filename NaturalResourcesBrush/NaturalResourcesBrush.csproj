@@ -56,6 +56,7 @@
     <Compile Include="Redirection\TargetTypeAttribute.cs" />
     <Compile Include="Redirection\Tuple.cs" />
     <Compile Include="ResourcePanelDetour.cs" />
+    <Compile Include="LandscapingPanelDetour.cs" />
     <Compile Include="TerrainPanelDetour.cs" />
     <Compile Include="TerrainToolDetour.cs" />
     <Compile Include="ToolbarButtonSpawner.cs" />

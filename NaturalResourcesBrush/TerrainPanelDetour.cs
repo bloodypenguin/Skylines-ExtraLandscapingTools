@@ -15,15 +15,6 @@ namespace NaturalResourcesBrush
     BindingFlags.NonPublic | BindingFlags.Instance,
     null, new Type[] { typeof(string), typeof(int) }, null);
 
-        private static readonly MethodInfo ShowBrushOptionsPanelMethod =
-            typeof(TerrainPanel).GetMethod("ShowBrushOptionsPanel", BindingFlags.Instance | BindingFlags.NonPublic);
-        private static readonly MethodInfo ShowLevelHeightPanelMethod =
-    typeof(TerrainPanel).GetMethod("ShowLevelHeightPanel", BindingFlags.Instance | BindingFlags.NonPublic);
-
-        private static readonly FieldInfo OptionsBrushPanelField = typeof(TerrainPanel).GetField(
-            "m_OptionsBrushPanel",
-            BindingFlags.NonPublic | BindingFlags.Instance);
-
         private static Dictionary<MethodInfo, RedirectCallsState> _redirects;
 
         public static void Deploy()
@@ -48,6 +39,36 @@ namespace NaturalResourcesBrush
             _redirects = null;
         }
 
+        [RedirectReverse]
+        private static void ShowUndoTerrainOptionsPanel(TerrainPanel panel, bool show)
+        {
+            UnityEngine.Debug.Log($"{panel}-{show}");
+        }
+
+        [RedirectReverse]
+        private static void ShowBrushOptionsPanel(TerrainPanel panel, bool show)
+        {
+            UnityEngine.Debug.Log($"{panel}-{show}");
+        }
+
+        [RedirectReverse]
+        private static void ShowLevelHeightPanel(TerrainPanel panel, bool show)
+        {
+            UnityEngine.Debug.Log($"{panel}-{show}");
+        }
+
+        [RedirectMethod]
+        protected override void OnHideOptionBars()
+        {
+            var panel = (TerrainPanel)Convert.ChangeType(this, typeof(TerrainPanel));
+            ShowBrushOptionsPanel(panel, false);
+            ShowUndoTerrainOptionsPanel(panel, false);
+            ShowLevelHeightPanel(panel, false);
+            //begin mod
+            UIView.library.Hide("LandscapingInfoPanel");
+            //end mod
+        }
+
         [RedirectMethod]
         public override void RefreshPanel()
         {
@@ -64,30 +85,36 @@ namespace NaturalResourcesBrush
         {
             int zOrder = comp.zOrder;
             TerrainTool terrainTool = ToolsModifierControl.SetTool<TerrainTool>();
-            if ((Object)terrainTool != (Object)null)
+            if (terrainTool == null)
             {
-                if ((Object)OptionsBrushPanelField.GetValue(this) != (Object)null)
-                    ((UIPanel)OptionsBrushPanelField.GetValue(this)).isVisible = true;
-                if (zOrder < kTools.Length)
-                {
-                    terrainTool.m_mode = TerrainPanelDetour.kTools[zOrder].enumValue;
-                    TerrainToolDetour.isDitch = false;
-                    TerrainToolDetour.ditchCombineMultipleStrokes = false;
-                    //TODO(earalov): hide ditch properties panel
-                }
-                else
-                {
-                    terrainTool.m_mode = TerrainTool.Mode.Shift;
-                    TerrainToolDetour.isDitch = true;
-                    TerrainToolDetour.ditchCombineMultipleStrokes = false;
-                    //TODO(earalov): show & refresh ditch properties panel
-                }
+                return;
             }
-            ShowBrushOptionsPanelMethod.Invoke(this, new object[] { true });
+            var panel = (TerrainPanel)Convert.ChangeType(this, typeof(TerrainPanel));
+            ShowUndoTerrainOptionsPanel(panel, true);
+            ShowBrushOptionsPanel(panel, true);
+            //begin mod
+            UIView.library.Show("LandscapingInfoPanel");
+            //end mod
             if (zOrder == 1 || zOrder == 3)
-                ShowLevelHeightPanelMethod.Invoke(this, new object[] { true });
+                ShowLevelHeightPanel(panel, true);
             else
-                ShowLevelHeightPanelMethod.Invoke(this, new object[] { false });
+                ShowLevelHeightPanel(panel, false);
+            //begin mod
+            if (zOrder < kTools.Length)
+            {
+                terrainTool.m_mode = TerrainPanelDetour.kTools[zOrder].enumValue;
+                TerrainToolDetour.isDitch = false;
+                TerrainToolDetour.ditchCombineMultipleStrokes = false;
+                //TODO(earalov): hide ditch properties panel
+            }
+            else
+            {
+                terrainTool.m_mode = TerrainTool.Mode.Shift;
+                TerrainToolDetour.isDitch = true;
+                TerrainToolDetour.ditchCombineMultipleStrokes = false;
+                //TODO(earalov): show & refresh ditch properties panel
+            }
+            //end mod
         }
 
         public override ItemClass.Service service { get; }

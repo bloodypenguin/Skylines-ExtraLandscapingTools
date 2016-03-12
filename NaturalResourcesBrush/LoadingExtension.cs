@@ -23,6 +23,7 @@ namespace NaturalResourcesBrush
             {
                 TerrainToolDetour.Deploy();
                 TerrainPanelDetour.Deploy();
+                //LandscapingPanelDetour.Deploy();
             }
         }
 
@@ -34,6 +35,7 @@ namespace NaturalResourcesBrush
             ResourcePanelDetour.Revert();
             TerrainToolDetour.Revert();
             TerrainPanelDetour.Revert();
+            //LandscapingPanelDetour.Revert();
         }
 
         public override void OnLevelLoaded(LoadMode mode)
