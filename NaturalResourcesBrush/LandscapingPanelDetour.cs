@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Reflection;
 using ColossalFramework;
+using ColossalFramework.DataBinding;
+using ColossalFramework.Globalization;
 using ColossalFramework.UI;
+using NaturalResourcesBrush.Options;
 using NaturalResourcesBrush.Redirection;
-using UnityEngine;
-using Object = System.Object;
 
 namespace NaturalResourcesBrush
 {
@@ -13,23 +14,11 @@ namespace NaturalResourcesBrush
     public class LandscapingPanelDetour : GeneratedScrollPanel
     {
         private static readonly PositionData<TerrainTool.Mode>[] kTools = Utils.GetOrderedEnumData<TerrainTool.Mode>();
-
-        private static readonly MethodInfo ShowBrushOptionsPanelMethod =
-            typeof(LandscapingPanel).GetMethod("ShowBrushOptionsPanel", BindingFlags.Instance | BindingFlags.NonPublic);
-        private static readonly MethodInfo ShowLevelHeightPanelMethod =
-    typeof(TerrainPanel).GetMethod("ShowLevelHeightPanel", BindingFlags.Instance | BindingFlags.NonPublic);
-
-        private static readonly FieldInfo OptionsBrushPanelField = typeof(TerrainPanel).GetField(
-            "m_OptionsBrushPanel",
-            BindingFlags.NonPublic | BindingFlags.Instance);
+        private static UIPanel m_OptionsUndoTerrainPanel;
+        private static UIPanel m_OptionsBrushPanel;
+        private static UIPanel m_OptionsLevelHeightPanel;
 
         private static Dictionary<MethodInfo, RedirectCallsState> _redirects;
-
-        [RedirectReverse]
-        private static void SpawnEntry(LandscapingPanel panel, string name, bool enabled, MilestoneInfo info)
-        {
-            UnityEngine.Debug.Log($"{panel}-{name}-{enabled}-{info}");
-        }
 
         public static void Deploy()
         {
@@ -51,6 +40,59 @@ namespace NaturalResourcesBrush
                 RedirectionHelper.RevertRedirect(redirect.Key, redirect.Value);
             }
             _redirects = null;
+
+            m_OptionsBrushPanel = null;
+            m_OptionsLevelHeightPanel = null;
+            m_OptionsUndoTerrainPanel = null;
+        }
+
+        public static void Initialize()
+        {
+            var optionsBar = UIView.Find<UIPanel>("OptionsBar");
+            if ((Object)optionsBar != (Object)null)
+            {
+                if ((Object)m_OptionsBrushPanel == (Object)null)
+                    m_OptionsBrushPanel = optionsBar.Find<UIPanel>("BrushPanel");
+                if ((Object)m_OptionsLevelHeightPanel == (Object)null)
+                    m_OptionsLevelHeightPanel = optionsBar.Find<UIPanel>("LevelHeightPanel");
+                if ((Object)m_OptionsUndoTerrainPanel == (Object)null)
+                    m_OptionsUndoTerrainPanel = optionsBar.Find<UIPanel>("UndoTerrainPanel");
+            }
+        }
+
+        private static void ShowUndoTerrainOptionsPanel(bool show)
+        {
+            if (!((Object)m_OptionsUndoTerrainPanel != (Object)null))
+                return;
+            m_OptionsUndoTerrainPanel.isVisible = show;
+            m_OptionsUndoTerrainPanel.zOrder = 2;
+        }
+
+        private static void ShowBrushOptionsPanel(bool show)
+        {
+            if (!((Object)m_OptionsBrushPanel != (Object)null))
+                return;
+            m_OptionsBrushPanel.isVisible = show;
+            m_OptionsBrushPanel.zOrder = 1;
+        }
+
+        private static void ShowLevelHeightPanel(bool show)
+        {
+            if (!((Object)m_OptionsLevelHeightPanel != (Object)null))
+                return;
+            m_OptionsLevelHeightPanel.isVisible = show;
+            m_OptionsLevelHeightPanel.zOrder = 0;
+        }
+
+        [RedirectMethod]
+        protected override void OnHideOptionBars()
+        {
+            //begin mod
+            ShowBrushOptionsPanel(false);
+            ShowUndoTerrainOptionsPanel(false);
+            ShowLevelHeightPanel(false);
+            //end mod
+            UIView.library.Hide("LandscapingInfoPanel");
         }
 
         [RedirectMethod]
@@ -58,17 +100,11 @@ namespace NaturalResourcesBrush
         {
             base.RefreshPanel();
             int index;
-            var panel = (LandscapingPanel)Convert.ChangeType(this, typeof(LandscapingPanel));;
-
             for (index = 0; index < LandscapingPanelDetour.kTools.Length; ++index)
-                SpawnEntry(panel, LandscapingPanelDetour.kTools[index].enumName, true, null);
-            SpawnEntry(panel, "Ditch", true, null);
-            //TODO(earalov): restore
-//            var ditchButton = gameObject.transform.FindChild("Ditch").gameObject.GetComponent<UIButton>();
-//            if (ditchButton != null)
-//            {
-//                ditchButton.atlas = Util.CreateAtlasFromEmbeddedResources(new List<string> { "TerrainDitch" });
-//            }
+                SpawnEntry(LandscapingPanelDetour.kTools[index].enumName, true, null);
+            //begin mod
+            SpawnEntry("Ditch", true, null);
+            //end mod
         }
 
         [RedirectMethod]
@@ -76,31 +112,76 @@ namespace NaturalResourcesBrush
         {
             int zOrder = comp.zOrder;
             TerrainTool terrainTool = ToolsModifierControl.SetTool<TerrainTool>();
-            if ((Object)terrainTool != (Object)null)
+            if (terrainTool == null)
             {
-                if ((Object)OptionsBrushPanelField.GetValue(this) != (Object)null)
-                    ((UIPanel)OptionsBrushPanelField.GetValue(this)).isVisible = true;
-                if (zOrder < kTools.Length)
-                {
-                    terrainTool.m_mode = LandscapingPanelDetour.kTools[zOrder].enumValue;
-                    TerrainToolDetour.isDitch = false;
-                    TerrainToolDetour.ditchCombineMultipleStrokes = false;
-                    //TODO(earalov): hide ditch properties panel
-                }
-                else
-                {
-                    terrainTool.m_mode = TerrainTool.Mode.Shift;
-                    TerrainToolDetour.isDitch = true;
-                    TerrainToolDetour.ditchCombineMultipleStrokes = false;
-                    //TODO(earalov): show & refresh ditch properties panel
-                }
+                return;
             }
-            ShowBrushOptionsPanelMethod.Invoke(this, new object[] { true });
-//TODO(earalov): bring back
-//            if (zOrder == 1 || zOrder == 3)
-//                ShowLevelHeightPanelMethod.Invoke(this, new object[] { true });
-//            else
-//                ShowLevelHeightPanelMethod.Invoke(this, new object[] { false });
+            ShowUndoTerrainOptionsPanel(true);
+            ShowBrushOptionsPanel(true);
+            //begin mod
+            if (OptionsHolder.Options.dirtLimits)
+            {
+                UIView.library.Show("LandscapingInfoPanel");
+            }
+            if (zOrder == 1 || zOrder == 3)
+                ShowLevelHeightPanel(true);
+            else
+                ShowLevelHeightPanel(false);
+            //begin mod
+            if (zOrder < kTools.Length)
+            {
+                terrainTool.m_mode = LandscapingPanelDetour.kTools[zOrder].enumValue;
+                TerrainToolDetour.isDitch = false;
+                TerrainToolDetour.ditchCombineMultipleStrokes = false;
+                //TODO(earalov): hide ditch properties panel
+            }
+            else
+            {
+                terrainTool.m_mode = TerrainTool.Mode.Shift;
+                TerrainToolDetour.isDitch = true;
+                TerrainToolDetour.ditchCombineMultipleStrokes = false;
+                //TODO(earalov): show & refresh ditch properties panel
+            }
+            //end mod
+        }
+
+        [RedirectMethod]
+        private void SpawnEntry(string name, bool enabled, MilestoneInfo info)
+        {
+            var landscapingInfo = (LandscapingPanel.LandscapingInfo)
+                typeof (LandscapingPanel).GetProperty("landscapingInfo", BindingFlags.NonPublic | BindingFlags.Instance)
+                    .GetValue(this, null);
+
+            landscapingInfo.m_DirtPrice = Singleton<TerrainManager>.instance.m_properties.m_dirtPrice;
+            float cost = (float)((double)landscapingInfo.m_DirtPrice * 65536.0 / 262144.0 * 512.0 / 100.0);
+            string str = TooltipHelper.Format(LocaleFormatter.Title, Locale.Get("LANDSCAPING_TITLE", name), LocaleFormatter.Sprite, name, LocaleFormatter.Text, Locale.Get("LANDSCAPING_DESC", name), LocaleFormatter.Locked, (!enabled).ToString(), LocaleFormatter.Cost, LocaleFormatter.FormatCubicCost(cost));
+            if (Singleton<UnlockManager>.exists)
+            {
+                string unlockDesc;
+                string currentValue;
+                string targetValue;
+                string progress;
+                string locked;
+                ToolsModifierControl.GetUnlockingInfo(info, out unlockDesc, out currentValue, out targetValue, out progress, out locked);
+                string addTooltip = TooltipHelper.Format(LocaleFormatter.LockedInfo, locked, LocaleFormatter.UnlockDesc, unlockDesc, LocaleFormatter.UnlockPopulationProgressText, progress, LocaleFormatter.UnlockPopulationTarget, targetValue, LocaleFormatter.UnlockPopulationCurrent, currentValue);
+                str = TooltipHelper.Append(str, addTooltip);
+            }
+            //begin mod
+            string buttonName;
+            UITextureAtlas buttonAtlas;
+            if (name == "Ditch")
+            {
+                buttonName = "TerrainDitch";
+                buttonAtlas = Util.CreateAtlasFromEmbeddedResources(new List<string> {"TerrainDitch"});
+            }
+            else
+            {
+                buttonName = "Landscaping" + name;
+                buttonAtlas = null;
+            }
+            var button = (UIButton)this.SpawnEntry(name, str, buttonName, (UITextureAtlas)buttonAtlas, GeneratedPanel.landscapingTooltipBox, enabled);
+            button.objectUserData = (object) landscapingInfo;
+            //end mod
         }
 
         public override ItemClass.Service service { get; }

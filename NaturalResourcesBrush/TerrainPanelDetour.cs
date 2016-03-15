@@ -11,9 +11,6 @@ namespace NaturalResourcesBrush
     public class TerrainPanelDetour : GeneratedScrollPanel
     {
         private static readonly PositionData<TerrainTool.Mode>[] kTools = Utils.GetOrderedEnumData<TerrainTool.Mode>();
-        private static readonly MethodInfo SpawnEntryMethod = typeof(TerrainPanel).GetMethod("SpawnEntry",
-    BindingFlags.NonPublic | BindingFlags.Instance,
-    null, new Type[] { typeof(string), typeof(int) }, null);
 
         private static Dictionary<MethodInfo, RedirectCallsState> _redirects;
 
@@ -40,21 +37,28 @@ namespace NaturalResourcesBrush
         }
 
         [RedirectReverse]
+        private static UIButton SpawnEntry(TerrainPanel panel, string name, int index)
+        {
+            UnityEngine.Debug.Log($"SpawnEntry-{panel}-{name}-{index}");
+            return null;
+        }
+
+        [RedirectReverse]
         private static void ShowUndoTerrainOptionsPanel(TerrainPanel panel, bool show)
         {
-            UnityEngine.Debug.Log($"{panel}-{show}");
+            UnityEngine.Debug.Log($"ShowUndoTerrainOptionsPanel-{panel}-{show}");
         }
 
         [RedirectReverse]
         private static void ShowBrushOptionsPanel(TerrainPanel panel, bool show)
         {
-            UnityEngine.Debug.Log($"{panel}-{show}");
+            UnityEngine.Debug.Log($"ShowBrushOptionsPanel-{panel}-{show}");
         }
 
         [RedirectReverse]
         private static void ShowLevelHeightPanel(TerrainPanel panel, bool show)
         {
-            UnityEngine.Debug.Log($"{panel}-{show}");
+            UnityEngine.Debug.Log($"ShowLevelHeightPanel-{panel}-{show}");
         }
 
         [RedirectMethod]
@@ -74,9 +78,10 @@ namespace NaturalResourcesBrush
         {
             base.RefreshPanel();
             int index;
+            var panel = (TerrainPanel)Convert.ChangeType(this, typeof(TerrainPanel));
             for (index = 0; index < TerrainPanelDetour.kTools.Length; ++index)
-                SpawnEntryMethod.Invoke(this, new object[] { TerrainPanelDetour.kTools[index].enumName, index });
-            var ditchButton = (UIButton)SpawnEntryMethod.Invoke(this, new object[] { "Ditch", index });
+                SpawnEntry(panel, TerrainPanelDetour.kTools[index].enumName, index );
+            var ditchButton = (UIButton)SpawnEntry(panel, "Ditch", index );
             ditchButton.atlas = Util.CreateAtlasFromEmbeddedResources(new List<string> { "TerrainDitch" });
         }
 

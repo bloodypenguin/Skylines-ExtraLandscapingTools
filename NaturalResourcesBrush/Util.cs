@@ -7,6 +7,7 @@ using ColossalFramework;
 using ColossalFramework.Globalization;
 using ColossalFramework.UI;
 using ICities;
+using NaturalResourcesBrush.Options;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -14,7 +15,6 @@ namespace NaturalResourcesBrush
 {
     public static class Util
     {
-
         public static Texture2D LoadTextureFromAssembly(string path, string textureName, bool readOnly = true)
         {
             try
@@ -151,6 +151,10 @@ namespace NaturalResourcesBrush
 
         public static void AddExtraToolsToController(ref ToolController toolController, List<ToolBase> extraTools)
         {
+            if (extraTools.Count < 1)
+            {
+                return;
+            }
             var fieldInfo = typeof(ToolController).GetField("m_tools", BindingFlags.Instance | BindingFlags.NonPublic);
             var tools = (ToolBase[])fieldInfo.GetValue(toolController);
             var initialLength = tools.Length;
@@ -170,35 +174,34 @@ namespace NaturalResourcesBrush
         }
 
         //returns false in no extra tools were set up
-        public static bool SetUpExtraTools(LoadMode mode, ref ToolController toolController, out List<ToolBase> extraTools)
+        public static List<ToolBase> SetUpExtraTools(LoadMode mode, ref ToolController toolController)
         {
-            extraTools = new List<ToolBase>();
+            var extraTools = new List<ToolBase>();
             if (mode == LoadMode.LoadGame | mode == LoadMode.NewGame)
             {
                 LoadResources();
-                if (SetUpResourcesToolbar())
+                if (SetUpToolbars(mode))
                 {
-                    if (NaturalResourcesBrush.Options.IsFlagSet(ModOptions.WaterTool))
+                    if (OptionsHolder.Options.waterTool)
                     {
                         SetUpWaterTool(ref toolController, ref extraTools);
                     }
-                    var optionsPanel = SetupBrushOptionsPanel(NaturalResourcesBrush.Options.IsFlagSet(ModOptions.TreeBrush));
+                    var optionsPanel = SetupBrushOptionsPanel(OptionsHolder.Options.treeBrush);
                     if (optionsPanel != null)
                     {
                         optionsPanel.m_BuiltinBrushes = toolController.m_brushes;
-                        if (NaturalResourcesBrush.Options.IsFlagSet(ModOptions.ResourcesTool))
+                        if (OptionsHolder.Options.resourcesTool)
                         {
                             SetUpNaturalResourcesTool(ref toolController, ref extraTools, ref optionsPanel);
                         }
-                        if (NaturalResourcesBrush.Options.IsFlagSet(ModOptions.TerrainTool))
+                        if (OptionsHolder.Options.terrainTool)
                         {
                             SetUpTerrainTool(ref toolController, ref extraTools, ref optionsPanel);
                         }
                     }
-
                 }
             }
-            return extraTools.Count > 0;
+            return extraTools;
         }
 
         private static void SetUpNaturalResourcesTool(ref ToolController toolController, ref List<ToolBase> extraTools, ref BrushOptionPanel optionsPanel)
@@ -342,24 +345,24 @@ namespace NaturalResourcesBrush
             return waterPanel.gameObject.AddComponent<WaterOptionPanel>();
         }
 
-        public static bool SetUpResourcesToolbar()
+        public static bool SetUpToolbars(LoadMode mode)
         {
             var mainToolbar = ToolsModifierControl.mainToolbar as GameMainToolbar;
             if (mainToolbar == null)
             {
-                Debug.LogError("ExtraTools#SetUpResourcesToolbar(): main toolbar is null");
+                Debug.LogError("ExtraTools#SetUpToolbars(): main toolbar is null");
                 return false;
             }
             var strip = mainToolbar.component as UITabstrip;
             if (strip == null)
             {
-                Debug.LogError("ExtraTools#SetUpResourcesToolbar(): strip is null");
+                Debug.LogError("ExtraTools#SetUpToolbars(): strip is null");
                 return false;
             }
             try
             {
                 var defaultAtlas = UIView.GetAView().defaultAtlas;
-                if (NaturalResourcesBrush.Options.IsFlagSet(ModOptions.ResourcesTool))
+                if (OptionsHolder.Options.resourcesTool)
                 {
                     ToolbarButtonSpawner.SpawnSubEntry(strip, "Resource", "MAPEDITOR_TOOL", null, "ToolbarIcon", true,
                         mainToolbar.m_OptionsBar, mainToolbar.m_DefaultInfoTooltipAtlas);
@@ -368,7 +371,7 @@ namespace NaturalResourcesBrush
                     ((UIButton)UIView.FindObjectOfType<ResourcePanel>().Find("Fertility")).atlas = defaultAtlas;
                     ((UIButton)UIView.FindObjectOfType<ResourcePanel>().Find("Sand")).atlas = defaultAtlas;
                 }
-                if (NaturalResourcesBrush.Options.IsFlagSet(ModOptions.WaterTool))
+                if (OptionsHolder.Options.waterTool)
                 {
                     ToolbarButtonSpawner.SpawnSubEntry(strip, "Water", "MAPEDITOR_TOOL", null, "ToolbarIcon", true,
                         mainToolbar.m_OptionsBar, mainToolbar.m_DefaultInfoTooltipAtlas);
@@ -379,22 +382,23 @@ namespace NaturalResourcesBrush
                     ((UIButton)UIView.FindObjectOfType<GameMainToolbar>().Find("Water")).atlas =
                         CreateAtlasFromResources(new List<string> { "ToolbarIconWater", "ToolbarIconBase" });
                 }
-                if (NaturalResourcesBrush.Options.IsFlagSet(ModOptions.TerrainTool))
+                if (mode == LoadMode.NewAsset || mode == LoadMode.LoadAsset)
                 {
-
-
-                    ToolbarButtonSpawner.SpawnSubEntry(strip, "Terrain", "MAPEDITOR_TOOL", null, "ToolbarIcon", true,
-                        mainToolbar.m_OptionsBar, mainToolbar.m_DefaultInfoTooltipAtlas);
-                    ((UIButton)UIView.FindObjectOfType<TerrainPanel>().Find("Shift")).atlas =
-                        CreateAtlasFromResources(new List<string> { "TerrainShift" });
-                    ((UIButton)UIView.FindObjectOfType<TerrainPanel>().Find("Slope")).atlas =
-                        CreateAtlasFromResources(new List<string> { "TerrainSlope" });
-                    ((UIButton)UIView.FindObjectOfType<TerrainPanel>().Find("Level")).atlas =
-                        CreateAtlasFromResources(new List<string> { "TerrainLevel" });
-                    ((UIButton)UIView.FindObjectOfType<TerrainPanel>().Find("Soften")).atlas =
-                        CreateAtlasFromResources(new List<string> { "TerrainSoften" });
-                    ((UIButton)UIView.FindObjectOfType<GameMainToolbar>().Find("Terrain")).atlas =
-                        CreateAtlasFromResources(new List<string> { "ToolbarIconTerrain", "ToolbarIconBase" });
+                    if (OptionsHolder.Options.terrainTool)
+                    {
+                        ToolbarButtonSpawner.SpawnSubEntry(strip, "Terrain", "MAPEDITOR_TOOL", null, "ToolbarIcon", true,
+                            mainToolbar.m_OptionsBar, mainToolbar.m_DefaultInfoTooltipAtlas);
+                        ((UIButton)UIView.FindObjectOfType<TerrainPanel>().Find("Shift")).atlas =
+                            CreateAtlasFromResources(new List<string> { "TerrainShift" });
+                        ((UIButton)UIView.FindObjectOfType<TerrainPanel>().Find("Slope")).atlas =
+                            CreateAtlasFromResources(new List<string> { "TerrainSlope" });
+                        ((UIButton)UIView.FindObjectOfType<TerrainPanel>().Find("Level")).atlas =
+                            CreateAtlasFromResources(new List<string> { "TerrainLevel" });
+                        ((UIButton)UIView.FindObjectOfType<TerrainPanel>().Find("Soften")).atlas =
+                            CreateAtlasFromResources(new List<string> { "TerrainSoften" });
+                        ((UIButton)UIView.FindObjectOfType<GameMainToolbar>().Find("Terrain")).atlas =
+                            CreateAtlasFromResources(new List<string> { "ToolbarIconTerrain", "ToolbarIconBase" });
+                    }
                 }
                 return true;
             }

@@ -3,8 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using ColossalFramework;
-using ColossalFramework.Globalization;
 using ICities;
+using NaturalResourcesBrush.Options;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -15,15 +15,18 @@ namespace NaturalResourcesBrush
         public override void OnCreated(ILoading lodaing)
         {
             //to allow to work in MapEditor
-            if (NaturalResourcesBrush.Options.IsFlagSet(ModOptions.TreePencil))
+            if (OptionsHolder.Options.treePencil)
             {
                 TreeToolDetour.Deploy();
             }
-            if (NaturalResourcesBrush.Options.IsFlagSet(ModOptions.TerrainTool))
+            if (OptionsHolder.Options.terrainTool)
             {
                 TerrainToolDetour.Deploy();
                 TerrainPanelDetour.Deploy();
-                //LandscapingPanelDetour.Deploy();
+                LandscapingPanelDetour.Deploy();
+                LevelHeightOptionPanelDetour.Deploy();
+                Util.AddLocale("LANDSCAPING", "Ditch", "Ditch tool", "");
+                Util.AddLocale("TERRAIN", "Ditch", "Ditch tool", "");
             }
         }
 
@@ -35,38 +38,34 @@ namespace NaturalResourcesBrush
             ResourcePanelDetour.Revert();
             TerrainToolDetour.Revert();
             TerrainPanelDetour.Revert();
-            //LandscapingPanelDetour.Revert();
+            LandscapingPanelDetour.Revert();
+            LevelHeightOptionPanelDetour.Revert();
         }
 
         public override void OnLevelLoaded(LoadMode mode)
         {
             if (mode == LoadMode.LoadGame || mode == LoadMode.NewGame)
             {
-                if (NaturalResourcesBrush.Options.IsFlagSet(ModOptions.TreeBrush))
+                if (OptionsHolder.Options.treeBrush)
                 {
                     BeautificationPanelDetour.Deploy();
                 }
-                if (NaturalResourcesBrush.Options.IsFlagSet(ModOptions.WaterTool))
+                if (OptionsHolder.Options.waterTool)
                 {
                     WaterToolDetour.Deploy();
+                    Util.AddLocale("TUTORIAL_ADVISER", "Water", "Water Tool", "");
                 }
-                if (NaturalResourcesBrush.Options.IsFlagSet(ModOptions.ResourcesTool))
+                if (OptionsHolder.Options.resourcesTool)
                 {
                     Util.AddLocale("RESOURCE", "Sand", "Sand",
                         "Use the primary mouse button to place decorative sand to the area under the brush\n" +
-                            "Use secondary mouse button to remove decorative sand from the area under the brush");
+                        "Use secondary mouse button to remove decorative sand from the area under the brush");
+                    Util.AddLocale("TUTORIAL_ADVISER", "Resource", "Ground Resources Tool", "");
                     ResourcePanelDetour.Deploy();
                 }
-                Util.AddLocale("TUTORIAL_ADVISER", "Terrain", "Terrain Tool", "");
-                Util.AddLocale("TUTORIAL_ADVISER", "Water", "Water Tool", "");
-                Util.AddLocale("TUTORIAL_ADVISER", "Resource", "Ground Resources Tool", "");
             }
-            if (NaturalResourcesBrush.Options.IsFlagSet(ModOptions.TerrainTool))
-            {
-                Util.AddLocale("TERRAIN", "Ditch", "Ditch tool",
-                    "");
-            }
-            var toolController = Object.FindObjectOfType<ToolController>();
+
+            var toolController = ToolsModifierControl.toolController;
             if (toolController == null)
             {
                 Debug.LogError("ExtraTools#OnLevelLoaded(): ToolContoller not found");
@@ -74,11 +73,7 @@ namespace NaturalResourcesBrush
             }
             try
             {
-                List<ToolBase> extraTools;
-                if (!Util.SetUpExtraTools(mode, ref toolController, out extraTools))
-                {
-                    return;
-                }
+                var extraTools = Util.SetUpExtraTools(mode, ref toolController);
                 Util.AddExtraToolsToController(ref toolController, extraTools);
             }
             catch (Exception e)
@@ -91,7 +86,10 @@ namespace NaturalResourcesBrush
                 {
                     toolController.Tools[0].enabled = true;
                 }
-
+            }
+            if (OptionsHolder.Options.terrainTool)
+            {
+                LandscapingPanelDetour.Initialize();
             }
         }
     }

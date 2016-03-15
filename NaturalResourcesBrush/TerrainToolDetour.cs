@@ -7,12 +7,11 @@ using System.Runtime.CompilerServices;
 using NaturalResourcesBrush.Redirection;
 using UnityEngine;
 using ColossalFramework.Globalization;
+using NaturalResourcesBrush.Options;
 
 [TargetType(typeof(TerrainTool))]
 public class TerrainToolDetour : TerrainTool
 {
-    private static readonly FieldInfo StartPositionField = typeof(TerrainTool).GetField("m_startPosition", BindingFlags.NonPublic | BindingFlags.Instance);
-
     private static SavedInputKey m_UndoKey;
     private static Vector3 m_mousePosition;
     internal static Vector3 m_startPosition;
@@ -63,16 +62,26 @@ public class TerrainToolDetour : TerrainTool
         m_UndoKey = null;
     }
 
+
+    [RedirectMethod]
     private IEnumerator StrokeEnded()
     {
         if (m_strokeInProgress)
         {
             EndStroke();
             m_strokeInProgress = false;
+            //begin mod
+            if (!ditchCombineMultipleStrokes)
+            {
+                ditchHeights = null;
+            }
+            //end mod
         }
         yield return null;
     }
 
+
+    [RedirectMethod]
     private IEnumerator DisableTool()
     {
         m_mouseLeftDown = false;
@@ -86,14 +95,22 @@ public class TerrainToolDetour : TerrainTool
     }
 
     [RedirectMethod]
+    private IEnumerator UndoRequest()
+    {
+        if (!m_strokeInProgress)
+        {
+            ApplyUndo();
+        }
+        yield return null;
+    }
+
+    [RedirectMethod]
     public bool IsUndoAvailable()
     {
         if (m_undoList != null)
             return m_undoList.Count > 0;
         return false;
     }
-
-    //TODO(earalov): detour undo() method?
 
     [RedirectMethod]
     public void ResetUndoBuffer()
@@ -145,9 +162,6 @@ public class TerrainToolDetour : TerrainTool
                 else if (m_mode == TerrainTool.Mode.Level || m_mode == TerrainTool.Mode.Slope)
                 {
                     m_startPosition = m_mousePosition;
-                    //begin mod
-                    StartPositionField.SetValue(this, m_startPosition);
-                    //end mod
                 }
             }
         }
@@ -335,12 +349,6 @@ public class TerrainToolDetour : TerrainTool
             else
             {
                 this.m_toolErrors = ToolBase.ToolErrors.Pending;
-                //begin mod
-                if (!ditchCombineMultipleStrokes)
-                {
-                    ditchHeights = null;
-                }
-                //end mod
             }
         }
         else
@@ -364,9 +372,7 @@ public class TerrainToolDetour : TerrainTool
     [RedirectMethod]
     private void EndStroke()
     {
-        //begin mod
-        if ((this.m_toolController.m_mode & ItemClass.Availability.Game) != ItemClass.Availability.None || isDitch)
-        //end mod
+        if ((this.m_toolController.m_mode & ItemClass.Availability.Game) != ItemClass.Availability.None)
         {
             if (this.m_currentCost > 0)
                 Singleton<EconomyManager>.instance.FetchResource(EconomyManager.Resource.Landscaping, this.m_currentCost, ItemClass.Service.Beautification, ItemClass.SubService.None, ItemClass.Level.None);
@@ -627,33 +633,36 @@ public class TerrainToolDetour : TerrainTool
         ToolBase.ToolErrors toolErrors = ToolBase.ToolErrors.None;
         if (flag)
         {
-            if (a1 > a2)
+            if (OptionsHolder.Options.dirtLimits)
             {
-                num35 = Mathf.Min(a1, dirtBuffer + a2);
-                if (num35 < a1)
+                if (a1 > a2)
                 {
-                    toolErrors |= ToolBase.ToolErrors.NotEnoughDirt;
-                    GuideController guideController = Singleton<GuideManager>.instance.m_properties;
-                    if (guideController != null)
-                        Singleton<TerrainManager>.instance.m_notEnoughDirt.Activate(guideController.m_notEnoughDirt);
+                    num35 = Mathf.Min(a1, dirtBuffer + a2);
+                    if (num35 < a1)
+                    {
+                        toolErrors |= ToolBase.ToolErrors.NotEnoughDirt;
+                        GuideController guideController = Singleton<GuideManager>.instance.m_properties;
+                        if (guideController != null)
+                            Singleton<TerrainManager>.instance.m_notEnoughDirt.Activate(guideController.m_notEnoughDirt);
+                    }
+                    GenericGuide genericGuide = Singleton<TerrainManager>.instance.m_tooMuchDirt;
+                    if (genericGuide != null)
+                        genericGuide.Deactivate();
                 }
-                GenericGuide genericGuide = Singleton<TerrainManager>.instance.m_tooMuchDirt;
-                if (genericGuide != null)
-                    genericGuide.Deactivate();
-            }
-            else if (a2 > a1)
-            {
-                num36 = Mathf.Min(a2, num9 - dirtBuffer + a1);
-                if (num36 < a2)
+                else if (a2 > a1)
                 {
-                    toolErrors |= ToolBase.ToolErrors.TooMuchDirt;
-                    GuideController guideController = Singleton<GuideManager>.instance.m_properties;
-                    if (guideController != null)
-                        Singleton<TerrainManager>.instance.m_tooMuchDirt.Activate(guideController.m_tooMuchDirt);
+                    num36 = Mathf.Min(a2, num9 - dirtBuffer + a1);
+                    if (num36 < a2)
+                    {
+                        toolErrors |= ToolBase.ToolErrors.TooMuchDirt;
+                        GuideController guideController = Singleton<GuideManager>.instance.m_properties;
+                        if (guideController != null)
+                            Singleton<TerrainManager>.instance.m_tooMuchDirt.Activate(guideController.m_tooMuchDirt);
+                    }
+                    GenericGuide genericGuide = Singleton<TerrainManager>.instance.m_notEnoughDirt;
+                    if (genericGuide != null)
+                        genericGuide.Deactivate();
                 }
-                GenericGuide genericGuide = Singleton<TerrainManager>.instance.m_notEnoughDirt;
-                if (genericGuide != null)
-                    genericGuide.Deactivate();
             }
             if (amount != Singleton<EconomyManager>.instance.PeekResource(EconomyManager.Resource.Landscaping, amount))
             {
@@ -712,7 +721,10 @@ public class TerrainToolDetour : TerrainTool
         }
         if (flag)
         {
-            instance1.DirtBuffer = dirtBuffer;
+            if (OptionsHolder.Options.dirtLimits)
+            {
+                instance1.DirtBuffer = dirtBuffer;
+            }
             this.m_currentCost = amount;
         }
         TerrainModify.UpdateArea(num11 - 2, num12 - 2, num13 + 2, num14 + 2, true, false, false);

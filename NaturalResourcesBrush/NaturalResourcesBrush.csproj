@@ -47,8 +47,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BeautificationPanelDetour.cs" />
+    <Compile Include="LevelHeightOptionPanelDetour.cs" />
     <Compile Include="NaturalResourcesBrush.cs" />
-    <Compile Include="Options.cs" />
+    <Compile Include="Options\CheckboxAttribute.cs" />
+    <Compile Include="Options\Options.cs" />
+    <Compile Include="Options\UIHelperBaseExtension.cs" />
+    <Compile Include="Options\Util.cs" />
     <Compile Include="Redirection\RedirectionHelper.cs" />
     <Compile Include="Redirection\RedirectionUtil.cs" />
     <Compile Include="Redirection\RedirectMethodAttribute.cs" />
