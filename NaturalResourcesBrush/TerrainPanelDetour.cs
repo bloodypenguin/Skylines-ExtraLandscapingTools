@@ -109,15 +109,11 @@ namespace NaturalResourcesBrush
             {
                 terrainTool.m_mode = TerrainPanelDetour.kTools[zOrder].enumValue;
                 TerrainToolDetour.isDitch = false;
-                TerrainToolDetour.ditchCombineMultipleStrokes = false;
-                //TODO(earalov): hide ditch properties panel
             }
             else
             {
                 terrainTool.m_mode = TerrainTool.Mode.Shift;
                 TerrainToolDetour.isDitch = true;
-                TerrainToolDetour.ditchCombineMultipleStrokes = false;
-                //TODO(earalov): show & refresh ditch properties panel
             }
             //end mod
         }

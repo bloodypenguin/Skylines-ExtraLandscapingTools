@@ -25,9 +25,14 @@ namespace NaturalResourcesBrush
                 TerrainPanelDetour.Deploy();
                 LandscapingPanelDetour.Deploy();
                 LevelHeightOptionPanelDetour.Deploy();
-                Util.AddLocale("LANDSCAPING", "Ditch", "Ditch tool", "");
-                Util.AddLocale("TERRAIN", "Ditch", "Ditch tool", "");
             }
+            Util.AddLocale("LANDSCAPING", "Ditch", "Ditch tool", "");
+            Util.AddLocale("TERRAIN", "Ditch", "Ditch tool", "");
+            Util.AddLocale("RESOURCE", "Sand", "Sand",
+                "Use the primary mouse button to place decorative sand to the area under the brush\n" +
+                "Use secondary mouse button to remove decorative sand from the area under the brush");
+            Util.AddLocale("TUTORIAL_ADVISER", "Resource", "Ground Resources Tool", "");
+            Util.AddLocale("TUTORIAL_ADVISER", "Water", "Water Tool", "");
         }
 
         public override void OnReleased()
@@ -35,7 +40,6 @@ namespace NaturalResourcesBrush
             TreeToolDetour.Revert();
             BeautificationPanelDetour.Revert();
             WaterToolDetour.Revert();
-            ResourcePanelDetour.Revert();
             TerrainToolDetour.Revert();
             TerrainPanelDetour.Revert();
             LandscapingPanelDetour.Revert();
@@ -53,15 +57,6 @@ namespace NaturalResourcesBrush
                 if (OptionsHolder.Options.waterTool)
                 {
                     WaterToolDetour.Deploy();
-                    Util.AddLocale("TUTORIAL_ADVISER", "Water", "Water Tool", "");
-                }
-                if (OptionsHolder.Options.resourcesTool)
-                {
-                    Util.AddLocale("RESOURCE", "Sand", "Sand",
-                        "Use the primary mouse button to place decorative sand to the area under the brush\n" +
-                        "Use secondary mouse button to remove decorative sand from the area under the brush");
-                    Util.AddLocale("TUTORIAL_ADVISER", "Resource", "Ground Resources Tool", "");
-                    ResourcePanelDetour.Deploy();
                 }
             }
 

@@ -34,7 +34,6 @@ public class TerrainToolDetour : TerrainTool
 
     private static Dictionary<MethodInfo, RedirectCallsState> _redirects;
     public static bool isDitch = false;
-    public static bool ditchCombineMultipleStrokes = false;
     private static ushort targetHeightStroke;
     private static ushort[] ditchHeights;
 
@@ -71,10 +70,7 @@ public class TerrainToolDetour : TerrainTool
             EndStroke();
             m_strokeInProgress = false;
             //begin mod
-            if (!ditchCombineMultipleStrokes)
-            {
-                ditchHeights = null;
-            }
+            ditchHeights = null;
             //end mod
         }
         yield return null;

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Reflection;
 using ColossalFramework;
 using ColossalFramework.DataBinding;
@@ -7,6 +6,8 @@ using ColossalFramework.Globalization;
 using ColossalFramework.UI;
 using NaturalResourcesBrush.Options;
 using NaturalResourcesBrush.Redirection;
+using UnityEngine;
+using Object = System.Object;
 
 namespace NaturalResourcesBrush
 {
@@ -104,6 +105,7 @@ namespace NaturalResourcesBrush
                 SpawnEntry(LandscapingPanelDetour.kTools[index].enumName, true, null);
             //begin mod
             SpawnEntry("Ditch", true, null);
+            SpawnEntry("Sand", true, null);
             //end mod
         }
 
@@ -111,18 +113,31 @@ namespace NaturalResourcesBrush
         protected override void OnButtonClicked(UIComponent comp)
         {
             int zOrder = comp.zOrder;
-            TerrainTool terrainTool = ToolsModifierControl.SetTool<TerrainTool>();
-            if (terrainTool == null)
+            TerrainTool terrainTool = null;
+            ResourceTool resourceTool = null;
+            if (zOrder < kTools.Length + 1)
             {
-                return;
+                terrainTool = ToolsModifierControl.SetTool<TerrainTool>();
+                if (terrainTool == null)
+                {
+                    return;
+                }
+                ShowUndoTerrainOptionsPanel(true);
+                if (OptionsHolder.Options.dirtLimits)
+                {
+                    UIView.library.Show("LandscapingInfoPanel");
+                }
             }
-            ShowUndoTerrainOptionsPanel(true);
+            else
+            {
+                resourceTool = ToolsModifierControl.SetTool<ResourceTool>();
+                if (resourceTool == null)
+                    return;
+                UIView.library.Hide("LandscapingInfoPanel");
+                ShowUndoTerrainOptionsPanel(false);
+            }
             ShowBrushOptionsPanel(true);
-            //begin mod
-            if (OptionsHolder.Options.dirtLimits)
-            {
-                UIView.library.Show("LandscapingInfoPanel");
-            }
+
             if (zOrder == 1 || zOrder == 3)
                 ShowLevelHeightPanel(true);
             else
@@ -132,15 +147,18 @@ namespace NaturalResourcesBrush
             {
                 terrainTool.m_mode = LandscapingPanelDetour.kTools[zOrder].enumValue;
                 TerrainToolDetour.isDitch = false;
-                TerrainToolDetour.ditchCombineMultipleStrokes = false;
-                //TODO(earalov): hide ditch properties panel
             }
             else
             {
-                terrainTool.m_mode = TerrainTool.Mode.Shift;
-                TerrainToolDetour.isDitch = true;
-                TerrainToolDetour.ditchCombineMultipleStrokes = false;
-                //TODO(earalov): show & refresh ditch properties panel
+                if (zOrder < kTools.Length + 1)
+                {
+                    terrainTool.m_mode = TerrainTool.Mode.Shift;
+                    TerrainToolDetour.isDitch = true;
+                }
+                else
+                {
+                    resourceTool.m_resource = NaturalResourceManager.Resource.Sand;
+                }
             }
             //end mod
         }
@@ -169,17 +187,27 @@ namespace NaturalResourcesBrush
             //begin mod
             string buttonName;
             UITextureAtlas buttonAtlas;
+            UIComponent tooltipBox;
             if (name == "Ditch")
             {
                 buttonName = "TerrainDitch";
                 buttonAtlas = Util.CreateAtlasFromEmbeddedResources(new List<string> {"TerrainDitch"});
+                tooltipBox = GeneratedPanel.landscapingTooltipBox;
+            }
+            else if (name == "Sand")
+            {
+                str = TooltipHelper.Format("title", Locale.Get("RESOURCE_TITLE", name), "sprite", name, "text", Locale.Get("RESOURCE_DESC", name));
+                buttonName = "ResourceSand";
+                tooltipBox = GeneratedPanel.tooltipBox;
+                buttonAtlas = UIView.GetAView().defaultAtlas;
             }
             else
             {
                 buttonName = "Landscaping" + name;
                 buttonAtlas = null;
+                tooltipBox = GeneratedPanel.landscapingTooltipBox;
             }
-            var button = (UIButton)this.SpawnEntry(name, str, buttonName, (UITextureAtlas)buttonAtlas, GeneratedPanel.landscapingTooltipBox, enabled);
+            var button = (UIButton)this.SpawnEntry(name, str, buttonName, (UITextureAtlas)buttonAtlas, tooltipBox, enabled);
             button.objectUserData = (object) landscapingInfo;
             //end mod
         }

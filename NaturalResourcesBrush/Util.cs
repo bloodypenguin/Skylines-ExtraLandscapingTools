@@ -190,7 +190,7 @@ namespace NaturalResourcesBrush
                     if (optionsPanel != null)
                     {
                         optionsPanel.m_BuiltinBrushes = toolController.m_brushes;
-                        if (OptionsHolder.Options.resourcesTool)
+                        if (OptionsHolder.Options.resourcesTool || OptionsHolder.Options.terrainTool)
                         {
                             SetUpNaturalResourcesTool(ref toolController, ref extraTools, ref optionsPanel);
                         }
@@ -361,28 +361,30 @@ namespace NaturalResourcesBrush
             }
             try
             {
-                var defaultAtlas = UIView.GetAView().defaultAtlas;
-                if (OptionsHolder.Options.resourcesTool)
+                if (mode == LoadMode.NewGame || mode == LoadMode.LoadGame)
                 {
-                    ToolbarButtonSpawner.SpawnSubEntry(strip, "Resource", "MAPEDITOR_TOOL", null, "ToolbarIcon", true,
-                        mainToolbar.m_OptionsBar, mainToolbar.m_DefaultInfoTooltipAtlas);
-                    ((UIButton)UIView.FindObjectOfType<ResourcePanel>().Find("Ore")).atlas = defaultAtlas;
-                    ((UIButton)UIView.FindObjectOfType<ResourcePanel>().Find("Oil")).atlas = defaultAtlas;
-                    ((UIButton)UIView.FindObjectOfType<ResourcePanel>().Find("Fertility")).atlas = defaultAtlas;
-                    ((UIButton)UIView.FindObjectOfType<ResourcePanel>().Find("Sand")).atlas = defaultAtlas;
-                }
-                if (OptionsHolder.Options.waterTool)
-                {
-                    ToolbarButtonSpawner.SpawnSubEntry(strip, "Water", "MAPEDITOR_TOOL", null, "ToolbarIcon", true,
-                        mainToolbar.m_OptionsBar, mainToolbar.m_DefaultInfoTooltipAtlas);
-                    ((UIButton)UIView.FindObjectOfType<WaterPanel>().Find("PlaceWater")).atlas =
-                        CreateAtlasFromResources(new List<string> { "WaterPlaceWater" });
-                    ((UIButton)UIView.FindObjectOfType<WaterPanel>().Find("MoveSeaLevel")).atlas =
-                        CreateAtlasFromResources(new List<string> { "WaterMoveSeaLevel" });
-                    ((UIButton)UIView.FindObjectOfType<GameMainToolbar>().Find("Water")).atlas =
-                        CreateAtlasFromResources(new List<string> { "ToolbarIconWater", "ToolbarIconBase" });
-                }
-                if (mode == LoadMode.NewAsset || mode == LoadMode.LoadAsset)
+                    var defaultAtlas = UIView.GetAView().defaultAtlas;
+                    if (OptionsHolder.Options.resourcesTool)
+                    {
+                        ToolbarButtonSpawner.SpawnSubEntry(strip, "Resource", "MAPEDITOR_TOOL", null, "ToolbarIcon",
+                            true,
+                            mainToolbar.m_OptionsBar, mainToolbar.m_DefaultInfoTooltipAtlas);
+                        ((UIButton) UIView.FindObjectOfType<ResourcePanel>().Find("Ore")).atlas = defaultAtlas;
+                        ((UIButton) UIView.FindObjectOfType<ResourcePanel>().Find("Oil")).atlas = defaultAtlas;
+                        ((UIButton) UIView.FindObjectOfType<ResourcePanel>().Find("Fertility")).atlas = defaultAtlas;
+                    }
+                    if (OptionsHolder.Options.waterTool)
+                    {
+                        ToolbarButtonSpawner.SpawnSubEntry(strip, "Water", "MAPEDITOR_TOOL", null, "ToolbarIcon", true,
+                            mainToolbar.m_OptionsBar, mainToolbar.m_DefaultInfoTooltipAtlas);
+                        ((UIButton) UIView.FindObjectOfType<WaterPanel>().Find("PlaceWater")).atlas =
+                            CreateAtlasFromResources(new List<string> {"WaterPlaceWater"});
+                        ((UIButton) UIView.FindObjectOfType<WaterPanel>().Find("MoveSeaLevel")).atlas =
+                            CreateAtlasFromResources(new List<string> {"WaterMoveSeaLevel"});
+                        ((UIButton) UIView.FindObjectOfType<GameMainToolbar>().Find("Water")).atlas =
+                            CreateAtlasFromResources(new List<string> {"ToolbarIconWater", "ToolbarIconBase"});
+                    }
+                } else if (mode == LoadMode.NewAsset || mode == LoadMode.LoadAsset)
                 {
                     if (OptionsHolder.Options.terrainTool)
                     {
