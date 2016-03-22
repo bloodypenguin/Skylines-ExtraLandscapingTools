@@ -12,6 +12,8 @@ namespace NaturalResourcesBrush
     {
         private static Dictionary<MethodInfo, RedirectCallsState> _redirects;
 
+        private static UIPanel m_OptionsBrushPanel;
+
         public static void Deploy()
         {
             if (_redirects != null)
@@ -32,6 +34,8 @@ namespace NaturalResourcesBrush
                 RedirectionHelper.RevertRedirect(redirect.Key, redirect.Value);
             }
             _redirects = null;
+
+            m_OptionsBrushPanel = null;
         }
 
 
@@ -48,6 +52,7 @@ namespace NaturalResourcesBrush
             NetInfo netInfo = objectUserData as NetInfo;
             TreeInfo treeInfo = objectUserData as TreeInfo;
             PropInfo propInfo = objectUserData as PropInfo;
+            m_OptionsBrushPanel?.Hide();
             if (buildingInfo != null)
             {
                 BuildingTool buildingTool = SetTool<BuildingTool>();
@@ -88,6 +93,13 @@ namespace NaturalResourcesBrush
                         treeTool.m_brushSize = 30;
                         treeTool.m_mode = TreeTool.Mode.Single;
                     }
+
+                    if (this.m_OptionsBar != null && m_OptionsBrushPanel == null)
+                    {
+                        m_OptionsBrushPanel = this.m_OptionsBar.Find<UIPanel>("BrushPanel");
+                    }
+                    m_OptionsBrushPanel.zOrder = 1;
+                    m_OptionsBrushPanel.Show();
                 }
             }
             if (!(propInfo != null))
