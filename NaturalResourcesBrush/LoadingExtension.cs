@@ -2,9 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using ColossalFramework;
+using ColossalFramework.UI;
 using ICities;
-using NaturalResourcesBrush.Options;
+using NaturalResourcesBrush.OptionsFramework;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -15,16 +15,17 @@ namespace NaturalResourcesBrush
         public override void OnCreated(ILoading lodaing)
         {
             //to allow to work in MapEditor
-            if (OptionsHolder.Options.treePencil)
+            if (OptionsWrapper<Options>.Options.treePencil)
             {
                 TreeToolDetour.Deploy();
             }
-            if (OptionsHolder.Options.terrainTool)
+            if (OptionsWrapper<Options>.Options.terrainTool)
             {
                 TerrainToolDetour.Deploy();
                 TerrainPanelDetour.Deploy();
                 LandscapingPanelDetour.Deploy();
                 LevelHeightOptionPanelDetour.Deploy();
+                UndoTerrainOptionPanelDetour.Deploy();
             }
             Util.AddLocale("LANDSCAPING", "Ditch", "Ditch tool", "");
             Util.AddLocale("TERRAIN", "Ditch", "Ditch tool", "");
@@ -44,17 +45,18 @@ namespace NaturalResourcesBrush
             TerrainPanelDetour.Revert();
             LandscapingPanelDetour.Revert();
             LevelHeightOptionPanelDetour.Revert();
+            UndoTerrainOptionPanelDetour.Revert();
         }
 
         public override void OnLevelLoaded(LoadMode mode)
         {
             if (mode == LoadMode.LoadGame || mode == LoadMode.NewGame)
             {
-                if (OptionsHolder.Options.treeBrush)
+                if (OptionsWrapper<Options>.Options.treeBrush)
                 {
                     BeautificationPanelDetour.Deploy();
                 }
-                if (OptionsHolder.Options.waterTool)
+                if (OptionsWrapper<Options>.Options.waterTool)
                 {
                     WaterToolDetour.Deploy();
                 }
@@ -82,8 +84,12 @@ namespace NaturalResourcesBrush
                     toolController.Tools[0].enabled = true;
                 }
             }
-            if (OptionsHolder.Options.terrainTool)
+            if (OptionsWrapper<Options>.Options.terrainTool)
             {
+                var panels =
+    (Dictionary<string, UIDynamicPanels.DynamicPanelInfo>)
+    typeof(UIDynamicPanels).GetField("m_CachedPanels", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(UIView.library);
+                panels.Remove("LandscapingInfoPanel");
                 LandscapingPanelDetour.Initialize();
             }
         }

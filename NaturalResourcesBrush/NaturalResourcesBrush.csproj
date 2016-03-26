@@ -48,11 +48,16 @@
   <ItemGroup>
     <Compile Include="BeautificationPanelDetour.cs" />
     <Compile Include="LevelHeightOptionPanelDetour.cs" />
+    <Compile Include="Options.cs" />
     <Compile Include="NaturalResourcesBrush.cs" />
-    <Compile Include="Options\CheckboxAttribute.cs" />
-    <Compile Include="Options\Options.cs" />
-    <Compile Include="Options\UIHelperBaseExtension.cs" />
-    <Compile Include="Options\Util.cs" />
+    <Compile Include="OptionsFramework\AbstractOptionsAttribute.cs" />
+    <Compile Include="OptionsFramework\CheckboxAttribute.cs" />
+    <Compile Include="OptionsFramework\IModOptions.cs" />
+    <Compile Include="OptionsFramework\IModOptionsExtension.cs" />
+    <Compile Include="OptionsFramework\OptionsWrapper.cs" />
+    <Compile Include="OptionsFramework\TextFieldAttribute.cs" />
+    <Compile Include="OptionsFramework\UIHelperBaseExtension.cs" />
+    <Compile Include="OptionsFramework\Util.cs" />
     <Compile Include="Redirection\RedirectionHelper.cs" />
     <Compile Include="Redirection\RedirectionUtil.cs" />
     <Compile Include="Redirection\RedirectMethodAttribute.cs" />
@@ -69,6 +74,7 @@
     <Compile Include="TreeInfoDetour.cs" />
     <Compile Include="TreeToolDetour.cs" />
     <Compile Include="UI.cs" />
+    <Compile Include="UndoTerrainOptionPanelDetour.cs" />
     <Compile Include="Util.cs" />
     <Compile Include="WaterToolDetour.cs" />
   </ItemGroup>
@@ -86,6 +92,12 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="resources\TerrainDitchDisabled.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\ConfigurableLandscapingCosts\ConfigurableLandscapingCosts.csproj">
+      <Project>{5305FE6D-9EDE-4BE7-92D2-858679A5D942}</Project>
+      <Name>ConfigurableLandscapingCosts</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

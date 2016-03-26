@@ -7,7 +7,7 @@ using ColossalFramework;
 using ColossalFramework.Globalization;
 using ColossalFramework.UI;
 using ICities;
-using NaturalResourcesBrush.Options;
+using NaturalResourcesBrush.OptionsFramework;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -182,19 +182,19 @@ namespace NaturalResourcesBrush
                 LoadResources();
                 if (SetUpToolbars(mode))
                 {
-                    if (OptionsHolder.Options.waterTool)
+                    if (OptionsWrapper<Options>.Options.waterTool)
                     {
                         SetUpWaterTool(ref toolController, ref extraTools);
                     }
-                    var optionsPanel = SetupBrushOptionsPanel(OptionsHolder.Options.treeBrush);
+                    var optionsPanel = SetupBrushOptionsPanel(OptionsWrapper<Options>.Options.treeBrush);
                     if (optionsPanel != null)
                     {
                         optionsPanel.m_BuiltinBrushes = toolController.m_brushes;
-                        if (OptionsHolder.Options.resourcesTool || OptionsHolder.Options.terrainTool)
+                        if (OptionsWrapper<Options>.Options.resourcesTool || OptionsWrapper<Options>.Options.terrainTool)
                         {
                             SetUpNaturalResourcesTool(ref toolController, ref extraTools, ref optionsPanel);
                         }
-                        if (OptionsHolder.Options.terrainTool)
+                        if (OptionsWrapper<Options>.Options.terrainTool)
                         {
                             SetUpTerrainTool(ref toolController, ref extraTools, ref optionsPanel);
                         }
@@ -364,7 +364,7 @@ namespace NaturalResourcesBrush
                 if (mode == LoadMode.NewGame || mode == LoadMode.LoadGame)
                 {
                     var defaultAtlas = UIView.GetAView().defaultAtlas;
-                    if (OptionsHolder.Options.resourcesTool)
+                    if (OptionsWrapper<Options>.Options.resourcesTool)
                     {
                         ToolbarButtonSpawner.SpawnSubEntry(strip, "Resource", "MAPEDITOR_TOOL", null, "ToolbarIcon",
                             true,
@@ -373,7 +373,7 @@ namespace NaturalResourcesBrush
                         ((UIButton) UIView.FindObjectOfType<ResourcePanel>().Find("Oil")).atlas = defaultAtlas;
                         ((UIButton) UIView.FindObjectOfType<ResourcePanel>().Find("Fertility")).atlas = defaultAtlas;
                     }
-                    if (OptionsHolder.Options.waterTool)
+                    if (OptionsWrapper<Options>.Options.waterTool)
                     {
                         ToolbarButtonSpawner.SpawnSubEntry(strip, "Water", "MAPEDITOR_TOOL", null, "ToolbarIcon", true,
                             mainToolbar.m_OptionsBar, mainToolbar.m_DefaultInfoTooltipAtlas);
@@ -386,7 +386,7 @@ namespace NaturalResourcesBrush
                     }
                 } else if (mode == LoadMode.NewAsset || mode == LoadMode.LoadAsset)
                 {
-                    if (OptionsHolder.Options.terrainTool)
+                    if (OptionsWrapper<Options>.Options.terrainTool)
                     {
                         ToolbarButtonSpawner.SpawnSubEntry(strip, "Terrain", "MAPEDITOR_TOOL", null, "ToolbarIcon", true,
                             mainToolbar.m_OptionsBar, mainToolbar.m_DefaultInfoTooltipAtlas);
