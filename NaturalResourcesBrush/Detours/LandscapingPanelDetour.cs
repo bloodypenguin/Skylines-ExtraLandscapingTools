@@ -186,7 +186,7 @@ namespace NaturalResourcesBrush
             if (name == "Ditch")
             {
                 buttonName = "TerrainDitch";
-                buttonAtlas = Util.CreateAtlasFromEmbeddedResources(new List<string> { "TerrainDitch" });
+                buttonAtlas = Util.CreateAtlasFromEmbeddedResources("NaturalResourcesBrush.resources", new List<string> { "TerrainDitch" });
                 tooltipBox = GeneratedPanel.landscapingTooltipBox;
             }
             else if (name == "Sand")

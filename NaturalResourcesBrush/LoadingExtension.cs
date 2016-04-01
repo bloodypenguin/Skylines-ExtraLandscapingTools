@@ -46,6 +46,7 @@ namespace NaturalResourcesBrush
             LandscapingPanelDetour.Revert();
             LevelHeightOptionPanelDetour.Revert();
             UndoTerrainOptionPanelDetour.Revert();
+
         }
 
         public override void OnLevelLoaded(LoadMode mode)
@@ -70,8 +71,8 @@ namespace NaturalResourcesBrush
             }
             try
             {
-                var extraTools = Util.SetUpExtraTools(mode, ref toolController);
-                Util.AddExtraToolsToController(ref toolController, extraTools);
+                var extraTools = NaturalResourcesBrush.SetUpExtraTools(mode, ref toolController);
+                NaturalResourcesBrush.AddExtraToolsToController(ref toolController, extraTools);
             }
             catch (Exception e)
             {

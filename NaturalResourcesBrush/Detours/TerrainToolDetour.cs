@@ -1,10 +1,4 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: TerrainTool
-// Assembly: Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-// MVID: 906C7FB1-1E94-43D4-92A6-B67369D3A673
-// Assembly location: D:\Games\Steam\steamapps\common\Cities_Skylines\Cities_Data\Managed\Assembly-CSharp.dll
-
-using ColossalFramework;
+﻿using ColossalFramework;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -35,8 +29,6 @@ public class TerrainToolDetour : TerrainTool
 
     private static Dictionary<MethodInfo, RedirectCallsState> _redirects;
     public static bool isDitch = false;
-    public static bool ditchCombineMultipleStrokes = false;
-    private static ushort targetHeightStroke;
     private static ushort[] ditchHeights;
 
     public static void Deploy()
@@ -277,10 +269,7 @@ public class TerrainToolDetour : TerrainTool
             m_strokeEnded = false;
             m_strokeInProgress = false;
             //begin mod
-            if (!ditchCombineMultipleStrokes)
-            {
-                ditchHeights = null;
-            }
+            ditchHeights = null;
             //end mod
         }
         else

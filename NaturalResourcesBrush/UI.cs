@@ -264,7 +264,7 @@ namespace NaturalResourcesBrush
             heightText.readOnly = false;
             heightText.selectionSprite = "EmptySprite";
             heightText.selectionBackgroundColor = new Color32(0, 172, 234, 255);
-            
+
             var heightSlider = levelHeightPanel.AddUIComponent<UISlider>();
             heightSlider.name = "Height";
             heightSlider.relativePosition = new Vector3(28, 79);

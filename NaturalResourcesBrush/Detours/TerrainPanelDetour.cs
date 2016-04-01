@@ -82,7 +82,7 @@ namespace NaturalResourcesBrush
             for (index = 0; index < TerrainPanelDetour.kTools.Length; ++index)
                 SpawnEntry(panel, TerrainPanelDetour.kTools[index].enumName, index );
             var ditchButton = (UIButton)SpawnEntry(panel, "Ditch", index );
-            ditchButton.atlas = Util.CreateAtlasFromEmbeddedResources(new List<string> { "TerrainDitch" });
+            ditchButton.atlas = Util.CreateAtlasFromEmbeddedResources("NaturalResourcesBrush.resources", new List<string> { "TerrainDitch" });
         }
 
         [RedirectMethod]
