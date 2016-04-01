@@ -4,9 +4,7 @@ using ColossalFramework;
 using ColossalFramework.DataBinding;
 using ColossalFramework.Globalization;
 using ColossalFramework.UI;
-using NaturalResourcesBrush.Options;
 using NaturalResourcesBrush.Redirection;
-using UnityEngine;
 using Object = System.Object;
 
 namespace NaturalResourcesBrush
@@ -123,10 +121,7 @@ namespace NaturalResourcesBrush
                     return;
                 }
                 ShowUndoTerrainOptionsPanel(true);
-                if (OptionsHolder.Options.dirtLimits)
-                {
-                    UIView.library.Show("LandscapingInfoPanel");
-                }
+                UIView.library.Show("LandscapingInfoPanel");
             }
             else
             {
@@ -167,7 +162,7 @@ namespace NaturalResourcesBrush
         private void SpawnEntry(string name, bool enabled, MilestoneInfo info)
         {
             var landscapingInfo = (LandscapingPanel.LandscapingInfo)
-                typeof (LandscapingPanel).GetProperty("landscapingInfo", BindingFlags.NonPublic | BindingFlags.Instance)
+                typeof(LandscapingPanel).GetProperty("landscapingInfo", BindingFlags.NonPublic | BindingFlags.Instance)
                     .GetValue(this, null);
 
             landscapingInfo.m_DirtPrice = Singleton<TerrainManager>.instance.m_properties.m_dirtPrice;
@@ -191,7 +186,7 @@ namespace NaturalResourcesBrush
             if (name == "Ditch")
             {
                 buttonName = "TerrainDitch";
-                buttonAtlas = Util.CreateAtlasFromEmbeddedResources(new List<string> {"TerrainDitch"});
+                buttonAtlas = Util.CreateAtlasFromEmbeddedResources(new List<string> { "TerrainDitch" });
                 tooltipBox = GeneratedPanel.landscapingTooltipBox;
             }
             else if (name == "Sand")
@@ -208,7 +203,7 @@ namespace NaturalResourcesBrush
                 tooltipBox = GeneratedPanel.landscapingTooltipBox;
             }
             var button = (UIButton)this.SpawnEntry(name, str, buttonName, (UITextureAtlas)buttonAtlas, tooltipBox, enabled);
-            button.objectUserData = (object) landscapingInfo;
+            button.objectUserData = (object)landscapingInfo;
             //end mod
         }
 

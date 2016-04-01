@@ -175,6 +175,8 @@ public class TerrainToolDetour : TerrainTool
                 backupHeights[index3] = rawHeights[index3];
             }
         }
+        Singleton<TerrainManager>.instance.RenderTopography = true;
+        Singleton<TransportManager>.instance.TunnelsVisible = true;
         //begin mod
         TerrainManager.instance.TransparentWater = true;
         //end mod
@@ -198,6 +200,8 @@ public class TerrainToolDetour : TerrainTool
     {
         BaseOnDisable();
         ToolCursor = (CursorInfo)null;
+        Singleton<TransportManager>.instance.TunnelsVisible = false;
+        Singleton<TerrainManager>.instance.RenderTopography = false;
         m_toolController.SetBrush((Texture2D)null, Vector3.zero, 1f);
         m_mouseLeftDown = false;
         m_mouseRightDown = false;
