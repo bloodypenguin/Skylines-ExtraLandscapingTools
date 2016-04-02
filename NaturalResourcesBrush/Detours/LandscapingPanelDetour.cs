@@ -191,7 +191,6 @@ namespace NaturalResourcesBrush
             }
             else if (name == "Sand")
             {
-                str = TooltipHelper.Format("title", Locale.Get("RESOURCE_TITLE", name), "sprite", name, "text", Locale.Get("RESOURCE_DESC", name));
                 buttonName = "ResourceSand";
                 tooltipBox = GeneratedPanel.tooltipBox;
                 buttonAtlas = UIView.GetAView().defaultAtlas;

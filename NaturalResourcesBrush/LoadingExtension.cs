@@ -29,7 +29,7 @@ namespace NaturalResourcesBrush
             }
             Util.AddLocale("LANDSCAPING", "Ditch", "Ditch tool", "");
             Util.AddLocale("TERRAIN", "Ditch", "Ditch tool", "");
-            Util.AddLocale("RESOURCE", "Sand", "Sand",
+            Util.AddLocale("LANDSCAPING", "Sand", "Sand",
                 "Use the primary mouse button to place decorative sand to the area under the brush\n" +
                 "Use secondary mouse button to remove decorative sand from the area under the brush");
             Util.AddLocale("TUTORIAL_ADVISER", "Resource", "Ground Resources Tool", "");
