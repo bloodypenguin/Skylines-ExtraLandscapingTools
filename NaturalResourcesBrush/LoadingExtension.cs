@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using ColossalFramework.UI;
 using ICities;
+using NaturalResourcesBrush.Detours;
 using NaturalResourcesBrush.OptionsFramework;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -27,6 +28,7 @@ namespace NaturalResourcesBrush
                 LevelHeightOptionPanelDetour.Deploy();
                 UndoTerrainOptionPanelDetour.Deploy();
             }
+            SurfaceToolDetour.Deploy();
             Util.AddLocale("LANDSCAPING", "Ditch", "Ditch tool", "");
             Util.AddLocale("TERRAIN", "Ditch", "Ditch tool", "");
             Util.AddLocale("LANDSCAPING", "Sand", "Sand",
@@ -46,7 +48,7 @@ namespace NaturalResourcesBrush
             LandscapingPanelDetour.Revert();
             LevelHeightOptionPanelDetour.Revert();
             UndoTerrainOptionPanelDetour.Revert();
-
+            SurfaceToolDetour.Revert();
         }
 
         public override void OnLevelLoaded(LoadMode mode)
@@ -60,6 +62,11 @@ namespace NaturalResourcesBrush
                 if (OptionsWrapper<Options>.Options.waterTool)
                 {
                     WaterToolDetour.Deploy();
+                }
+
+                if (!SurfaceManager.exists)
+                {
+                    TerrainManager.RegisterTerrainManager(SurfaceManager.instance);
                 }
             }
 

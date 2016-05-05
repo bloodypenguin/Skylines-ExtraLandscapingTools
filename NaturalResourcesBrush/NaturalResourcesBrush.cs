@@ -66,6 +66,7 @@ namespace NaturalResourcesBrush
                         }
                     }
                 }
+                SetUpSurfaceTool(ref toolController, ref extraTools);
             }
             return extraTools;
         }
@@ -92,6 +93,16 @@ namespace NaturalResourcesBrush
             if (waterTool == null)
             {
                 waterTool = toolController.gameObject.AddComponent<WaterTool>();
+                extraTools.Add(waterTool);
+            }
+        }
+
+        private static void SetUpSurfaceTool(ref ToolController toolController, ref List<ToolBase> extraTools)
+        {
+            var waterTool = toolController.gameObject.GetComponent<SurfaceTool>();
+            if (waterTool == null)
+            {
+                waterTool = toolController.gameObject.AddComponent<SurfaceTool>();
                 extraTools.Add(waterTool);
             }
         }
@@ -250,7 +261,15 @@ namespace NaturalResourcesBrush
                         ((UIButton) UIView.FindObjectOfType<GameMainToolbar>().Find("Water")).atlas =
                             Util.CreateAtlasFromResources(new List<string> {"ToolbarIconWater", "ToolbarIconBase"});
                     }
-                } else if (mode == LoadMode.NewAsset || mode == LoadMode.LoadAsset)
+                    ToolbarButtonSpawner.SpawnSubEntry(strip, "Surface", "DECORATIONEDITOR_TOOL", null, "ToolbarIcon", true, mainToolbar.m_OptionsBar,
+                        mainToolbar.m_DefaultInfoTooltipAtlas);
+                    ((UIButton)UIView.FindObjectOfType<SurfacePanel>().Find("PavementB")).atlas = Util.CreateAtlasFromResources(new List<string> { "SurfacePavementB" });
+                    ((UIButton)UIView.FindObjectOfType<SurfacePanel>().Find("Gravel")).atlas = Util.CreateAtlasFromResources(new List<string> { "SurfaceGravel" });
+                    ((UIButton)UIView.FindObjectOfType<SurfacePanel>().Find("Field")).atlas = Util.CreateAtlasFromResources(new List<string> { "SurfaceField" });
+                    ((UIButton)UIView.FindObjectOfType<SurfacePanel>().Find("Clip")).atlas = Util.CreateAtlasFromResources(new List<string> { "SurfaceClip" });
+                    ((UIButton)UIView.FindObjectOfType<SurfacePanel>().Find("Ruined")).atlas = Util.CreateAtlasFromResources(new List<string> { "SurfaceRuined" });
+                }
+                else if (mode == LoadMode.NewAsset || mode == LoadMode.LoadAsset)
                 {
                     if (OptionsWrapper<Options>.Options.terrainTool)
                     {

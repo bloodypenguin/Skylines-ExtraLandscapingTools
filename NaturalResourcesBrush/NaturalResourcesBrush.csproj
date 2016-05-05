@@ -41,6 +41,7 @@
   <ItemGroup>
     <Compile Include="Detours\BeautificationPanelDetour.cs" />
     <Compile Include="Detours\LevelHeightOptionPanelDetour.cs" />
+    <Compile Include="Detours\SurfaceToolDetour.cs" />
     <Compile Include="Options.cs" />
     <Compile Include="Mod.cs" />
     <Compile Include="OptionsFramework\AbstractOptionsAttribute.cs" />
@@ -60,6 +61,7 @@
     <Compile Include="Detours\LandscapingPanelDetour.cs" />
     <Compile Include="Detours\TerrainPanelDetour.cs" />
     <Compile Include="Detours\TerrainToolDetour.cs" />
+    <Compile Include="SurfaceManager.cs" />
     <Compile Include="ToolbarButtonSpawner.cs" />
     <Compile Include="LoadingExtension.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
