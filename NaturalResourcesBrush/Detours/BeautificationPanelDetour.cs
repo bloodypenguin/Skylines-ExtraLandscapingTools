@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 using ColossalFramework.UI;
 using NaturalResourcesBrush.Redirection;
@@ -6,61 +7,44 @@ using UnityEngine;
 
 namespace NaturalResourcesBrush
 {
+    [TargetType(typeof(BeautificationPanel))]
     public class BeautificationPanelDetour : GeneratedScrollPanel
     {
-        private static RedirectCallsState _state;
-        private static bool _deployed;
+        private static Dictionary<MethodInfo, RedirectCallsState> _redirects;
+
+        private static UIPanel m_OptionsBrushPanel;
 
         public static void Deploy()
         {
-            if (_deployed)
+            if (_redirects != null)
             {
                 return;
             }
-            try
-            {
-                _state = RedirectionHelper.RedirectCalls
-                    (
-                        typeof(BeautificationPanel).GetMethod("OnButtonClicked",
-                            BindingFlags.Instance | BindingFlags.NonPublic),
-                        typeof(BeautificationPanelDetour).GetMethod("OnButtonClicked",
-                            BindingFlags.Instance | BindingFlags.NonPublic)
-                    );
-            }
-            catch (Exception e)
-            {
-                UnityEngine.Debug.LogException(e);
-            }
-            _deployed = true;
+            _redirects = RedirectionUtil.RedirectType(typeof(BeautificationPanelDetour));
         }
 
         public static void Revert()
         {
-            if (!_deployed)
+            if (_redirects == null)
             {
                 return;
             }
-            try
+            foreach (var redirect in _redirects)
             {
-                RedirectionHelper.RevertRedirect(
-                    typeof(BeautificationPanel).GetMethod("OnButtonClicked",
-                        BindingFlags.Instance | BindingFlags.NonPublic),
-                    _state
-                    );
+                RedirectionHelper.RevertRedirect(redirect.Key, redirect.Value);
+            }
+            _redirects = null;
 
-            }
-            catch (Exception e)
-            {
-                UnityEngine.Debug.LogException(e);
-            }
-            _deployed = false;
+            m_OptionsBrushPanel = null;
         }
+
 
         public override ItemClass.Service service
         {
             get { throw new NotImplementedException(); }
         }
 
+        [RedirectMethod]
         protected override void OnButtonClicked(UIComponent comp)
         {
             object objectUserData = comp.objectUserData;
@@ -68,13 +52,13 @@ namespace NaturalResourcesBrush
             NetInfo netInfo = objectUserData as NetInfo;
             TreeInfo treeInfo = objectUserData as TreeInfo;
             PropInfo propInfo = objectUserData as PropInfo;
+            m_OptionsBrushPanel?.Hide();
             if (buildingInfo != null)
             {
                 BuildingTool buildingTool = SetTool<BuildingTool>();
                 if (buildingTool != null)
                 {
-                    if (pathsOptionPanel != null)
-                        pathsOptionPanel.Hide();
+                    this.HideAllOptionPanels();
                     buildingTool.m_prefab = buildingInfo;
                     buildingTool.m_relocate = 0;
                 }
@@ -84,8 +68,14 @@ namespace NaturalResourcesBrush
                 NetTool netTool = SetTool<NetTool>();
                 if (netTool != null)
                 {
-                    if (pathsOptionPanel != null)
-                        pathsOptionPanel.Show();
+                    if (netInfo.GetClassLevel() == ItemClass.Level.Level3)
+                        this.ShowFloodwallsOptionPanel();
+                    else if (netInfo.GetClassLevel() == ItemClass.Level.Level4)
+                        this.ShowQuaysOptionPanel();
+                    else if (netInfo.GetClassLevel() == ItemClass.Level.Level5)
+                        this.ShowCanalsOptionPanel();
+                    else
+                        this.ShowPathsOptionPanel();
                     netTool.m_prefab = netInfo;
                 }
             }
@@ -95,16 +85,21 @@ namespace NaturalResourcesBrush
                 TreeTool treeTool = SetTool<TreeTool>();
                 if (treeTool != null)
                 {
-                    if (pathsOptionPanel != null)
-                        pathsOptionPanel.Hide();
+                    this.HideAllOptionPanels();
                     treeTool.m_prefab = treeInfo;
                     if (prevTreeTool == null)
                     {
-                        var toolController = GameObject.FindObjectOfType<ToolController>();
                         treeTool.m_brush = toolController.m_brushes[3];
                         treeTool.m_brushSize = 30;
                         treeTool.m_mode = TreeTool.Mode.Single;
                     }
+
+                    if (this.m_OptionsBar != null && m_OptionsBrushPanel == null)
+                    {
+                        m_OptionsBrushPanel = this.m_OptionsBar.Find<UIPanel>("BrushPanel");
+                    }
+                    m_OptionsBrushPanel.zOrder = 1;
+                    m_OptionsBrushPanel.Show();
                 }
             }
             if (!(propInfo != null))
@@ -113,8 +108,7 @@ namespace NaturalResourcesBrush
             PropTool propTool = SetTool<PropTool>();
             if (!(propTool != null))
                 return;
-            if (pathsOptionPanel != null)
-                pathsOptionPanel.Hide();
+            this.HideAllOptionPanels();
             propTool.m_prefab = propInfo;
             if (prevPropTool == null)
             {

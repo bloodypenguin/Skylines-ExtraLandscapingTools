@@ -1,10 +1,4 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: TerrainTool
-// Assembly: Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-// MVID: 906C7FB1-1E94-43D4-92A6-B67369D3A673
-// Assembly location: D:\Games\Steam\steamapps\common\Cities_Skylines\Cities_Data\Managed\Assembly-CSharp.dll
-
-using ColossalFramework;
+﻿using ColossalFramework;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -14,10 +8,7 @@ using UnityEngine;
 [TargetType(typeof(TerrainTool))]
 public class TerrainToolDetour : TerrainTool
 {
-    private static readonly FieldInfo UndoRequestField = typeof(TerrainTool).GetField("m_undoRequest", BindingFlags.NonPublic | BindingFlags.Instance);
-    private static readonly FieldInfo StartPositionField = typeof(TerrainTool).GetField("m_startPosition", BindingFlags.NonPublic | BindingFlags.Instance);
-
-    private static SavedInputKey m_UndoKey = new SavedInputKey(Settings.mapEditorTerrainUndo, Settings.inputSettingsFile, DefaultSettings.mapEditorTerrainUndo, true);
+    private static SavedInputKey m_UndoKey;
     private static Vector3 m_mousePosition;
     internal static Vector3 m_startPosition;
     private static Vector3 m_endPosition;
@@ -38,8 +29,6 @@ public class TerrainToolDetour : TerrainTool
 
     private static Dictionary<MethodInfo, RedirectCallsState> _redirects;
     public static bool isDitch = false;
-    public static bool ditchCombineMultipleStrokes = false;
-    private static ushort targetHeightStroke;
     private static ushort[] ditchHeights;
 
     public static void Deploy()
@@ -62,6 +51,8 @@ public class TerrainToolDetour : TerrainTool
             RedirectionHelper.RevertRedirect(redirect.Key, redirect.Value);
         }
         _redirects = null;
+
+        m_UndoKey = null;
     }
 
 
@@ -73,8 +64,8 @@ public class TerrainToolDetour : TerrainTool
         return false;
     }
 
-    [RedirectMethod] //it gets inlined. Impossible to detour
-    public void Undo()
+    [RedirectMethod]
+    public static void Undo(TerrainTool tool)
     {
         m_undoRequest = true;
     }
@@ -129,9 +120,6 @@ public class TerrainToolDetour : TerrainTool
                 else if (m_mode == TerrainTool.Mode.Level || m_mode == TerrainTool.Mode.Slope)
                 {
                     m_startPosition = m_mousePosition;
-                    //begin mod
-                    StartPositionField.SetValue(this, m_startPosition);
-                    //end mod
                 }
             }
         }
@@ -150,6 +138,11 @@ public class TerrainToolDetour : TerrainTool
                     m_strokeEnded = true;
             }
         }
+        if (m_UndoKey == null)
+        {
+            m_UndoKey = (SavedInputKey)typeof(TerrainTool).GetField("m_UndoKey", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(this);
+        }
+
         if (!m_UndoKey.IsPressed(e) || m_undoRequest || (m_mouseLeftDown || m_mouseRightDown) || !IsUndoAvailable())
             return;
         Undo();
@@ -174,6 +167,8 @@ public class TerrainToolDetour : TerrainTool
                 backupHeights[index3] = rawHeights[index3];
             }
         }
+        Singleton<TerrainManager>.instance.RenderTopography = true;
+        Singleton<TransportManager>.instance.TunnelsVisible = true;
         //begin mod
         TerrainManager.instance.TransparentWater = true;
         //end mod
@@ -197,6 +192,8 @@ public class TerrainToolDetour : TerrainTool
     {
         BaseOnDisable();
         ToolCursor = (CursorInfo)null;
+        Singleton<TransportManager>.instance.TunnelsVisible = false;
+        Singleton<TerrainManager>.instance.RenderTopography = false;
         m_toolController.SetBrush((Texture2D)null, Vector3.zero, 1f);
         m_mouseLeftDown = false;
         m_mouseRightDown = false;
@@ -260,18 +257,11 @@ public class TerrainToolDetour : TerrainTool
     [RedirectMethod]
     public override void SimulationStep()
     {
-
-        //begin mod
-        m_undoRequest = (bool)UndoRequestField.GetValue(this);
-        m_startPosition = (Vector3)StartPositionField.GetValue(this);
-        //end mod
         ToolBase.RaycastInput input = new ToolBase.RaycastInput(m_mouseRay, m_mouseRayLength);
         if (m_undoRequest && !m_strokeInProgress)
         {
             ApplyUndo();
-            //begin mod
-            UndoRequestField.SetValue(this, false);
-            //end mod
+            m_undoRequest = false;
         }
         else if (m_strokeEnded)
         {
@@ -279,10 +269,7 @@ public class TerrainToolDetour : TerrainTool
             m_strokeEnded = false;
             m_strokeInProgress = false;
             //begin mod
-            if (!ditchCombineMultipleStrokes)
-            {
-                ditchHeights = null;
-            }
+            ditchHeights = null;
             //end mod
         }
         else

@@ -6,13 +6,11 @@ using System.Reflection;
 using ColossalFramework;
 using ColossalFramework.Globalization;
 using ColossalFramework.UI;
-using ICities;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace NaturalResourcesBrush
 {
-    public static class Util
+    public class Util
     {
         public static Texture2D LoadTextureFromAssembly(string path, string textureName, bool readOnly = true)
         {
@@ -34,32 +32,32 @@ namespace NaturalResourcesBrush
         public static UITextureAtlas CreateAtlasFromResources(List<string> baseIconNames)
         {
             var names = GetIconNames(baseIconNames);
-            var sprites = ResourceUtils.Load<Texture2D>(names);
+            var sprites = Util.Load<Texture2D>(names);
             return CreateAtlas(sprites);
         }
 
-        public static UITextureAtlas CreateAtlasFromEmbeddedResources(List<string> baseIconNames)
+        public static UITextureAtlas CreateAtlasFromEmbeddedResources(string basePath, List<string> baseIconNames)
         {
             var names = GetIconNames(baseIconNames);
             var sprites = new Texture2D[names.Length];
             for (var i = 0; i < names.Length; i++)
             {
-                sprites[i] = LoadTextureFromAssembly($"NaturalResourcesBrush.resources.{names[i]}.png", names[i], false);
+                sprites[i] = LoadTextureFromAssembly($"{basePath}.{names[i]}.png", names[i], false);
             }
             return CreateAtlas(sprites);
         }
 
         private static string[] GetIconNames(List<string> baseIconNames)
         {
-            var names = new string[baseIconNames.Count*5];
+            var names = new string[baseIconNames.Count * 5];
             var i = 0;
             foreach (var baseIconName in baseIconNames)
             {
-                names[i*5] = baseIconName;
-                names[i*5 + 1] = baseIconName + "Focused";
-                names[i*5 + 2] = baseIconName + "Hovered";
-                names[i*5 + 3] = baseIconName + "Pressed";
-                names[i*5 + 4] = baseIconName + "Disabled";
+                names[i * 5] = baseIconName;
+                names[i * 5 + 1] = baseIconName + "Focused";
+                names[i * 5 + 2] = baseIconName + "Hovered";
+                names[i * 5 + 3] = baseIconName + "Pressed";
+                names[i * 5 + 4] = baseIconName + "Disabled";
                 i++;
             }
             return names;
@@ -148,265 +146,30 @@ namespace NaturalResourcesBrush
             return null;
         }
 
-        public static void AddExtraToolsToController(ref ToolController toolController, List<ToolBase> extraTools)
+        public static T Load<T>(string name) where T : UnityEngine.Object
         {
-            var fieldInfo = typeof(ToolController).GetField("m_tools", BindingFlags.Instance | BindingFlags.NonPublic);
-            var tools = (ToolBase[])fieldInfo.GetValue(toolController);
-            var initialLength = tools.Length;
-            Array.Resize(ref tools, initialLength + extraTools.Count);
-            var i = 0;
-            var dictionary =
-                (Dictionary<Type, ToolBase>)
-                    typeof(ToolsModifierControl).GetField("m_Tools", BindingFlags.Static | BindingFlags.NonPublic)
-                        .GetValue(null);
-            foreach (var tool in extraTools)
+            T[] ts = Load<T>(new string[] { name });
+            if (ts.Length >= 1)
             {
-                dictionary.Add(tool.GetType(), tool);
-                tools[initialLength + i] = tool;
-                i++;
+                return ts[0];
             }
-            fieldInfo.SetValue(toolController, tools);
-        }
-
-        //returns false in no extra tools were set up
-        public static bool SetUpExtraTools(LoadMode mode, ref ToolController toolController, out List<ToolBase> extraTools)
-        {
-            extraTools = new List<ToolBase>();
-            if (mode == LoadMode.LoadGame | mode == LoadMode.NewGame)
+            else
             {
-                LoadResources();
-                if (SetUpResourcesToolbar())
-                {
-                    if (NaturalResourcesBrush.Options.IsFlagSet(ModOptions.WaterTool))
-                    {
-                        SetUpWaterTool(ref toolController, ref extraTools);
-                    }
-                    var optionsPanel = SetupBrushOptionsPanel(NaturalResourcesBrush.Options.IsFlagSet(ModOptions.TreeBrush));
-                    if (optionsPanel != null)
-                    {
-                        optionsPanel.m_BuiltinBrushes = toolController.m_brushes;
-                        if (NaturalResourcesBrush.Options.IsFlagSet(ModOptions.ResourcesTool))
-                        {
-                            SetUpNaturalResourcesTool(ref toolController, ref extraTools, ref optionsPanel);
-                        }
-                        if (NaturalResourcesBrush.Options.IsFlagSet(ModOptions.TerrainTool))
-                        {
-                            SetUpTerrainTool(ref toolController, ref extraTools, ref optionsPanel);
-                        }
-                    }
-
-                }
-            }
-            return extraTools.Count > 0;
-        }
-
-        private static void SetUpNaturalResourcesTool(ref ToolController toolController, ref List<ToolBase> extraTools, ref BrushOptionPanel optionsPanel)
-        {
-            var resourceTool = toolController.gameObject.GetComponent<ResourceTool>();
-            if (resourceTool == null)
-            {
-                resourceTool = toolController.gameObject.AddComponent<ResourceTool>();
-                extraTools.Add(resourceTool);
-            }
-            resourceTool.m_brush = toolController.m_brushes[0];
-        }
-
-        private static void SetUpWaterTool(ref ToolController toolController, ref List<ToolBase> extraTools)
-        {
-            var optionsPanel = SetupWaterPanel();
-            if (optionsPanel == null)
-            {
-                return;
-            }
-            var waterTool = toolController.gameObject.GetComponent<WaterTool>();
-            if (waterTool == null)
-            {
-                waterTool = toolController.gameObject.AddComponent<WaterTool>();
-                extraTools.Add(waterTool);
-            }
-        }
-
-        private static void SetUpTerrainTool(ref ToolController toolController, ref List<ToolBase> extraTools, ref BrushOptionPanel optionsPanel)
-        {
-            var terrainTool = toolController.gameObject.GetComponent<TerrainTool>();
-            if (terrainTool == null)
-            {
-                terrainTool = toolController.gameObject.AddComponent<TerrainTool>();
-                extraTools.Add(terrainTool);
-
-                var optionsBar = UIView.Find<UIPanel>("OptionsBar");
-                if (optionsBar == null)
-                {
-                    Debug.LogError("ExtraTools#SetupBrushOptionsPanel(): options bar not found");
-                    return;
-                }
-                UI.SetUpUndoModififcationPanel(optionsBar);
-                UI.SetupLevelHeightPanel(optionsBar);
-                var utoPanel = Object.FindObjectOfType<UndoTerrainOptionPanel>();
-                var toolField = typeof (UndoTerrainOptionPanel).GetField("m_TerrainTool", BindingFlags.Instance | BindingFlags.NonPublic);
-                toolField.SetValue(utoPanel, terrainTool);
-                terrainTool.m_brush = toolController.m_brushes[0];
-            }
-        }
-        public static void LoadResources()
-        {
-            var defaultAtlas = UIView.GetAView().defaultAtlas;
-
-            CopySprite("InfoIconResources", "ToolbarIconResource", defaultAtlas);
-            CopySprite("InfoIconResourcesDisabled", "ToolbarIconResourceDisabled", defaultAtlas);
-            CopySprite("InfoIconResourcesFocused", "ToolbarIconResourceFocused", defaultAtlas);
-            CopySprite("InfoIconResourcesHovered", "ToolbarIconResourceHovered", defaultAtlas);
-            CopySprite("InfoIconResourcesPressed", "ToolbarIconResourcePressed", defaultAtlas);
-
-            CopySprite("ToolbarIconGroup6Normal", "ToolbarIconBaseNormal", defaultAtlas);
-            CopySprite("ToolbarIconGroup6Disabled", "ToolbarIconBaseDisabled", defaultAtlas);
-            CopySprite("ToolbarIconGroup6Focused", "ToolbarIconBaseFocused", defaultAtlas);
-            CopySprite("ToolbarIconGroup6Hovered", "ToolbarIconBaseHovered", defaultAtlas);
-            CopySprite("ToolbarIconGroup6Pressed", "ToolbarIconBasePressed", defaultAtlas);
-        }
-
-        public static void CopySprite(string originalName, string newName, UITextureAtlas destAtlas)
-        {
-            try
-            {
-                var spriteInfo = UIView.GetAView().defaultAtlas[originalName];
-                destAtlas.AddSprite(new UITextureAtlas.SpriteInfo
-                {
-                    border = spriteInfo.border,
-                    name = newName,
-                    region = spriteInfo.region,
-                    texture = spriteInfo.texture
-                });
-            }
-            catch (Exception e)
-            {
-                Debug.LogException(e);
-            }
-
-        }
-
-
-        public static BrushOptionPanel SetupBrushOptionsPanel(bool treeBrushEnabled)
-        {
-            var optionsBar = UIView.Find<UIPanel>("OptionsBar");
-            if (optionsBar == null)
-            {
-                Debug.LogError("ExtraTools#SetupBrushOptionsPanel(): options bar not found");
                 return null;
             }
-
-            var brushOptionsPanel = optionsBar.AddUIComponent<UIPanel>();
-            brushOptionsPanel.name = "BrushPanel";
-            brushOptionsPanel.backgroundSprite = "MenuPanel2";
-            brushOptionsPanel.size = new Vector2(231, 506);
-            brushOptionsPanel.isVisible = false;
-            brushOptionsPanel.relativePosition = new Vector3(-256, -488);
-
-            UI.SetupTitle("Brush Options", brushOptionsPanel);
-            UI.SetupBrushSizePanel(brushOptionsPanel);
-            UI.SetupBrushStrengthPanel(brushOptionsPanel);
-            UI.SetupBrushSelectPanel(brushOptionsPanel);
-
-            if (treeBrushEnabled)
-            {
-                var beauPanel = Object.FindObjectOfType<BeautificationPanel>();
-                if (beauPanel == null)
-                {
-                    Debug.LogWarning("ExtraTools#SetupBrushOptionsPanel(): beautification panel not found.");
-                }
-                else
-                {
-                    beauPanel.component.eventVisibilityChanged += (comp, visible) =>
-                    {
-                        brushOptionsPanel.isVisible = visible;
-                    };
-                }
-            }
-            return brushOptionsPanel.gameObject.AddComponent<BrushOptionPanel>();
         }
 
-        public static WaterOptionPanel SetupWaterPanel()
+        public static T[] Load<T>(string[] names) where T : UnityEngine.Object
         {
-            var optionsBar = UIView.Find<UIPanel>("OptionsBar");
-            if (optionsBar == null)
+            List<T> ts = new List<T>();
+            foreach (T t in Resources.FindObjectsOfTypeAll<T>())
             {
-                Debug.LogError("SetupWaterPanel(): options bar not found");
-                return null;
-            }
-
-            var waterPanel = optionsBar.AddUIComponent<UIPanel>();
-            waterPanel.name = "WaterPanel";
-            waterPanel.backgroundSprite = "MenuPanel2";
-            waterPanel.size = new Vector2(231, 184);
-            waterPanel.isVisible = false;
-            waterPanel.relativePosition = new Vector3(-256, -166);
-
-            UI.SetupTitle("Water Options", waterPanel);
-            UI.SetupWaterCapacityPanel(waterPanel);
-            return waterPanel.gameObject.AddComponent<WaterOptionPanel>();
-        }
-
-        public static bool SetUpResourcesToolbar()
-        {
-            var mainToolbar = ToolsModifierControl.mainToolbar as GameMainToolbar;
-            if (mainToolbar == null)
-            {
-                Debug.LogError("ExtraTools#SetUpResourcesToolbar(): main toolbar is null");
-                return false;
-            }
-            var strip = mainToolbar.component as UITabstrip;
-            if (strip == null)
-            {
-                Debug.LogError("ExtraTools#SetUpResourcesToolbar(): strip is null");
-                return false;
-            }
-            try
-            {
-                var defaultAtlas = UIView.GetAView().defaultAtlas;
-                if (NaturalResourcesBrush.Options.IsFlagSet(ModOptions.ResourcesTool))
+                if (Array.Exists(names, n => n == t.name))
                 {
-                    ToolbarButtonSpawner.SpawnSubEntry(strip, "Resource", "MAPEDITOR_TOOL", null, "ToolbarIcon", true,
-                        mainToolbar.m_OptionsBar, mainToolbar.m_DefaultInfoTooltipAtlas);
-                    ((UIButton) UIView.FindObjectOfType<ResourcePanel>().Find("Ore")).atlas = defaultAtlas;
-                    ((UIButton) UIView.FindObjectOfType<ResourcePanel>().Find("Oil")).atlas = defaultAtlas;
-                    ((UIButton) UIView.FindObjectOfType<ResourcePanel>().Find("Fertility")).atlas = defaultAtlas;
-                    ((UIButton) UIView.FindObjectOfType<ResourcePanel>().Find("Sand")).atlas = defaultAtlas;
+                    ts.Add(t);
                 }
-                if (NaturalResourcesBrush.Options.IsFlagSet(ModOptions.WaterTool))
-                {
-                    ToolbarButtonSpawner.SpawnSubEntry(strip, "Water", "MAPEDITOR_TOOL", null, "ToolbarIcon", true,
-                        mainToolbar.m_OptionsBar, mainToolbar.m_DefaultInfoTooltipAtlas);
-                    ((UIButton) UIView.FindObjectOfType<WaterPanel>().Find("PlaceWater")).atlas =
-                        CreateAtlasFromResources(new List<string> {"WaterPlaceWater"});
-                    ((UIButton) UIView.FindObjectOfType<WaterPanel>().Find("MoveSeaLevel")).atlas =
-                        CreateAtlasFromResources(new List<string> {"WaterMoveSeaLevel"});
-                    ((UIButton) UIView.FindObjectOfType<GameMainToolbar>().Find("Water")).atlas =
-                        CreateAtlasFromResources(new List<string> {"ToolbarIconWater", "ToolbarIconBase"});
-                }
-                if (NaturalResourcesBrush.Options.IsFlagSet(ModOptions.TerrainTool))
-                {
-
-
-                    ToolbarButtonSpawner.SpawnSubEntry(strip, "Terrain", "MAPEDITOR_TOOL", null, "ToolbarIcon", true,
-                        mainToolbar.m_OptionsBar, mainToolbar.m_DefaultInfoTooltipAtlas);
-                    ((UIButton) UIView.FindObjectOfType<TerrainPanel>().Find("Shift")).atlas =
-                        CreateAtlasFromResources(new List<string> {"TerrainShift"});
-                    ((UIButton) UIView.FindObjectOfType<TerrainPanel>().Find("Slope")).atlas =
-                        CreateAtlasFromResources(new List<string> {"TerrainSlope"});
-                    ((UIButton) UIView.FindObjectOfType<TerrainPanel>().Find("Level")).atlas =
-                        CreateAtlasFromResources(new List<string> {"TerrainLevel"});
-                    ((UIButton) UIView.FindObjectOfType<TerrainPanel>().Find("Soften")).atlas =
-                        CreateAtlasFromResources(new List<string> {"TerrainSoften"});
-                    ((UIButton) UIView.FindObjectOfType<GameMainToolbar>().Find("Terrain")).atlas =
-                        CreateAtlasFromResources(new List<string> {"ToolbarIconTerrain", "ToolbarIconBase"});
-                }
-                return true;
             }
-            catch (Exception e)
-            {
-                UnityEngine.Debug.LogException(e);
-            }
-            return false;
+            return ts.ToArray();
         }
     }
 }

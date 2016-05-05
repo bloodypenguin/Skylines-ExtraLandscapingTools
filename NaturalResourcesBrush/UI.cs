@@ -1,4 +1,5 @@
-﻿using ColossalFramework;
+﻿using System.Reflection;
+using ColossalFramework;
 using ColossalFramework.UI;
 using UnityEngine;
 
@@ -207,6 +208,10 @@ namespace NaturalResourcesBrush
 
         public static void SetUpUndoModififcationPanel(UIComponent optionsBar)
         {
+            if (GameObject.Find("UndoTerrainPanel") != null)
+            {
+                return;
+            }
             var undoPanel = optionsBar.AddUIComponent<UIPanel>();
             undoPanel.name = "UndoTerrainPanel";
             undoPanel.backgroundSprite = "MenuPanel2";
@@ -226,10 +231,17 @@ namespace NaturalResourcesBrush
             applyButton.canFocus = false;
             var utoPanel = undoPanel.gameObject.AddComponent<UndoTerrainOptionPanel>();
             applyButton.eventClick += (component, eventParam) => { utoPanel.UndoTerrain(); };
+
+            var toolField = typeof(UndoTerrainOptionPanel).GetField("m_TerrainTool", BindingFlags.Instance | BindingFlags.NonPublic);
+            toolField.SetValue(utoPanel, ToolsModifierControl.GetTool<TerrainTool>());
         }
 
         public static void SetupLevelHeightPanel(UIComponent optionsBar)
         {
+            if (GameObject.Find("LevelHeightPanel") != null)
+            {
+                return;
+            }
             var levelHeightPanel = optionsBar.AddUIComponent<UIPanel>();
             levelHeightPanel.backgroundSprite = "MenuPanel2";
             levelHeightPanel.isVisible = false;
@@ -252,7 +264,7 @@ namespace NaturalResourcesBrush
             heightText.readOnly = false;
             heightText.selectionSprite = "EmptySprite";
             heightText.selectionBackgroundColor = new Color32(0, 172, 234, 255);
-            
+
             var heightSlider = levelHeightPanel.AddUIComponent<UISlider>();
             heightSlider.name = "Height";
             heightSlider.relativePosition = new Vector3(28, 79);
