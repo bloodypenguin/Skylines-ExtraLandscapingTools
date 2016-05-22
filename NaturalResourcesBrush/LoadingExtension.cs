@@ -81,8 +81,8 @@ namespace NaturalResourcesBrush
             }
             try
             {
-                var extraTools = NaturalResourcesBrush.SetUpExtraTools(mode, ref toolController);
-                NaturalResourcesBrush.AddExtraToolsToController(ref toolController, extraTools);
+                var extraTools = NaturalResourcesBrush.SetUpExtraTools(mode, toolController);
+                NaturalResourcesBrush.AddExtraToolsToController(toolController, extraTools);
             }
             catch (Exception e)
             {

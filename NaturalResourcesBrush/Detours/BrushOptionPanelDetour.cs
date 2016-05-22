@@ -11,6 +11,26 @@ namespace NaturalResourcesBrush.Detours
     {
 
         [RedirectMethod]
+        private void SetBrushStrength(float val)
+        {
+            PropTool currentTool1 = ToolsModifierControl.GetCurrentTool<PropTool>();
+            if ((UnityEngine.Object)currentTool1 != (UnityEngine.Object)null)
+                currentTool1.m_strength = val;
+            TerrainTool currentTool2 = ToolsModifierControl.GetCurrentTool<TerrainTool>();
+            if ((UnityEngine.Object)currentTool2 != (UnityEngine.Object)null)
+                currentTool2.m_strength = val;
+            TreeTool currentTool3 = ToolsModifierControl.GetCurrentTool<TreeTool>();
+            if ((UnityEngine.Object)currentTool3 != (UnityEngine.Object)null)
+                currentTool3.m_strength = val;
+            ResourceTool currentTool4 = ToolsModifierControl.GetCurrentTool<ResourceTool>();
+            if ((UnityEngine.Object)currentTool4 != (UnityEngine.Object)null)
+                currentTool4.m_strength = val;
+            //begin mod
+            Plugins.SetStrength(val);
+            //end mod
+        }
+
+        [RedirectMethod]
         private void SetBrushSize(float val)
         {
             var brushSizeSlider =
@@ -33,12 +53,12 @@ namespace NaturalResourcesBrush.Detours
                 currentTool3.m_mode = (double)currentTool3.m_brushSize != (double)brushSizeSlider.minValue ? TreeTool.Mode.Brush : TreeTool.Mode.Single;
             }
             ResourceTool currentTool4 = ToolsModifierControl.GetCurrentTool<ResourceTool>();
-            if ((UnityEngine.Object) currentTool4 != (UnityEngine.Object) null)
+            if ((UnityEngine.Object)currentTool4 != (UnityEngine.Object)null)
             {
                 currentTool4.m_brushSize = val;
             }
             //begin mod
-            Plugins.SetSize(val);
+            Plugins.SetSize(val, val == (double)brushSizeSlider.minValue);
             //end mod
         }
 
@@ -66,7 +86,7 @@ namespace NaturalResourcesBrush.Detours
             if ((UnityEngine.Object)tool3 != (UnityEngine.Object)null)
                 tool3.m_brush = texture2D;
             PropTool tool4 = ToolsModifierControl.GetTool<PropTool>();
-            if ((UnityEngine.Object) tool4 == (UnityEngine.Object) null)
+            if ((UnityEngine.Object)tool4 == (UnityEngine.Object)null)
             {
                 tool4.m_brush = texture2D;
             }
@@ -74,6 +94,19 @@ namespace NaturalResourcesBrush.Detours
             Plugins.SetBrush(texture2D);
             //end mod
         }
+
+        [RedirectMethod]
+        private bool SupportsSingle()
+        {
+            //begin mod
+            if (Plugins.SupportsSingle(ToolsModifierControl.GetCurrentTool<ToolBase>()))
+            {
+                return true;
+            }
+            //end mod
+            return ToolsModifierControl.GetCurrentTool<PropTool>() != null || ToolsModifierControl.GetCurrentTool<TreeTool>() != null;
+        }
+
 
         [RedirectReverse]
         private void SelectByIndex(int value)
