@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using ColossalFramework.Plugins;
 using ColossalFramework.UI;
 using ICities;
 using UnityEngine;
+using UnityEngine.VR;
 
 namespace NaturalResourcesBrush.API
 {
@@ -15,19 +18,28 @@ namespace NaturalResourcesBrush.API
         public static void Initialize()
         {
             var pluginsList = new List<IEltPlugin>();
-            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+            var enabledMods = PluginManager.instance.GetPluginsInfo().Where(p => p.isEnabled);
+            foreach (var mod in enabledMods)
             {
-                try
+                var assemblies = Util.GetPrivate<List<Assembly>>(mod, "m_Assemblies");
+                if (assemblies == null)
                 {
-                    var types = assembly.GetTypes();
-                    pluginsList.AddRange(types
-                        .Where(type => typeof(IEltPlugin).IsAssignableFrom(type))
-                        .Select(type => (IEltPlugin)Activator.CreateInstance(type))
-                        );
+                    continue;
                 }
-                catch
+                foreach (var assembly in assemblies)
                 {
-                    // ignored
+                    try
+                    {
+                        var types = assembly.GetTypes();
+                        pluginsList.AddRange(types
+                            .Where(type => typeof(IEltPlugin).IsAssignableFrom(type))
+                            .Select(type => (IEltPlugin)Activator.CreateInstance(type))
+                            );
+                    }
+                    catch
+                    {
+                        // ignored
+                    }
                 }
             }
             plugins = pluginsList.ToArray();
