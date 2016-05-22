@@ -1,40 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reflection;
 using ColossalFramework;
 using ColossalFramework.UI;
 using NaturalResourcesBrush.Redirection;
 
-namespace NaturalResourcesBrush
+namespace NaturalResourcesBrush.Detours
 {
     [TargetType(typeof(TerrainPanel))]
     public class TerrainPanelDetour : GeneratedScrollPanel
     {
         private static readonly PositionData<TerrainTool.Mode>[] kTools = Utils.GetOrderedEnumData<TerrainTool.Mode>();
-
-        private static Dictionary<MethodInfo, RedirectCallsState> _redirects;
-
-        public static void Deploy()
-        {
-            if (_redirects != null)
-            {
-                return;
-            }
-            _redirects = RedirectionUtil.RedirectType(typeof(TerrainPanelDetour));
-        }
-
-        public static void Revert()
-        {
-            if (_redirects == null)
-            {
-                return;
-            }
-            foreach (var redirect in _redirects)
-            {
-                RedirectionHelper.RevertRedirect(redirect.Key, redirect.Value);
-            }
-            _redirects = null;
-        }
 
         [RedirectReverse]
         private static UIButton SpawnEntry(TerrainPanel panel, string name, int index)

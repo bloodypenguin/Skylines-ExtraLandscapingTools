@@ -7,6 +7,7 @@ using ColossalFramework;
 using ColossalFramework.Globalization;
 using ColossalFramework.UI;
 using ICities;
+using NaturalResourcesBrush.API;
 using NaturalResourcesBrush.OptionsFramework;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -66,8 +67,9 @@ namespace NaturalResourcesBrush
                         }
                     }
                 }
-                SetUpSurfaceTool(ref toolController, ref extraTools);
             }
+            var pluginTools = Plugins.SetupTools(toolController, mode);
+            extraTools.AddRange(pluginTools);
             return extraTools;
         }
 
@@ -93,16 +95,6 @@ namespace NaturalResourcesBrush
             if (waterTool == null)
             {
                 waterTool = toolController.gameObject.AddComponent<WaterTool>();
-                extraTools.Add(waterTool);
-            }
-        }
-
-        private static void SetUpSurfaceTool(ref ToolController toolController, ref List<ToolBase> extraTools)
-        {
-            var waterTool = toolController.gameObject.GetComponent<SurfaceTool>();
-            if (waterTool == null)
-            {
-                waterTool = toolController.gameObject.AddComponent<SurfaceTool>();
                 extraTools.Add(waterTool);
             }
         }

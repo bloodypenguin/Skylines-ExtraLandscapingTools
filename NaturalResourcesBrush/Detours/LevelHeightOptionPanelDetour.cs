@@ -1,43 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Reflection;
-using ColossalFramework.UI;
+﻿using ColossalFramework.UI;
 using NaturalResourcesBrush.Redirection;
 
-namespace NaturalResourcesBrush
+namespace NaturalResourcesBrush.Detours
 {
     [TargetType(typeof(LevelHeightOptionPanel))]
     public class LevelHeightOptionPanelDetour : LevelHeightOptionPanel
     {
 
-        private static Dictionary<MethodInfo, RedirectCallsState> _redirects;
         private static UISlider m_HeightSlider;
 
-        public static void Deploy()
+        public static void Dispose()
         {
-            if (_redirects != null)
-            {
-                return;
-            }
-            _redirects = RedirectionUtil.RedirectType(typeof(LevelHeightOptionPanelDetour));
-        }
-
-        public static void Revert()
-        {
-            if (_redirects == null)
-            {
-                return;
-            }
-            foreach (var redirect in _redirects)
-            {
-                RedirectionHelper.RevertRedirect(redirect.Key, redirect.Value);
-            }
-            _redirects = null;
-
             m_HeightSlider = null;
         }
-
-
 
         [RedirectMethod]
         private void SetHeight(float height)

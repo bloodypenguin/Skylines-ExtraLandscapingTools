@@ -1,40 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Reflection;
 using ColossalFramework.UI;
 using NaturalResourcesBrush.Redirection;
-using UnityEngine;
 
-namespace NaturalResourcesBrush
+namespace NaturalResourcesBrush.Detours
 {
     [TargetType(typeof(BeautificationPanel))]
     public class BeautificationPanelDetour : GeneratedScrollPanel
     {
-        private static Dictionary<MethodInfo, RedirectCallsState> _redirects;
 
         private static UIPanel m_OptionsBrushPanel;
 
-        public static void Deploy()
+        public static void Dispose()
         {
-            if (_redirects != null)
-            {
-                return;
-            }
-            _redirects = RedirectionUtil.RedirectType(typeof(BeautificationPanelDetour));
-        }
-
-        public static void Revert()
-        {
-            if (_redirects == null)
-            {
-                return;
-            }
-            foreach (var redirect in _redirects)
-            {
-                RedirectionHelper.RevertRedirect(redirect.Key, redirect.Value);
-            }
-            _redirects = null;
-
             m_OptionsBrushPanel = null;
         }
 

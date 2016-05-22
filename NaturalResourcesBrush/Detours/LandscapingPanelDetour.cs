@@ -7,7 +7,7 @@ using ColossalFramework.UI;
 using NaturalResourcesBrush.Redirection;
 using Object = System.Object;
 
-namespace NaturalResourcesBrush
+namespace NaturalResourcesBrush.Detours
 {
     [TargetType(typeof(LandscapingPanel))]
     public class LandscapingPanelDetour : GeneratedScrollPanel
@@ -17,29 +17,8 @@ namespace NaturalResourcesBrush
         private static UIPanel m_OptionsBrushPanel;
         private static UIPanel m_OptionsLevelHeightPanel;
 
-        private static Dictionary<MethodInfo, RedirectCallsState> _redirects;
-
-        public static void Deploy()
+        public static void Dispose()
         {
-            if (_redirects != null)
-            {
-                return;
-            }
-            _redirects = RedirectionUtil.RedirectType(typeof(LandscapingPanelDetour));
-        }
-
-        public static void Revert()
-        {
-            if (_redirects == null)
-            {
-                return;
-            }
-            foreach (var redirect in _redirects)
-            {
-                RedirectionHelper.RevertRedirect(redirect.Key, redirect.Value);
-            }
-            _redirects = null;
-
             m_OptionsBrushPanel = null;
             m_OptionsLevelHeightPanel = null;
             m_OptionsUndoTerrainPanel = null;
