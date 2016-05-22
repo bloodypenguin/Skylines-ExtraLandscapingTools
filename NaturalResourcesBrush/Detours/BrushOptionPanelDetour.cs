@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using ColossalFramework;
 using ColossalFramework.UI;
 using NaturalResourcesBrush.API;
 using NaturalResourcesBrush.Redirection;
@@ -44,8 +45,13 @@ namespace NaturalResourcesBrush.Detours
                 currentTool1.m_mode = (double)currentTool1.m_brushSize != (double)brushSizeSlider.minValue ? PropTool.Mode.Brush : PropTool.Mode.Single;
             }
             TerrainTool currentTool2 = ToolsModifierControl.GetCurrentTool<TerrainTool>();
+            //begin mod
             if ((UnityEngine.Object)currentTool2 != (UnityEngine.Object)null)
+            {
                 currentTool2.m_brushSize = val;
+                TerrainToolDetour.m_sizeMode = (double)currentTool2.m_brushSize != (double)brushSizeSlider.minValue ? TerrainToolDetour.Mode.Brush : TerrainToolDetour.Mode.Single;
+            }
+            //end mod
             TreeTool currentTool3 = ToolsModifierControl.GetCurrentTool<TreeTool>();
             if ((UnityEngine.Object)currentTool3 != (UnityEngine.Object)null)
             {
@@ -103,8 +109,49 @@ namespace NaturalResourcesBrush.Detours
             {
                 return true;
             }
+            return ToolsModifierControl.GetCurrentTool<PropTool>() != null || ToolsModifierControl.GetCurrentTool<TreeTool>() != null || ToolsModifierControl.GetCurrentTool<TerrainTool>() != null;
             //end mod
-            return ToolsModifierControl.GetCurrentTool<PropTool>() != null || ToolsModifierControl.GetCurrentTool<TreeTool>() != null;
+        }
+
+        [RedirectMethod]
+        private static void ProcessKeyEvent(BrushOptionPanel panel, UnityEngine.EventType eventType, KeyCode keyCode, EventModifiers modifiers)
+        {
+            if (eventType != UnityEngine.EventType.KeyDown)
+                return;
+            var mBrushSizeSlider = Util.GetPrivate<UISlider>(panel, "m_BrushSizeSlider");
+            var sizeInterval = GetSliderValue(mBrushSizeSlider) < 50f ? 1f : 50f;
+            if (Util.GetPrivate<SavedInputKey>(panel, "m_IncreaseBrushSize").IsPressed(eventType, keyCode, modifiers))
+                SetSliderValue(mBrushSizeSlider, GetSliderValue(mBrushSizeSlider) + sizeInterval);
+            else if (Util.GetPrivate<SavedInputKey>(panel, "m_DecreaseBrushSize").IsPressed(eventType, keyCode, modifiers))
+                SetSliderValue(mBrushSizeSlider, GetSliderValue(mBrushSizeSlider) - sizeInterval);
+            else
+            {
+                var mBrushStrengthSlider = Util.GetPrivate<UISlider>(panel, "m_BrushStrengthSlider");
+                var strengthInterval = 0.1f;
+                if (Util.GetPrivate<SavedInputKey>(panel, "m_IncreaseBrushStrength").IsPressed(eventType, keyCode, modifiers))
+                {
+                    mBrushStrengthSlider.value = mBrushStrengthSlider.value + strengthInterval;
+                }
+                else
+                {
+                    if (!Util.GetPrivate<SavedInputKey>(panel, "m_DecreaseBrushStrength").IsPressed(eventType, keyCode, modifiers))
+                        return;
+                    mBrushStrengthSlider.value = mBrushStrengthSlider.value - strengthInterval;
+                }
+            }
+        }
+
+        [RedirectReverse]
+        private static void SetSliderValue(UISlider slider, float value)
+        {
+            UnityEngine.Debug.Log("Failed to detour SetSliderValue()");
+        }
+
+        [RedirectReverse]
+        private static float GetSliderValue(UISlider slider)
+        {
+            UnityEngine.Debug.Log("Failed to detour SelectByIndex()");
+            return 0f;
         }
 
 

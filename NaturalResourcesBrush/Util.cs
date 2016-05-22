@@ -171,5 +171,17 @@ namespace NaturalResourcesBrush
             }
             return ts.ToArray();
         }
+
+        public static T GetPrivate<T>(object o, string fieldName)
+        {
+            var field = o.GetType().GetField(fieldName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+            return (T)field.GetValue(o);
+        }
+
+        public static void SetPrivate(object o, string fieldName, object value)
+        {
+            var field = o.GetType().GetField(fieldName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+            field.SetValue(o, value);
+        }
     }
 }

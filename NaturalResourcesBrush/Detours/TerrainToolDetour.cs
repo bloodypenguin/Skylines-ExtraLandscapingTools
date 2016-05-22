@@ -31,10 +31,12 @@ namespace NaturalResourcesBrush.Detours
 
         public static bool isDitch = false;
         private static ushort[] ditchHeights;
+        public static Mode m_sizeMode;
 
         public static void Dispose()
         {
             m_UndoKey = null;
+            m_sizeMode = Mode.Single;
         }
 
 
@@ -134,7 +136,12 @@ namespace NaturalResourcesBrush.Detours
         protected override void OnEnable()
         {
             BaseOnEnable();
-            m_toolController.SetBrush(m_brush, m_mousePosition, m_brushSize);
+            //begin mod
+            if (m_sizeMode == Mode.Brush)
+                m_toolController.SetBrush(this.m_brush, m_mousePosition, this.m_brushSize);
+            else
+                m_toolController.SetBrush((Texture2D)null, Vector3.zero, 1f);
+            //end mod
             m_strokeXmin = 1080;
             m_strokeXmax = 0;
             m_strokeZmin = 1080;
@@ -233,7 +240,12 @@ namespace NaturalResourcesBrush.Detours
             m_mouseRay = Camera.main.ScreenPointToRay(Input.mousePosition);
             m_mouseRayLength = Camera.main.farClipPlane;
             m_mouseRayValid = !m_toolController.IsInsideUI && Cursor.visible;
-            m_toolController.SetBrush(m_brush, m_mousePosition, m_brushSize);
+            //begin mod
+            if (m_sizeMode == Mode.Brush)
+                m_toolController.SetBrush(this.m_brush, m_mousePosition, this.m_brushSize);
+            else
+                m_toolController.SetBrush((Texture2D)null, Vector3.zero, 1f);
+            //end mod
         }
 
         [RedirectMethod]
@@ -387,7 +399,9 @@ namespace NaturalResourcesBrush.Detours
         private void ApplyBrush()
         {
             float[] brushData = m_toolController.BrushData;
-            float num1 = m_brushSize * 0.5f;
+            //begin mod
+            float num1 = m_sizeMode == Mode.Single ? 0.0f : m_brushSize * 0.5f;
+            //end mod
             float num2 = 16f;
             int b = 1080;
             ushort[] rawHeights = Singleton<TerrainManager>.instance.RawHeights;
@@ -422,16 +436,24 @@ namespace NaturalResourcesBrush.Detours
                 int num10 = Mathf.Clamp(Mathf.CeilToInt(f1), 0, 63);
                 for (int val2_2 = minX; val2_2 <= maxX; ++val2_2)
                 {
-                    float f2 = (float)((((double)val2_2 - (double)b * 0.5) * (double)num2 - (double)vector3_1.x + (double)num1) / (double)m_brushSize * 64.0 - 0.5);
-                    int num11 = Mathf.Clamp(Mathf.FloorToInt(f2), 0, 63);
-                    int num12 = Mathf.Clamp(Mathf.CeilToInt(f2), 0, 63);
-                    float num13 = brushData[num9 * 64 + num11];
-                    float num14 = brushData[num9 * 64 + num12];
-                    float num15 = brushData[num10 * 64 + num11];
-                    float num16 = brushData[num10 * 64 + num12];
-                    float num17 = num13 + (float)(((double)num14 - (double)num13) * ((double)f2 - (double)num11));
-                    float num18 = num15 + (float)(((double)num16 - (double)num15) * ((double)f2 - (double)num11));
-                    float num19 = num17 + (float)(((double)num18 - (double)num17) * ((double)f1 - (double)num9));
+                    float num19 = 0;
+                    if (m_sizeMode == Mode.Single)
+                    {
+                        num19 = 1.0f;
+                    }
+                    else
+                    {
+                        float f2 = (float)((((double)val2_2 - (double)b * 0.5) * (double)num2 - (double)vector3_1.x + (double)num1) / (double)m_brushSize * 64.0 - 0.5);
+                        int num11 = Mathf.Clamp(Mathf.FloorToInt(f2), 0, 63);
+                        int num12 = Mathf.Clamp(Mathf.CeilToInt(f2), 0, 63);
+                        float num13 = brushData[num9 * 64 + num11];
+                        float num14 = brushData[num9 * 64 + num12];
+                        float num15 = brushData[num10 * 64 + num11];
+                        float num16 = brushData[num10 * 64 + num12];
+                        float num17 = num13 + (float)(((double)num14 - (double)num13) * ((double)f2 - (double)num11));
+                        float num18 = num15 + (float)(((double)num16 - (double)num15) * ((double)f2 - (double)num11));
+                        num19 = num17 + (float)(((double)num18 - (double)num17) * ((double)f1 - (double)num9));
+                    }
                     float from = (float)rawHeights[val2_1 * (b + 1) + val2_2] * num5;
                     float to = 0.0f;
                     //begin mod
@@ -443,36 +465,36 @@ namespace NaturalResourcesBrush.Detours
                     else
                     //end mod
                         if (m_mode == TerrainTool.Mode.Shift)
-                            to = from + num8;
-                        else if (m_mode == TerrainTool.Mode.Level)
-                            to = m_startPosition.y;
-                        else if (m_mode == TerrainTool.Mode.Soften)
+                        to = from + num8;
+                    else if (m_mode == TerrainTool.Mode.Level)
+                        to = m_startPosition.y;
+                    else if (m_mode == TerrainTool.Mode.Soften)
+                    {
+                        int num20 = Mathf.Max(val2_2 - num4, 0);
+                        int num21 = Mathf.Max(val2_1 - num4, 0);
+                        int num22 = Mathf.Min(val2_2 + num4, b);
+                        int num23 = Mathf.Min(val2_1 + num4, b);
+                        float num24 = 0.0f;
+                        for (int index1 = num21; index1 <= num23; ++index1)
                         {
-                            int num20 = Mathf.Max(val2_2 - num4, 0);
-                            int num21 = Mathf.Max(val2_1 - num4, 0);
-                            int num22 = Mathf.Min(val2_2 + num4, b);
-                            int num23 = Mathf.Min(val2_1 + num4, b);
-                            float num24 = 0.0f;
-                            for (int index1 = num21; index1 <= num23; ++index1)
+                            for (int index2 = num20; index2 <= num22; ++index2)
                             {
-                                for (int index2 = num20; index2 <= num22; ++index2)
+                                float num25 = (float)(1.0 - (double)((index2 - val2_2) * (index2 - val2_2) + (index1 - val2_1) * (index1 - val2_1)) / (double)(num4 * num4));
+                                if ((double)num25 > 0.0)
                                 {
-                                    float num25 = (float)(1.0 - (double)((index2 - val2_2) * (index2 - val2_2) + (index1 - val2_1) * (index1 - val2_1)) / (double)(num4 * num4));
-                                    if ((double)num25 > 0.0)
-                                    {
-                                        to += (float)finalHeights[index1 * (b + 1) + index2] * (num5 * num25);
-                                        num24 += num25;
-                                    }
+                                    to += (float)finalHeights[index1 * (b + 1) + index2] * (num5 * num25);
+                                    num24 += num25;
                                 }
                             }
-                            to /= num24;
                         }
-                        else if (m_mode == TerrainTool.Mode.Slope)
-                        {
-                            float num20 = ((float)val2_2 - (float)b * 0.5f) * num2;
-                            float num21 = ((float)val2_1 - (float)b * 0.5f) * num2;
-                            to = Mathf.Lerp(m_startPosition.y, m_endPosition.y, (float)(((double)num20 - (double)m_startPosition.x) * (double)vector3_2.x + ((double)num21 - (double)m_startPosition.z) * (double)vector3_2.z) * num7);
-                        }
+                        to /= num24;
+                    }
+                    else if (m_mode == TerrainTool.Mode.Slope)
+                    {
+                        float num20 = ((float)val2_2 - (float)b * 0.5f) * num2;
+                        float num21 = ((float)val2_1 - (float)b * 0.5f) * num2;
+                        to = Mathf.Lerp(m_startPosition.y, m_endPosition.y, (float)(((double)num20 - (double)m_startPosition.x) * (double)vector3_2.x + ((double)num21 - (double)m_startPosition.z) * (double)vector3_2.z) * num7);
+                    }
                     float num26 = Mathf.Lerp(from, to, num3 * num19);
                     rawHeights[val2_1 * (b + 1) + val2_2] = (ushort)Mathf.Clamp(Mathf.RoundToInt(num26 * num6), 0, (int)ushort.MaxValue);
                     m_strokeXmin = Math.Min(m_strokeXmin, val2_2);
@@ -491,6 +513,12 @@ namespace NaturalResourcesBrush.Detours
             public int zmin;
             public int zmax;
             public int pointer;
+        }
+
+        public enum Mode
+        {
+            Brush,
+            Single,
         }
     }
 }

@@ -52,7 +52,7 @@ namespace NaturalResourcesBrush
             brushSizeSlider.relativePosition = new Vector3(13, 30, 0);
             brushSizeSlider.backgroundSprite = "ScrollbarTrack";
             brushSizeSlider.size = new Vector2(171, 12);
-            brushSizeSlider.minValue = 29;
+            brushSizeSlider.minValue = 14;
             brushSizeSlider.maxValue = 2000;
             brushSizeSlider.stepSize = 1;
             var brushSizeSliderThumb = brushSizeSlider.AddUIComponent<UISlicedSprite>();
