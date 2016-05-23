@@ -3,10 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using ColossalFramework.Plugins;
-using ColossalFramework.UI;
 using ICities;
 using UnityEngine;
-using UnityEngine.VR;
 
 namespace NaturalResourcesBrush.API
 {

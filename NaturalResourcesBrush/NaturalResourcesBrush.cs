@@ -69,8 +69,15 @@ namespace NaturalResourcesBrush
                     }
                 }
             }
-            var pluginTools = Plugins.SetupTools(mode);
-            extraTools.AddRange(pluginTools);
+            try
+            {
+                var pluginTools = Plugins.SetupTools(mode);
+                extraTools.AddRange(pluginTools);
+            }
+            catch (Exception e)
+            {
+                UnityEngine.Debug.LogException(e);
+            }
             return extraTools;
         }
 
@@ -261,7 +268,14 @@ namespace NaturalResourcesBrush
                             Util.CreateAtlasFromResources(new List<string> { "ToolbarIconTerrain", "ToolbarIconBase" });
                     }
                 }
-                Plugins.CreateToolbars(mode);
+                try
+                {
+                    Plugins.CreateToolbars(mode);
+                }
+                catch (Exception e)
+                {
+                    UnityEngine.Debug.LogException(e);
+                }
                 return true;
             }
             catch (Exception e)

@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 using ColossalFramework;
 using ColossalFramework.UI;
 using NaturalResourcesBrush.API;
@@ -27,7 +28,14 @@ namespace NaturalResourcesBrush.Detours
             if ((UnityEngine.Object)currentTool4 != (UnityEngine.Object)null)
                 currentTool4.m_strength = val;
             //begin mod
-            Plugins.SetStrength(val);
+            try
+            {
+                Plugins.SetStrength(val);
+            }
+            catch (Exception e)
+            {
+                UnityEngine.Debug.LogException(e);
+            }
             //end mod
         }
 
@@ -64,7 +72,14 @@ namespace NaturalResourcesBrush.Detours
                 currentTool4.m_brushSize = val;
             }
             //begin mod
-            Plugins.SetSize(val, val == (double)brushSizeSlider.minValue);
+            try
+            {
+                Plugins.SetSize(val, val == (double)brushSizeSlider.minValue);
+            }
+            catch (Exception e)
+            {
+                UnityEngine.Debug.LogException(e);
+            }
             //end mod
         }
 
@@ -97,7 +112,14 @@ namespace NaturalResourcesBrush.Detours
                 tool4.m_brush = texture2D;
             }
             //begin mod
-            Plugins.SetBrush(texture2D);
+            try
+            {
+                Plugins.SetBrush(texture2D);
+            }
+            catch (Exception e)
+            {
+                UnityEngine.Debug.LogException(e);
+            }
             //end mod
         }
 
@@ -105,9 +127,16 @@ namespace NaturalResourcesBrush.Detours
         private bool SupportsSingle()
         {
             //begin mod
-            if (Plugins.SupportsSingle(ToolsModifierControl.GetCurrentTool<ToolBase>()))
+            try
             {
-                return true;
+                if (Plugins.SupportsSingle(ToolsModifierControl.GetCurrentTool<ToolBase>()))
+                {
+                    return true;
+                }
+            }
+            catch (Exception e)
+            {
+                UnityEngine.Debug.LogException(e);
             }
             return ToolsModifierControl.GetCurrentTool<PropTool>() != null || ToolsModifierControl.GetCurrentTool<TreeTool>() != null || ToolsModifierControl.GetCurrentTool<TerrainTool>() != null;
             //end mod

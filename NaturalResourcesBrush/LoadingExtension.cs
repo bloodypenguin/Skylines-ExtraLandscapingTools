@@ -38,7 +38,14 @@ namespace NaturalResourcesBrush
                 "Use secondary mouse button to remove decorative sand from the area under the brush");
             Util.AddLocale("TUTORIAL_ADVISER", "Resource", "Ground Resources Tool", "");
             Util.AddLocale("TUTORIAL_ADVISER", "Water", "Water Tool", "");
-            Plugins.Initialize();
+            try
+            {
+                Plugins.Initialize();
+            }
+            catch (Exception e)
+            {
+                UnityEngine.Debug.LogException(e);
+            }
         }
 
         public override void OnReleased()
@@ -56,7 +63,14 @@ namespace NaturalResourcesBrush
             LevelHeightOptionPanelDetour.Dispose();
             Redirector<UndoTerrainOptionPanelDetour>.Revert();
             Redirector<BrushOptionPanelDetour>.Revert();
-            Plugins.Dispose();
+            try
+            {
+                Plugins.Dispose();
+            }
+            catch (Exception e)
+            {
+                UnityEngine.Debug.LogException(e);
+            }
         }
 
         public override void OnLevelLoaded(LoadMode mode)
