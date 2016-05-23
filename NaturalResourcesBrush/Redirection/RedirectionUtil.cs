@@ -72,7 +72,7 @@ namespace NaturalResourcesBrush.Redirection
                             return ((RedirectMethodAttribute)redirectAttributes[0]).OnCreated == onCreated;
                         }))
             {
-                UnityEngine.Debug.Log($"Redirecting {targetType.Name}#{method.Name}...");
+//                UnityEngine.Debug.Log($"Redirecting {targetType.Name}#{method.Name}...");
                 RedirectMethod(targetType, method, redirects);
             }
         }
@@ -92,7 +92,7 @@ namespace NaturalResourcesBrush.Redirection
                             return false;
                         }))
             {
-                UnityEngine.Debug.Log($"Redirecting reverse {targetType.Name}#{method.Name}...");
+//                UnityEngine.Debug.Log($"Redirecting reverse {targetType.Name}#{method.Name}...");
                 RedirectMethod(targetType, method, redirects, true);
             }
         }

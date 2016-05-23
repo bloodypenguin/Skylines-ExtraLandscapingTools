@@ -180,22 +180,6 @@ namespace NaturalResourcesBrush
             UI.SetupBrushSelectPanel(brushOptionsPanel);
 
             brushOptionsPanel.gameObject.AddComponent<BrushOptionPanel>();
-
-            //            if (treeBrushEnabled)
-            //            {
-            //                var beauPanel = Object.FindObjectOfType<BeautificationPanel>();
-            //                if (beauPanel == null)
-            //                {
-            //                    Debug.LogWarning("ExtraTools#SetupBrushOptionsPanel(): beautification panel not found.");
-            //                }
-            //                else
-            //                {
-            //                    beauPanel.component.eventVisibilityChanged += (comp, visible) =>
-            //                    {
-            //                        brushOptionsPanel.isVisible = visible;
-            //                    };
-            //                }
-            //            }
         }
 
         public static WaterOptionPanel SetupWaterPanel()

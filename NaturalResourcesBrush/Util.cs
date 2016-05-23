@@ -5,7 +5,9 @@ using System.Linq;
 using System.Reflection;
 using ColossalFramework;
 using ColossalFramework.Globalization;
+using ColossalFramework.Plugins;
 using ColossalFramework.UI;
+using ICities;
 using UnityEngine;
 
 namespace NaturalResourcesBrush
@@ -182,6 +184,17 @@ namespace NaturalResourcesBrush
         {
             var field = o.GetType().GetField(fieldName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
             field.SetValue(o, value);
+        }
+
+        public static bool IsModActive(string modName)
+        {
+            var plugins = PluginManager.instance.GetPluginsInfo();
+            return (from plugin in plugins.Where(p => p.isEnabled)
+                    select plugin.GetInstances<IUserMod>() into instances
+                    where instances.Any()
+                    select instances[0].Name into name
+                    where name == modName
+                    select name).Any();
         }
     }
 }
