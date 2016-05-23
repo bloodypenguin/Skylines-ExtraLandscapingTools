@@ -39,7 +39,10 @@
     <Reference Include="UnityEngine" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="API\IEltPlugin.cs" />
+    <Compile Include="API\Plugins.cs" />
     <Compile Include="Detours\BeautificationPanelDetour.cs" />
+    <Compile Include="Detours\BrushOptionPanelDetour.cs" />
     <Compile Include="Detours\LevelHeightOptionPanelDetour.cs" />
     <Compile Include="Options.cs" />
     <Compile Include="Mod.cs" />
@@ -51,20 +54,20 @@
     <Compile Include="OptionsFramework\TextFieldAttribute.cs" />
     <Compile Include="OptionsFramework\UIHelperBaseExtension.cs" />
     <Compile Include="OptionsFramework\Util.cs" />
-    <Compile Include="Redirection\RedirectionHelper.cs" />
-    <Compile Include="Redirection\RedirectionUtil.cs" />
-    <Compile Include="Redirection\RedirectMethodAttribute.cs" />
-    <Compile Include="Redirection\RedirectReverseAttribute.cs" />
-    <Compile Include="Redirection\TargetTypeAttribute.cs" />
-    <Compile Include="Redirection\Tuple.cs" />
     <Compile Include="Detours\LandscapingPanelDetour.cs" />
     <Compile Include="Detours\TerrainPanelDetour.cs" />
     <Compile Include="Detours\TerrainToolDetour.cs" />
+    <Compile Include="Redirection\RedirectionHelper.cs" />
+    <Compile Include="Redirection\RedirectionUtil.cs" />
+    <Compile Include="Redirection\RedirectMethodAttribute.cs" />
+    <Compile Include="Redirection\Redirector.cs" />
+    <Compile Include="Redirection\RedirectReverseAttribute.cs" />
+    <Compile Include="Redirection\TargetTypeAttribute.cs" />
+    <Compile Include="Redirection\Tuple.cs" />
     <Compile Include="ToolbarButtonSpawner.cs" />
     <Compile Include="LoadingExtension.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Util.cs" />
-    <Compile Include="Detours\TreeInfoDetour.cs" />
     <Compile Include="Detours\TreeToolDetour.cs" />
     <Compile Include="UI.cs" />
     <Compile Include="Detours\UndoTerrainOptionPanelDetour.cs" />

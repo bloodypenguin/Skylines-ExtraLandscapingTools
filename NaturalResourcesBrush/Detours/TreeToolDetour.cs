@@ -5,14 +5,11 @@ using ColossalFramework;
 using NaturalResourcesBrush.Redirection;
 using UnityEngine;
 
-namespace NaturalResourcesBrush
+namespace NaturalResourcesBrush.Detours
 {
+    [TargetType(typeof(TreeTool))]
     public class TreeToolDetour : TreeTool
     {
-
-        private static RedirectCallsState _state;
-        private static bool _deployed;
-
         private static FieldInfo mouseLeftDownField = typeof(TreeTool).GetField("m_mouseLeftDown",
             BindingFlags.NonPublic | BindingFlags.Instance);
         private static FieldInfo mouseRightDownField = typeof(TreeTool).GetField("m_mouseRightDown",
@@ -24,36 +21,7 @@ BindingFlags.NonPublic | BindingFlags.Instance);
 
         private static Vector3 lastAllowedMousePosition = Vector3.zero;
 
-        public static void Deploy()
-        {
-            if (_deployed)
-            {
-                return;
-            }
-            try
-            {
-                _state = RedirectionHelper.RedirectCalls(
-                    typeof(TreeTool).GetMethod("OnToolGUI", BindingFlags.NonPublic | BindingFlags.Instance),
-                    typeof(TreeToolDetour).GetMethod("OnToolGUI", BindingFlags.NonPublic | BindingFlags.Instance));
-
-            }
-            catch (Exception e)
-            {
-                UnityEngine.Debug.LogException(e);
-            }
-            _deployed = true;
-        }
-
-        public static void Revert()
-        {
-            if (!_deployed)
-            {
-                return;
-            }
-            RedirectionHelper.RevertRedirect(typeof(TreeTool).GetMethod("OnToolGUI", BindingFlags.NonPublic | BindingFlags.Instance), _state);
-            _deployed = false;
-        }
-
+        [RedirectMethod]
         protected override void OnToolGUI(Event e)
         {
             if (!this.m_toolController.IsInsideUI &&

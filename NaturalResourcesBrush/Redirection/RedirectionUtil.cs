@@ -7,6 +7,41 @@ namespace NaturalResourcesBrush.Redirection
 {
     public static class RedirectionUtil
     {
+
+        public static Dictionary<MethodInfo, RedirectCallsState> RedirectAssembly()
+        {
+            var redirects = new Dictionary<MethodInfo, RedirectCallsState>();
+            foreach (var type in Assembly.GetExecutingAssembly().GetTypes())
+            {
+                redirects.AddRange(RedirectType(type));
+            }
+            return redirects;
+        }
+
+        public static void RevertRedirects(Dictionary<MethodInfo, RedirectCallsState> redirects)
+        {
+            if (redirects == null)
+            {
+                return;
+            }
+            foreach (var kvp in redirects)
+            {
+                RedirectionHelper.RevertRedirect(kvp.Key, kvp.Value);
+            }
+        }
+
+        public static void AddRange<T>(this ICollection<T> target, IEnumerable<T> source)
+        {
+            if (target == null)
+                throw new ArgumentNullException(nameof(target));
+            if (source == null)
+            {
+                return;
+            }
+            foreach (var element in source)
+                target.Add(element);
+        }
+
         public static Dictionary<MethodInfo, RedirectCallsState> RedirectType(Type type, bool onCreated = false)
         {
             var redirects = new Dictionary<MethodInfo, RedirectCallsState>();
@@ -34,10 +69,10 @@ namespace NaturalResourcesBrush.Redirection
                             {
                                 return false;
                             }
-                           return ((RedirectMethodAttribute) redirectAttributes[0]).OnCreated == onCreated;
+                            return ((RedirectMethodAttribute)redirectAttributes[0]).OnCreated == onCreated;
                         }))
             {
-                UnityEngine.Debug.Log($"Redirecting {targetType.Name}#{method.Name}...");
+//                UnityEngine.Debug.Log($"Redirecting {targetType.Name}#{method.Name}...");
                 RedirectMethod(targetType, method, redirects);
             }
         }
@@ -57,7 +92,7 @@ namespace NaturalResourcesBrush.Redirection
                             return false;
                         }))
             {
-                UnityEngine.Debug.Log($"Redirecting reverse {targetType.Name}#{method.Name}...");
+//                UnityEngine.Debug.Log($"Redirecting reverse {targetType.Name}#{method.Name}...");
                 RedirectMethod(targetType, method, redirects, true);
             }
         }

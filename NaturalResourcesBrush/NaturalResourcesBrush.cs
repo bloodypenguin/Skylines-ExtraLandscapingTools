@@ -7,6 +7,7 @@ using ColossalFramework;
 using ColossalFramework.Globalization;
 using ColossalFramework.UI;
 using ICities;
+using NaturalResourcesBrush.API;
 using NaturalResourcesBrush.OptionsFramework;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -15,7 +16,7 @@ namespace NaturalResourcesBrush
 {
     public static class NaturalResourcesBrush
     {
-        public static void AddExtraToolsToController(ref ToolController toolController, List<ToolBase> extraTools)
+        public static void AddExtraToolsToController(ToolController toolController, List<ToolBase> extraTools)
         {
             if (extraTools.Count < 1)
             {
@@ -40,7 +41,7 @@ namespace NaturalResourcesBrush
         }
 
         //returns false in no extra tools were set up
-        public static List<ToolBase> SetUpExtraTools(LoadMode mode, ref ToolController toolController)
+        public static List<ToolBase> SetUpExtraTools(LoadMode mode, ToolController toolController)
         {
             var extraTools = new List<ToolBase>();
             if (mode == LoadMode.LoadGame | mode == LoadMode.NewGame)
@@ -50,55 +51,66 @@ namespace NaturalResourcesBrush
                 {
                     if (OptionsWrapper<Options>.Options.waterTool)
                     {
-                        SetUpWaterTool(ref toolController, ref extraTools);
+                        SetUpWaterTool(extraTools);
                     }
-                    var optionsPanel = SetupBrushOptionsPanel(OptionsWrapper<Options>.Options.treeBrush);
+                    SetupBrushOptionsPanel(OptionsWrapper<Options>.Options.treeBrush);
+                    var optionsPanel = Object.FindObjectOfType<BrushOptionPanel>();
                     if (optionsPanel != null)
                     {
                         optionsPanel.m_BuiltinBrushes = toolController.m_brushes;
                         if (OptionsWrapper<Options>.Options.resourcesTool || OptionsWrapper<Options>.Options.terrainTool)
                         {
-                            SetUpNaturalResourcesTool(ref toolController, ref extraTools, ref optionsPanel);
+                            SetUpNaturalResourcesTool(extraTools);
                         }
                         if (OptionsWrapper<Options>.Options.terrainTool)
                         {
-                            SetUpTerrainTool(ref toolController, ref extraTools, ref optionsPanel);
+                            SetUpTerrainToolExtensionss();
                         }
                     }
                 }
             }
+            try
+            {
+                var pluginTools = Plugins.SetupTools(mode);
+                extraTools.AddRange(pluginTools);
+            }
+            catch (Exception e)
+            {
+                UnityEngine.Debug.LogException(e);
+            }
             return extraTools;
         }
 
-        private static void SetUpNaturalResourcesTool(ref ToolController toolController, ref List<ToolBase> extraTools, ref BrushOptionPanel optionsPanel)
+        private static void SetUpNaturalResourcesTool(ICollection<ToolBase> extraTools)
         {
-            var resourceTool = toolController.gameObject.GetComponent<ResourceTool>();
+            var resourceTool = ToolsModifierControl.GetTool<ResourceTool>();
             if (resourceTool == null)
             {
-                resourceTool = toolController.gameObject.AddComponent<ResourceTool>();
+                resourceTool = ToolsModifierControl.toolController.gameObject.AddComponent<ResourceTool>();
                 extraTools.Add(resourceTool);
             }
-            resourceTool.m_brush = toolController.m_brushes[0];
+            resourceTool.m_brush = ToolsModifierControl.toolController.m_brushes[0];
         }
 
-        private static void SetUpWaterTool(ref ToolController toolController, ref List<ToolBase> extraTools)
+        private static void SetUpWaterTool(ICollection<ToolBase> extraTools)
         {
             var optionsPanel = SetupWaterPanel();
             if (optionsPanel == null)
             {
                 return;
             }
-            var waterTool = toolController.gameObject.GetComponent<WaterTool>();
-            if (waterTool == null)
+            var waterTool = ToolsModifierControl.GetTool<WaterTool>();
+            if (waterTool != null)
             {
-                waterTool = toolController.gameObject.AddComponent<WaterTool>();
-                extraTools.Add(waterTool);
+                return;
             }
+            waterTool = ToolsModifierControl.toolController.gameObject.AddComponent<WaterTool>();
+            extraTools.Add(waterTool);
         }
 
-        private static void SetUpTerrainTool(ref ToolController toolController, ref List<ToolBase> extraTools, ref BrushOptionPanel optionsPanel)
+        private static void SetUpTerrainToolExtensionss()
         {
-            var terrainTool = toolController.gameObject.GetComponent<TerrainTool>();
+            var terrainTool = ToolsModifierControl.GetTool<TerrainTool>();
             if (terrainTool == null)
             {
                 Debug.LogError("ExtraTools#SetupBrushOptionsPanel(): terrain tool not found");
@@ -151,43 +163,30 @@ namespace NaturalResourcesBrush
         }
 
 
-        public static BrushOptionPanel SetupBrushOptionsPanel(bool treeBrushEnabled)
+        public static void SetupBrushOptionsPanel(bool treeBrushEnabled)
         {
             var optionsBar = UIView.Find<UIPanel>("OptionsBar");
             if (optionsBar == null)
             {
                 Debug.LogError("ExtraTools#SetupBrushOptionsPanel(): options bar not found");
-                return null;
+                return;
             }
-
+            if (GameObject.Find("BrushPanel") != null)
+            {
+                return;
+            }
             var brushOptionsPanel = optionsBar.AddUIComponent<UIPanel>();
             brushOptionsPanel.name = "BrushPanel";
             brushOptionsPanel.backgroundSprite = "MenuPanel2";
             brushOptionsPanel.size = new Vector2(231, 506);
             brushOptionsPanel.isVisible = false;
             brushOptionsPanel.relativePosition = new Vector3(-256, -488);
-
             UI.SetupTitle("Brush Options", brushOptionsPanel);
             UI.SetupBrushSizePanel(brushOptionsPanel);
             UI.SetupBrushStrengthPanel(brushOptionsPanel);
             UI.SetupBrushSelectPanel(brushOptionsPanel);
 
-            if (treeBrushEnabled)
-            {
-                var beauPanel = Object.FindObjectOfType<BeautificationPanel>();
-                if (beauPanel == null)
-                {
-                    Debug.LogWarning("ExtraTools#SetupBrushOptionsPanel(): beautification panel not found.");
-                }
-                else
-                {
-                    beauPanel.component.eventVisibilityChanged += (comp, visible) =>
-                    {
-                        brushOptionsPanel.isVisible = visible;
-                    };
-                }
-            }
-            return brushOptionsPanel.gameObject.AddComponent<BrushOptionPanel>();
+            brushOptionsPanel.gameObject.AddComponent<BrushOptionPanel>();
         }
 
         public static WaterOptionPanel SetupWaterPanel()
@@ -213,7 +212,7 @@ namespace NaturalResourcesBrush
 
         public static bool SetUpToolbars(LoadMode mode)
         {
-            var mainToolbar = ToolsModifierControl.mainToolbar as GameMainToolbar;
+            var mainToolbar = ToolsModifierControl.mainToolbar;
             if (mainToolbar == null)
             {
                 Debug.LogError("ExtraTools#SetUpToolbars(): main toolbar is null");
@@ -235,22 +234,23 @@ namespace NaturalResourcesBrush
                         ToolbarButtonSpawner.SpawnSubEntry(strip, "Resource", "MAPEDITOR_TOOL", null, "ToolbarIcon",
                             true,
                             mainToolbar.m_OptionsBar, mainToolbar.m_DefaultInfoTooltipAtlas);
-                        ((UIButton) UIView.FindObjectOfType<ResourcePanel>().Find("Ore")).atlas = defaultAtlas;
-                        ((UIButton) UIView.FindObjectOfType<ResourcePanel>().Find("Oil")).atlas = defaultAtlas;
-                        ((UIButton) UIView.FindObjectOfType<ResourcePanel>().Find("Fertility")).atlas = defaultAtlas;
+                        ((UIButton)UIView.FindObjectOfType<ResourcePanel>().Find("Ore")).atlas = defaultAtlas;
+                        ((UIButton)UIView.FindObjectOfType<ResourcePanel>().Find("Oil")).atlas = defaultAtlas;
+                        ((UIButton)UIView.FindObjectOfType<ResourcePanel>().Find("Fertility")).atlas = defaultAtlas;
                     }
                     if (OptionsWrapper<Options>.Options.waterTool)
                     {
                         ToolbarButtonSpawner.SpawnSubEntry(strip, "Water", "MAPEDITOR_TOOL", null, "ToolbarIcon", true,
                             mainToolbar.m_OptionsBar, mainToolbar.m_DefaultInfoTooltipAtlas);
-                        ((UIButton) UIView.FindObjectOfType<WaterPanel>().Find("PlaceWater")).atlas =
-                            Util.CreateAtlasFromResources(new List<string> {"WaterPlaceWater"});
-                        ((UIButton) UIView.FindObjectOfType<WaterPanel>().Find("MoveSeaLevel")).atlas =
-                           Util.CreateAtlasFromResources(new List<string> {"WaterMoveSeaLevel"});
-                        ((UIButton) UIView.FindObjectOfType<GameMainToolbar>().Find("Water")).atlas =
-                            Util.CreateAtlasFromResources(new List<string> {"ToolbarIconWater", "ToolbarIconBase"});
+                        ((UIButton)UIView.FindObjectOfType<WaterPanel>().Find("PlaceWater")).atlas =
+                            Util.CreateAtlasFromResources(new List<string> { "WaterPlaceWater" });
+                        ((UIButton)UIView.FindObjectOfType<WaterPanel>().Find("MoveSeaLevel")).atlas =
+                           Util.CreateAtlasFromResources(new List<string> { "WaterMoveSeaLevel" });
+                        ((UIButton)UIView.FindObjectOfType<GameMainToolbar>().Find("Water")).atlas =
+                            Util.CreateAtlasFromResources(new List<string> { "ToolbarIconWater", "ToolbarIconBase" });
                     }
-                } else if (mode == LoadMode.NewAsset || mode == LoadMode.LoadAsset)
+                }
+                else if (mode == LoadMode.NewAsset || mode == LoadMode.LoadAsset)
                 {
                     if (OptionsWrapper<Options>.Options.terrainTool)
                     {
@@ -267,6 +267,14 @@ namespace NaturalResourcesBrush
                         ((UIButton)UIView.FindObjectOfType<GameMainToolbar>().Find("Terrain")).atlas =
                             Util.CreateAtlasFromResources(new List<string> { "ToolbarIconTerrain", "ToolbarIconBase" });
                     }
+                }
+                try
+                {
+                    Plugins.CreateToolbars(mode);
+                }
+                catch (Exception e)
+                {
+                    UnityEngine.Debug.LogException(e);
                 }
                 return true;
             }

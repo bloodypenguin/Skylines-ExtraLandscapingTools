@@ -4,7 +4,10 @@ using System.Collections.Generic;
 using System.Reflection;
 using ColossalFramework.UI;
 using ICities;
+using NaturalResourcesBrush.API;
+using NaturalResourcesBrush.Detours;
 using NaturalResourcesBrush.OptionsFramework;
+using NaturalResourcesBrush.Redirection;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -17,16 +20,17 @@ namespace NaturalResourcesBrush
             //to allow to work in MapEditor
             if (OptionsWrapper<Options>.Options.treePencil)
             {
-                TreeToolDetour.Deploy();
+                Redirector<TreeToolDetour>.Deploy();
             }
             if (OptionsWrapper<Options>.Options.terrainTool)
             {
-                TerrainToolDetour.Deploy();
-                TerrainPanelDetour.Deploy();
-                LandscapingPanelDetour.Deploy();
-                LevelHeightOptionPanelDetour.Deploy();
-                UndoTerrainOptionPanelDetour.Deploy();
+                Redirector<TerrainToolDetour>.Deploy();
+                Redirector<TerrainPanelDetour>.Deploy();
+                Redirector<LandscapingPanelDetour>.Deploy();
+                Redirector<LevelHeightOptionPanelDetour>.Deploy();
+                Redirector<UndoTerrainOptionPanelDetour>.Deploy();
             }
+            Redirector<BrushOptionPanelDetour>.Deploy();
             Util.AddLocale("LANDSCAPING", "Ditch", "Ditch tool", "");
             Util.AddLocale("TERRAIN", "Ditch", "Ditch tool", "");
             Util.AddLocale("LANDSCAPING", "Sand", "Sand",
@@ -34,19 +38,39 @@ namespace NaturalResourcesBrush
                 "Use secondary mouse button to remove decorative sand from the area under the brush");
             Util.AddLocale("TUTORIAL_ADVISER", "Resource", "Ground Resources Tool", "");
             Util.AddLocale("TUTORIAL_ADVISER", "Water", "Water Tool", "");
+            try
+            {
+                Plugins.Initialize();
+            }
+            catch (Exception e)
+            {
+                UnityEngine.Debug.LogException(e);
+            }
         }
 
         public override void OnReleased()
         {
-            TreeToolDetour.Revert();
-            BeautificationPanelDetour.Revert();
-            WaterToolDetour.Revert();
-            TerrainToolDetour.Revert();
-            TerrainPanelDetour.Revert();
-            LandscapingPanelDetour.Revert();
-            LevelHeightOptionPanelDetour.Revert();
-            UndoTerrainOptionPanelDetour.Revert();
-
+            Redirector<TreeToolDetour>.Revert();
+            Redirector<BeautificationPanelDetour>.Revert();
+            BeautificationPanelDetour.Dispose();
+            Redirector<WaterToolDetour>.Revert();
+            Redirector<TerrainToolDetour>.Revert();
+            TerrainToolDetour.Dispose();
+            Redirector<TerrainPanelDetour>.Revert();
+            Redirector<LandscapingPanelDetour>.Revert();
+            LandscapingPanelDetour.Dispose();
+            Redirector<LevelHeightOptionPanelDetour>.Revert();
+            LevelHeightOptionPanelDetour.Dispose();
+            Redirector<UndoTerrainOptionPanelDetour>.Revert();
+            Redirector<BrushOptionPanelDetour>.Revert();
+            try
+            {
+                Plugins.Dispose();
+            }
+            catch (Exception e)
+            {
+                UnityEngine.Debug.LogException(e);
+            }
         }
 
         public override void OnLevelLoaded(LoadMode mode)
@@ -55,11 +79,11 @@ namespace NaturalResourcesBrush
             {
                 if (OptionsWrapper<Options>.Options.treeBrush)
                 {
-                    BeautificationPanelDetour.Deploy();
+                    Redirector<BeautificationPanelDetour>.Deploy();
                 }
                 if (OptionsWrapper<Options>.Options.waterTool)
                 {
-                    WaterToolDetour.Deploy();
+                    Redirector<WaterToolDetour>.Deploy();
                 }
             }
 
@@ -71,8 +95,8 @@ namespace NaturalResourcesBrush
             }
             try
             {
-                var extraTools = NaturalResourcesBrush.SetUpExtraTools(mode, ref toolController);
-                NaturalResourcesBrush.AddExtraToolsToController(ref toolController, extraTools);
+                var extraTools = NaturalResourcesBrush.SetUpExtraTools(mode, toolController);
+                NaturalResourcesBrush.AddExtraToolsToController(toolController, extraTools);
             }
             catch (Exception e)
             {
