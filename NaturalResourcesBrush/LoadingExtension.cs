@@ -15,6 +15,9 @@ namespace NaturalResourcesBrush
 {
     public class LoadingExtension : LoadingExtensionBase
     {
+        private const string LandscapingInfoPanel = "LandscapingInfoPanel";
+        private static UIDynamicPanels.DynamicPanelInfo landscapingPanel;
+
         public override void OnCreated(ILoading lodaing)
         {
             //to allow to work in MapEditor
@@ -109,14 +112,32 @@ namespace NaturalResourcesBrush
                     toolController.Tools[0].enabled = true;
                 }
             }
-            if (OptionsWrapper<Options>.Options.terrainTool)
+            if (OptionsWrapper<Options>.Options.terrainTool && GetPanels().ContainsKey(LandscapingInfoPanel))
             {
-                var panels =
-    (Dictionary<string, UIDynamicPanels.DynamicPanelInfo>)
-    typeof(UIDynamicPanels).GetField("m_CachedPanels", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(UIView.library);
-                panels.Remove("LandscapingInfoPanel");
+                landscapingPanel = GetPanels()[LandscapingInfoPanel];
+                if (landscapingPanel != null)
+                {
+                    GetPanels().Remove(LandscapingInfoPanel);
+                }
                 LandscapingPanelDetour.Initialize();
             }
+        }
+
+        public override void OnLevelUnloading()
+        {
+            base.OnLevelUnloading();
+            if (landscapingPanel != null)
+            {
+                GetPanels().Add(LandscapingInfoPanel, landscapingPanel);
+            }
+            landscapingPanel = null;
+
+        }
+
+        private static Dictionary<string, UIDynamicPanels.DynamicPanelInfo> GetPanels()
+        {
+            return (Dictionary<string, UIDynamicPanels.DynamicPanelInfo>)
+                typeof(UIDynamicPanels).GetField("m_CachedPanels", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(UIView.library);
         }
     }
 
