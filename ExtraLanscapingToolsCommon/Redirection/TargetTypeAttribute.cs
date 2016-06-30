@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace NaturalResourcesBrush.Redirection
+namespace ExtraLanscapingToolsCommon.Redirection
 {
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
     public class TargetTypeAttribute : Attribute

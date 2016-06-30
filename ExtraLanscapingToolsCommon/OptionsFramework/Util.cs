@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-namespace NaturalResourcesBrush.OptionsFramework
+namespace ExtraLanscapingToolsCommon.OptionsFramework
 {
     public class Util
     {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace NaturalResourcesBrush.OptionsFramework
+namespace ExtraLanscapingToolsCommon.OptionsFramework
 {
     public static class IModOptionsExtension
     {

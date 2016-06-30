@@ -3,13 +3,14 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using ColossalFramework.UI;
+using ExtraLanscapingToolsCommon.API;
+using ExtraLanscapingToolsCommon.OptionsFramework;
+using ExtraLanscapingToolsCommon.Redirection;
 using ICities;
-using NaturalResourcesBrush.API;
 using NaturalResourcesBrush.Detours;
-using NaturalResourcesBrush.OptionsFramework;
-using NaturalResourcesBrush.Redirection;
 using UnityEngine;
 using Object = UnityEngine.Object;
+using Util = ExtraLanscapingToolsCommon.Util;
 
 namespace NaturalResourcesBrush
 {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 
-namespace NaturalResourcesBrush.OptionsFramework
+namespace ExtraLanscapingToolsCommon.OptionsFramework
 {
     [AttributeUsage(AttributeTargets.Property)]
     public class TextFieldAttribute : AbstractOptionsAttribute

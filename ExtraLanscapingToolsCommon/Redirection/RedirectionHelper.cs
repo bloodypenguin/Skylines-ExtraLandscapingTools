@@ -21,7 +21,7 @@ THE SOFTWARE.
 using System;
 using System.Reflection;
 
-namespace NaturalResourcesBrush.Redirection
+namespace ExtraLanscapingToolsCommon.Redirection
 {
 
     public struct RedirectCallsState

@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Linq;
 using ColossalFramework.Globalization;
 using ColossalFramework.UI;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace NaturalResourcesBrush
+namespace ExtraLanscapingToolsCommon
 {
     public class ToolbarButtonSpawner
     {

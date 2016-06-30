@@ -6,7 +6,7 @@ using ColossalFramework.Plugins;
 using ICities;
 using UnityEngine;
 
-namespace NaturalResourcesBrush.API
+namespace ExtraLanscapingToolsCommon.API
 {
     public class Plugins
     {

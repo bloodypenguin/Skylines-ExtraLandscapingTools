@@ -1,16 +1,16 @@
 ﻿using System;
 
-namespace NaturalResourcesBrush.Redirection
+namespace ExtraLanscapingToolsCommon.Redirection
 {
     [AttributeUsage(AttributeTargets.Method)]
-    public class RedirectMethodAttribute : Attribute
+    public class RedirectReverseAttribute : Attribute
     {
-        public RedirectMethodAttribute()
+        public RedirectReverseAttribute()
         {
             this.OnCreated = false;
         }
 
-        public RedirectMethodAttribute(bool onCreated)
+        public RedirectReverseAttribute(bool onCreated)
         {
             this.OnCreated = onCreated;
         }

@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using ColossalFramework;
 using ColossalFramework.UI;
-using NaturalResourcesBrush.Redirection;
+using ExtraLanscapingToolsCommon;
+using ExtraLanscapingToolsCommon.Redirection;
 
 namespace NaturalResourcesBrush.Detours
 {
@@ -57,7 +59,7 @@ namespace NaturalResourcesBrush.Detours
             for (index = 0; index < TerrainPanelDetour.kTools.Length; ++index)
                 SpawnEntry(panel, TerrainPanelDetour.kTools[index].enumName, index );
             var ditchButton = (UIButton)SpawnEntry(panel, "Ditch", index );
-            ditchButton.atlas = Util.CreateAtlasFromEmbeddedResources("NaturalResourcesBrush.resources", new List<string> { "TerrainDitch" });
+            ditchButton.atlas = Util.CreateAtlasFromEmbeddedResources(Assembly.GetExecutingAssembly(), "NaturalResourcesBrush.resources", new List<string> { "TerrainDitch" });
         }
 
         [RedirectMethod]

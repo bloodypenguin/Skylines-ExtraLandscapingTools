@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using System.Reflection;
 using ColossalFramework;
-using NaturalResourcesBrush.Redirection;
+using ExtraLanscapingToolsCommon.OptionsFramework;
+using ExtraLanscapingToolsCommon.Redirection;
 using UnityEngine;
 
 namespace NaturalResourcesBrush.Detours
@@ -156,7 +157,7 @@ namespace NaturalResourcesBrush.Detours
                     backupHeights[index3] = rawHeights[index3];
                 }
             }
-            Singleton<TerrainManager>.instance.RenderTopography = true;
+            Singleton<TerrainManager>.instance.RenderTopography = OptionsWrapper<Options>.Options.terrainTopography;
             Singleton<TransportManager>.instance.TunnelsVisible = true;
             //begin mod
             TerrainManager.instance.TransparentWater = true;

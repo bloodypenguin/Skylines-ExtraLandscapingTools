@@ -1,5 +1,5 @@
 ﻿using System.Xml.Serialization;
-using NaturalResourcesBrush.OptionsFramework;
+using ExtraLanscapingToolsCommon.OptionsFramework;
 
 namespace NaturalResourcesBrush
 {
@@ -12,6 +12,7 @@ namespace NaturalResourcesBrush
             terrainTool = true;
             treeBrush = true;
             treePencil = true;
+            terrainTopography = true;
         }
 
         [Checkbox("Natural Resources Tool")]
@@ -24,6 +25,8 @@ namespace NaturalResourcesBrush
         public bool treeBrush { set; get; }
         [Checkbox("Tree Pencil")]
         public bool treePencil { set; get; }
+        [Checkbox("Render terrain topography")]
+        public bool terrainTopography { set; get; }
 
         [XmlIgnore]
         public string FileName => "CSL-ExtraTools.xml";

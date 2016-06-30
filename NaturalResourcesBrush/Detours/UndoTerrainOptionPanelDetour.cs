@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Reflection;
-using NaturalResourcesBrush.Redirection;
+using ExtraLanscapingToolsCommon.Redirection;
 
 namespace NaturalResourcesBrush.Detours
 {

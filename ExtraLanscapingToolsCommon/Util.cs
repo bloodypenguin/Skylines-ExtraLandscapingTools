@@ -10,15 +10,14 @@ using ColossalFramework.UI;
 using ICities;
 using UnityEngine;
 
-namespace NaturalResourcesBrush
+namespace ExtraLanscapingToolsCommon
 {
     public class Util
     {
-        public static Texture2D LoadTextureFromAssembly(string path, string textureName, bool readOnly = true)
+        public static Texture2D LoadTextureFromAssembly(Assembly assembly, string path, string textureName, bool readOnly = true)
         {
             try
             {
-                var assembly = System.Reflection.Assembly.GetExecutingAssembly();
                 using (var textureStream = assembly.GetManifestResourceStream(path))
                 {
                     return LoadTextureFromStream(readOnly, textureStream, textureName);
@@ -38,13 +37,13 @@ namespace NaturalResourcesBrush
             return CreateAtlas(sprites);
         }
 
-        public static UITextureAtlas CreateAtlasFromEmbeddedResources(string basePath, List<string> baseIconNames)
+        public static UITextureAtlas CreateAtlasFromEmbeddedResources(Assembly assembly, string basePath, List<string> baseIconNames)
         {
             var names = GetIconNames(baseIconNames);
             var sprites = new Texture2D[names.Length];
             for (var i = 0; i < names.Length; i++)
             {
-                sprites[i] = LoadTextureFromAssembly($"{basePath}.{names[i]}.png", names[i], false);
+                sprites[i] = LoadTextureFromAssembly(assembly, $"{basePath}.{names[i]}.png", names[i], false);
             }
             return CreateAtlas(sprites);
         }

@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
-using ColossalFramework.UI;
 using ICities;
 using UnityEngine;
 
-namespace NaturalResourcesBrush.API
+namespace ExtraLanscapingToolsCommon.API
 {
     public interface IEltPlugin
     {

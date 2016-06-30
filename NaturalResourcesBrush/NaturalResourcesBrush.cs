@@ -6,11 +6,13 @@ using System.Reflection;
 using ColossalFramework;
 using ColossalFramework.Globalization;
 using ColossalFramework.UI;
+using ExtraLanscapingToolsCommon;
+using ExtraLanscapingToolsCommon.API;
+using ExtraLanscapingToolsCommon.OptionsFramework;
 using ICities;
-using NaturalResourcesBrush.API;
-using NaturalResourcesBrush.OptionsFramework;
 using UnityEngine;
 using Object = UnityEngine.Object;
+using Util = ExtraLanscapingToolsCommon.Util;
 
 namespace NaturalResourcesBrush
 {
@@ -181,7 +183,7 @@ namespace NaturalResourcesBrush
             brushOptionsPanel.size = new Vector2(231, 506);
             brushOptionsPanel.isVisible = false;
             brushOptionsPanel.relativePosition = new Vector3(-256, -488);
-            UI.SetupTitle("Brush Options", brushOptionsPanel);
+            UIUtil.SetupTitle("Brush Options", brushOptionsPanel);
             UI.SetupBrushSizePanel(brushOptionsPanel);
             UI.SetupBrushStrengthPanel(brushOptionsPanel);
             UI.SetupBrushSelectPanel(brushOptionsPanel);
@@ -205,7 +207,7 @@ namespace NaturalResourcesBrush
             waterPanel.isVisible = false;
             waterPanel.relativePosition = new Vector3(-256, -166);
 
-            UI.SetupTitle("Water Options", waterPanel);
+            UIUtil.SetupTitle("Water Options", waterPanel);
             UI.SetupWaterCapacityPanel(waterPanel);
             return waterPanel.gameObject.AddComponent<WaterOptionPanel>();
         }

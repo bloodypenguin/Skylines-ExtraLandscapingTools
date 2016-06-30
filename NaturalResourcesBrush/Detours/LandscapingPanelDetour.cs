@@ -4,7 +4,8 @@ using ColossalFramework;
 using ColossalFramework.DataBinding;
 using ColossalFramework.Globalization;
 using ColossalFramework.UI;
-using NaturalResourcesBrush.Redirection;
+using ExtraLanscapingToolsCommon;
+using ExtraLanscapingToolsCommon.Redirection;
 using Object = System.Object;
 
 namespace NaturalResourcesBrush.Detours
@@ -165,7 +166,7 @@ namespace NaturalResourcesBrush.Detours
             if (name == "Ditch")
             {
                 buttonName = "TerrainDitch";
-                buttonAtlas = Util.CreateAtlasFromEmbeddedResources("NaturalResourcesBrush.resources", new List<string> { "TerrainDitch" });
+                buttonAtlas = Util.CreateAtlasFromEmbeddedResources(Assembly.GetExecutingAssembly(), "NaturalResourcesBrush.resources", new List<string> { "TerrainDitch" });
                 tooltipBox = GeneratedPanel.landscapingTooltipBox;
             }
             else if (name == "Sand")

@@ -2,8 +2,9 @@
 using System.Reflection;
 using ColossalFramework;
 using ColossalFramework.UI;
-using NaturalResourcesBrush.API;
-using NaturalResourcesBrush.Redirection;
+using ExtraLanscapingToolsCommon;
+using ExtraLanscapingToolsCommon.API;
+using ExtraLanscapingToolsCommon.Redirection;
 using UnityEngine;
 
 namespace NaturalResourcesBrush.Detours

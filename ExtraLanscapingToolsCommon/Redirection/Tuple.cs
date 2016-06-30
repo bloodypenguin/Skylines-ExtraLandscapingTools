@@ -1,4 +1,4 @@
-﻿namespace NaturalResourcesBrush.Redirection
+﻿namespace ExtraLanscapingToolsCommon.Redirection
 {
     public class Tuple<T1, T2>
     {

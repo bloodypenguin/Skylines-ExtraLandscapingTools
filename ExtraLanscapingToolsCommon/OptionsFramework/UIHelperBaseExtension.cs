@@ -4,7 +4,7 @@ using System.Linq;
 using ColossalFramework.UI;
 using ICities;
 
-namespace NaturalResourcesBrush.OptionsFramework
+namespace ExtraLanscapingToolsCommon.OptionsFramework
 {
     public static class UIHelperBaseExtension
     {
