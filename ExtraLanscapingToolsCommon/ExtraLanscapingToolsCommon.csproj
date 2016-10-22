@@ -33,6 +33,7 @@
   <ItemGroup>
     <Compile Include="API\IEltPlugin.cs" />
     <Compile Include="API\Plugins.cs" />
+    <Compile Include="Mod.cs" />
     <Compile Include="OptionsFramework\AbstractOptionsAttribute.cs" />
     <Compile Include="OptionsFramework\CheckboxAttribute.cs" />
     <Compile Include="OptionsFramework\IModOptions.cs" />

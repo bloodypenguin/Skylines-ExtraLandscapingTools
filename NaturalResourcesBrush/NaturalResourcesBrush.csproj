@@ -35,7 +35,7 @@
     <Reference Include="Assembly-CSharp" />
     <Reference Include="ColossalManaged" />
     <Reference Include="ExtraLanscapingToolsCommon">
-      <HintPath>C:\Users\user\AppData\Local\Colossal Order\Cities_Skylines\Addons\Mods\ExtraLanscapingToolsCommon\ExtraLanscapingToolsCommon.dll</HintPath>
+      <HintPath>..\ExtraLanscapingToolsCommon\bin\Release\ExtraLanscapingToolsCommon.dll</HintPath>
     </Reference>
     <Reference Include="ICities" />
     <Reference Include="System.Xml" />
