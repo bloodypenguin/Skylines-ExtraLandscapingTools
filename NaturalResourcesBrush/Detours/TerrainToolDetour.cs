@@ -32,17 +32,17 @@ namespace NaturalResourcesBrush.Detours
 
         public static bool isDitch = false;
         private static ushort[] ditchHeights;
-        public static Mode m_sizeMode;
+        public static SizeMode m_sizeMode;
 
         public static void Dispose()
         {
             m_UndoKey = null;
-            m_sizeMode = Mode.Single;
+            m_sizeMode = SizeMode.Single;
         }
 
 
         [RedirectMethod]
-        public bool IsUndoAvailable()
+        public new bool IsUndoAvailable()
         {
             if (m_undoList != null)
                 return m_undoList.Count > 0;
@@ -56,7 +56,7 @@ namespace NaturalResourcesBrush.Detours
         }
 
         [RedirectMethod]
-        public void ResetUndoBuffer()
+        public new void ResetUndoBuffer()
         {
             m_undoList.Clear();
             ushort[] backupHeights = Singleton<TerrainManager>.instance.BackupHeights;
@@ -138,7 +138,7 @@ namespace NaturalResourcesBrush.Detours
         {
             BaseOnEnable();
             //begin mod
-            if (m_sizeMode == Mode.Brush)
+            if (m_sizeMode == SizeMode.Brush)
                 m_toolController.SetBrush(this.m_brush, m_mousePosition, this.m_brushSize);
             else
                 m_toolController.SetBrush((Texture2D)null, Vector3.zero, 1f);
@@ -242,7 +242,7 @@ namespace NaturalResourcesBrush.Detours
             m_mouseRayLength = Camera.main.farClipPlane;
             m_mouseRayValid = !m_toolController.IsInsideUI && Cursor.visible;
             //begin mod
-            if (m_sizeMode == Mode.Brush)
+            if (m_sizeMode == SizeMode.Brush)
                 m_toolController.SetBrush(this.m_brush, m_mousePosition, this.m_brushSize);
             else
                 m_toolController.SetBrush((Texture2D)null, Vector3.zero, 1f);
@@ -349,7 +349,7 @@ namespace NaturalResourcesBrush.Detours
         }
 
         [RedirectMethod]
-        public void ApplyUndo()
+        public new void ApplyUndo()
         {
             if (m_undoList.Count < 1)
                 return;
@@ -401,7 +401,7 @@ namespace NaturalResourcesBrush.Detours
         {
             float[] brushData = m_toolController.BrushData;
             //begin mod
-            float num1 = m_sizeMode == Mode.Single ? 0.0f : m_brushSize * 0.5f;
+            float num1 = m_sizeMode == SizeMode.Single ? 0.0f : m_brushSize * 0.5f;
             //end mod
             float num2 = 16f;
             int b = 1080;
@@ -438,7 +438,7 @@ namespace NaturalResourcesBrush.Detours
                 for (int val2_2 = minX; val2_2 <= maxX; ++val2_2)
                 {
                     float num19 = 0;
-                    if (m_sizeMode == Mode.Single)
+                    if (m_sizeMode == SizeMode.Single)
                     {
                         num19 = 1.0f;
                     }
@@ -516,7 +516,7 @@ namespace NaturalResourcesBrush.Detours
             public int pointer;
         }
 
-        public enum Mode
+        public enum SizeMode
         {
             Brush,
             Single,

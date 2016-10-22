@@ -58,7 +58,7 @@ namespace NaturalResourcesBrush.Detours
             if ((UnityEngine.Object)currentTool2 != (UnityEngine.Object)null)
             {
                 currentTool2.m_brushSize = val;
-                TerrainToolDetour.m_sizeMode = (double)currentTool2.m_brushSize != (double)brushSizeSlider.minValue ? TerrainToolDetour.Mode.Brush : TerrainToolDetour.Mode.Single;
+                TerrainToolDetour.m_sizeMode = (double)currentTool2.m_brushSize != (double)brushSizeSlider.minValue ? TerrainToolDetour.SizeMode.Brush : TerrainToolDetour.SizeMode.Single;
             }
             //end mod
             TreeTool currentTool3 = ToolsModifierControl.GetCurrentTool<TreeTool>();
@@ -85,7 +85,7 @@ namespace NaturalResourcesBrush.Detours
         }
 
         [RedirectMethod]
-        public void OnClick(UIComponent comp, UIMouseEventParameter p)
+        public new void OnClick(UIComponent comp, UIMouseEventParameter p)
         {
             UIButton uiButton = p.source as UIButton;
             int byIndex = this.GetByIndex((UIComponent)uiButton);
