@@ -26,7 +26,9 @@ namespace NaturalResourcesBrush.Detours
         private static int m_strokeZmin;
         private static int m_strokeZmax;
         private static int m_undoBufferFreePointer;
-        private static List<TerrainToolDetour.UndoStroke> m_undoList;
+
+        private static List<TerrainToolDetour.UndoStroke> m_undoListArray = null;
+        private static List<TerrainToolDetour.UndoStroke> m_undoList => m_undoListArray ?? (m_undoListArray = new List<TerrainToolDetour.UndoStroke>());
         private static bool m_strokeInProgress;
         private static bool m_undoRequest;
 
@@ -75,10 +77,17 @@ namespace NaturalResourcesBrush.Detours
         protected override void Awake()
         {
             BaseAwake();
-            m_undoList = new List<TerrainToolDetour.UndoStroke>();
+            //begin mod
+            //end mod
             if (!Singleton<LoadingManager>.exists)
                 return;
             Singleton<LoadingManager>.instance.m_levelLoaded += new LoadingManager.LevelLoadedHandler(OnLevelLoaded);
+        }
+
+        [RedirectReverse]
+        private void OnLevelLoaded(SimulationManager.UpdateMode mode)
+        {
+            UnityEngine.Debug.Log("Lalala");
         }
 
         protected void BaseAwake()
@@ -169,12 +178,6 @@ namespace NaturalResourcesBrush.Detours
             if (!((UnityEngine.Object)m_toolController.CurrentTool != (UnityEngine.Object)this))
                 return;
             m_toolController.CurrentTool = this;
-        }
-
-        [RedirectMethod]
-        private void OnLevelLoaded(SimulationManager.UpdateMode mode)
-        {
-            ResetUndoBuffer();
         }
 
         [RedirectMethod]
