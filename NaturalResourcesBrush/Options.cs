@@ -1,9 +1,9 @@
-﻿using System.Xml.Serialization;
-using ExtraLanscapingToolsCommon.OptionsFramework;
+﻿using ExtraLanscapingToolsCommon.OptionsFramework.Attibutes;
 
 namespace NaturalResourcesBrush
 {
-    public class Options : IModOptions
+    [Options("ExtraLanscapingTools", "CSL-ExtraTools.xml")]
+    public class Options
     {
         public Options()
         {
@@ -15,20 +15,17 @@ namespace NaturalResourcesBrush
             terrainTopography = true;
         }
 
-        [Checkbox("Natural Resources Tool")]
+        [Checkbox("ELT_OPTION_RESOURCES_TOOL")]
         public bool resourcesTool { set; get; }
-        [Checkbox("Water Tool")]
+        [Checkbox("ELT_OPTION_WATER_TOOL")]
         public bool waterTool { set; get; }
-        [Checkbox("Terrain Tool Extensions")]
+        [Checkbox("ELT_OPTION_TERRAIN_TOOL")]
         public bool terrainTool { set; get; }
-        [Checkbox("Tree Brush")]
+        [Checkbox("ELT_OPTION_TREE_BRUSH")]
         public bool treeBrush { set; get; }
-        [Checkbox("Tree Pencil")]
+        [Checkbox("ELT_OPTION_TREE_PENCIL")]
         public bool treePencil { set; get; }
-        [Checkbox("Render terrain topography")]
+        [Checkbox("ELT_OPTION_TOPOGRAPHY")]
         public bool terrainTopography { set; get; }
-
-        [XmlIgnore]
-        public string FileName => "CSL-ExtraTools.xml";
     }
 }

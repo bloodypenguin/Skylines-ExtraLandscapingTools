@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace ExtraLanscapingToolsCommon.OptionsFramework
 {
-    public class Util
+    internal class Util
     {
         public static Type FindType(string className)
         {
