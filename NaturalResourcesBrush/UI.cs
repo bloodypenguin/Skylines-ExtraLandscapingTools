@@ -16,7 +16,7 @@ namespace NaturalResourcesBrush
             brushSizePanel.relativePosition = new Vector2(17, 57);
             brushSizePanel.name = "Size";
             var brushSizeLabel = brushSizePanel.AddUIComponent<UILabel>();
-            brushSizeLabel.text = "Size";
+            brushSizeLabel.localeID = "MAPEDITOR_BRUSHSIZE";
             brushSizeLabel.size = new Vector2(126, 18);
             brushSizeLabel.relativePosition = new Vector3(-3, 8);
 
@@ -51,7 +51,7 @@ namespace NaturalResourcesBrush
             brushStrengthPanel.relativePosition = new Vector2(17, 110);
             brushStrengthPanel.name = "Strength";
             var brushStrengthLabel = brushStrengthPanel.AddUIComponent<UILabel>();
-            brushStrengthLabel.text = "Strength";
+            brushStrengthLabel.localeID = "MAPEDITOR_BRUSHSTRENGTH";
             brushStrengthLabel.size = new Vector2(131, 19);
             brushStrengthLabel.relativePosition = new Vector3(-5, 7);
             var brushStrengthText = brushStrengthPanel.AddUIComponent<UITextField>();
@@ -111,7 +111,7 @@ namespace NaturalResourcesBrush
             waterCapacityPanel.relativePosition = new Vector2(0, 40);
             waterCapacityPanel.name = "Settings";
             var waterCapacityLabel = waterCapacityPanel.AddUIComponent<UILabel>();
-            waterCapacityLabel.text = "Water Capacity";
+            waterCapacityLabel.localeID = "MAPEDITOR_WATERCAPACITY";
             waterCapacityLabel.size = new Vector2(137, 16);
             waterCapacityLabel.relativePosition = new Vector3(10, 16);
             var waterCapacityText = waterCapacityPanel.AddUIComponent<UITextField>();
@@ -140,7 +140,7 @@ namespace NaturalResourcesBrush
 
             var resetButton = waterOptionsPanel.AddUIComponent<UIButton>();
             resetButton.name = "Apply";
-            resetButton.text = "Reset Water To Sea Level";
+            resetButton.localeID = "MAPEDITOR_RESET_WATER";
             resetButton.size = new Vector2(191, 38);
             resetButton.relativePosition = new Vector3(20, 132);
             resetButton.eventClick += (component, eventParam) => { Singleton<TerrainManager>.instance.WaterSimulation.m_resetWater = true; };
@@ -169,7 +169,7 @@ namespace NaturalResourcesBrush
             UIUtil.SetupTitle("", undoPanel);
             var applyButton = undoPanel.AddUIComponent<UIButton>();
             applyButton.name = "Apply";
-            applyButton.text = "Undo Terrain Modification";
+            applyButton.localeID = "MAPEDITOR_UNDO_TERRAIN";
             applyButton.size = new Vector2(191, 38);
             applyButton.relativePosition = new Vector3(20, 54);
             applyButton.normalBgSprite = "ButtonMenu";
@@ -199,7 +199,7 @@ namespace NaturalResourcesBrush
             UIUtil.SetupTitle("", levelHeightPanel);
             var heightLabel = levelHeightPanel.AddUIComponent<UILabel>();
             heightLabel.name = "HeightLabel";
-            heightLabel.text = "Terrain Height";
+            heightLabel.localeID = "MAPEDITOR_TERRAINLEVEL";
             heightLabel.size = new Vector2(134, 18);
             heightLabel.relativePosition = new Vector3(13, 56);
             var heightText = levelHeightPanel.AddUIComponent<UITextField>();
