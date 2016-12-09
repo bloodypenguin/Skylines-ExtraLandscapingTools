@@ -10,5 +10,11 @@
     <Translation ID="ELT_OPTION_TREE_PENCIL" String="树刷类型" />
     <Translation ID="ELT_OPTION_TOPOGRAPHY" String="地表涂装工具" />
     <Translation ID="ELT_DITCH_TOOL" String="沟渠工具" />
+    <!--UI-->
+    <Translation ID="ELT_BRUSH_OPTIONS" String="Brush options" />
+    <Translation ID="ELT_WATER_OPTIONS" String="Water options" />
+    <Translation ID="ELT_DITCH_BUTTON" String="沟渠工具" />
+    <Translation ID="ELT_SAND_BUTTON" String="Sand" />
+    <Translation ID="ELT_SAND_DESCRIPTION" String ="Use the primary mouse button to place decorative sand to the area under the brush&#13;&#10;Use secondary mouse button to remove decorative sand from the area under the brush" />
   </Translations>
 </Language>

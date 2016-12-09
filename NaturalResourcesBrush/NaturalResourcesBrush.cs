@@ -183,7 +183,7 @@ namespace NaturalResourcesBrush
             brushOptionsPanel.size = new Vector2(231, 506);
             brushOptionsPanel.isVisible = false;
             brushOptionsPanel.relativePosition = new Vector3(-256, -488);
-            UIUtil.SetupTitle("Brush Options", brushOptionsPanel);
+            UIUtil.SetupTitle(Mod.translation.GetTranslation("ELT_BRUSH_OPTIONS"), brushOptionsPanel);
             UI.SetupBrushSizePanel(brushOptionsPanel);
             UI.SetupBrushStrengthPanel(brushOptionsPanel);
             UI.SetupBrushSelectPanel(brushOptionsPanel);
@@ -207,7 +207,7 @@ namespace NaturalResourcesBrush
             waterPanel.isVisible = false;
             waterPanel.relativePosition = new Vector3(-256, -166);
 
-            UIUtil.SetupTitle("Water Options", waterPanel);
+            UIUtil.SetupTitle(Mod.translation.GetTranslation("ELT_WATER_OPTIONS"), waterPanel);
             UI.SetupWaterCapacityPanel(waterPanel);
             return waterPanel.gameObject.AddComponent<WaterOptionPanel>();
         }

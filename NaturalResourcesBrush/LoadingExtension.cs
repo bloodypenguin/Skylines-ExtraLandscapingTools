@@ -35,11 +35,10 @@ namespace NaturalResourcesBrush
                 Redirector<UndoTerrainOptionPanelDetour>.Deploy();
             }
             Redirector<BrushOptionPanelDetour>.Deploy();
-            Util.AddLocale("LANDSCAPING", "Ditch", Mod.translation.GetTranslation("ELT_DITCH_TOOL"), "");
-            Util.AddLocale("TERRAIN", "Ditch", Mod.translation.GetTranslation("ELT_DITCH_TOOL"), "");
-            Util.AddLocale("LANDSCAPING", "Sand", "Sand",
-                "Use the primary mouse button to place decorative sand to the area under the brush\n" +
-                "Use secondary mouse button to remove decorative sand from the area under the brush");
+            Util.AddLocale("LANDSCAPING", "Ditch", Mod.translation.GetTranslation("ELT_DITCH_BUTTON"), "");
+            Util.AddLocale("TERRAIN", "Ditch", Mod.translation.GetTranslation("ELT_DITCH_BUTTON"), "");
+            Util.AddLocale("LANDSCAPING", "Sand", Mod.translation.GetTranslation("ELT_SAND_BUTTON"),
+                Mod.translation.GetTranslation("ELT_SAND_DESCRIPTION"));
             Util.AddLocale("TUTORIAL_ADVISER", "Resource", "Ground Resources Tool", "");
             Util.AddLocale("TUTORIAL_ADVISER", "Water", "Water Tool", "");
             try
