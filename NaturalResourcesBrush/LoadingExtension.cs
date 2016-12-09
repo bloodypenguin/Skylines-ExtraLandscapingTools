@@ -79,7 +79,7 @@ namespace NaturalResourcesBrush
 
         public override void OnLevelLoaded(LoadMode mode)
         {
-            if (mode == LoadMode.LoadGame || mode == LoadMode.NewGame)
+            if (mode == LoadMode.LoadGame || mode == LoadMode.NewGame || mode == LoadMode.NewGameFromScenario)
             {
                 if (OptionsWrapper<Options>.Options.treeBrush)
                 {
