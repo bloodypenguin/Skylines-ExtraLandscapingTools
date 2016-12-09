@@ -46,7 +46,7 @@ namespace NaturalResourcesBrush
         public static List<ToolBase> SetUpExtraTools(LoadMode mode, ToolController toolController)
         {
             var extraTools = new List<ToolBase>();
-            if (mode == LoadMode.LoadGame | mode == LoadMode.NewGame)
+            if (mode == LoadMode.LoadGame || mode == LoadMode.NewGame || mode == LoadMode.NewGameFromScenario)
             {
                 LoadResources();
                 if (SetUpToolbars(mode))
@@ -228,7 +228,7 @@ namespace NaturalResourcesBrush
             }
             try
             {
-                if (mode == LoadMode.NewGame || mode == LoadMode.LoadGame)
+                if (mode == LoadMode.NewGame || mode == LoadMode.LoadGame || mode == LoadMode.NewGameFromScenario)
                 {
                     var defaultAtlas = UIView.GetAView().defaultAtlas;
                     if (OptionsWrapper<Options>.Options.resourcesTool)
