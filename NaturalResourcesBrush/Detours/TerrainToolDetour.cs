@@ -27,8 +27,8 @@ namespace NaturalResourcesBrush.Detours
         private static int m_strokeZmax;
         private static int m_undoBufferFreePointer;
 
-        private static List<TerrainToolDetour.UndoStroke> m_undoListArray = null;
-        private static List<TerrainToolDetour.UndoStroke> m_undoList => m_undoListArray ?? (m_undoListArray = new List<TerrainToolDetour.UndoStroke>());
+        private static List<UndoStroke> m_undoListArray = null;
+        private static List<UndoStroke> m_undoList => m_undoListArray ?? (m_undoListArray = new List<UndoStroke>());
         private static bool m_strokeInProgress;
         private static bool m_undoRequest;
 
@@ -323,7 +323,7 @@ namespace NaturalResourcesBrush.Detours
             }
             else
             {
-                m_undoList.Add(new TerrainToolDetour.UndoStroke()
+                m_undoList.Add(new UndoStroke()
                 {
                     xmin = m_strokeXmin,
                     xmax = m_strokeXmax,
@@ -356,7 +356,7 @@ namespace NaturalResourcesBrush.Detours
         {
             if (m_undoList.Count < 1)
                 return;
-            TerrainToolDetour.UndoStroke undoStroke = m_undoList[m_undoList.Count - 1];
+            UndoStroke undoStroke = m_undoList[m_undoList.Count - 1];
             m_undoList.RemoveAt(m_undoList.Count - 1);
             ushort[] undoBuffer = Singleton<TerrainManager>.instance.UndoBuffer;
             ushort[] backupHeights = Singleton<TerrainManager>.instance.BackupHeights;
@@ -508,15 +508,6 @@ namespace NaturalResourcesBrush.Detours
                 }
             }
             TerrainModify.UpdateArea(minX, minZ, maxX, maxZ, true, false, false);
-        }
-
-        private struct UndoStroke
-        {
-            public int xmin;
-            public int xmax;
-            public int zmin;
-            public int zmax;
-            public int pointer;
         }
 
         public enum SizeMode
