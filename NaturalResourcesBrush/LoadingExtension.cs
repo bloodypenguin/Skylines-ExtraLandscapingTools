@@ -19,8 +19,21 @@ namespace NaturalResourcesBrush
         private const string LandscapingInfoPanel = "LandscapingInfoPanel";
         private static UIDynamicPanels.DynamicPanelInfo landscapingPanel;
 
-        public override void OnCreated(ILoading lodaing)
+        public override void OnCreated(ILoading loading)
         {
+            base.OnCreated(loading);
+            if (loading.currentMode == AppMode.Game)
+            {
+                if (OptionsWrapper<Options>.Options.treeBrush)
+                {
+                    Redirector<BeautificationPanelDetour>.Deploy();
+                }
+                if (OptionsWrapper<Options>.Options.waterTool)
+                {
+                    Redirector<WaterToolDetour>.Deploy();
+                }
+            }
+
             //to allow to work in MapEditor
             if (OptionsWrapper<Options>.Options.treePencil)
             {
@@ -78,18 +91,6 @@ namespace NaturalResourcesBrush
 
         public override void OnLevelLoaded(LoadMode mode)
         {
-            if (mode == LoadMode.LoadGame || mode == LoadMode.NewGame || mode == LoadMode.NewGameFromScenario)
-            {
-                if (OptionsWrapper<Options>.Options.treeBrush)
-                {
-                    Redirector<BeautificationPanelDetour>.Deploy();
-                }
-                if (OptionsWrapper<Options>.Options.waterTool)
-                {
-                    Redirector<WaterToolDetour>.Deploy();
-                }
-            }
-
             var toolController = ToolsModifierControl.toolController;
             if (toolController == null)
             {
