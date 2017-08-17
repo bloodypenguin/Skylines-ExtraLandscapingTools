@@ -85,7 +85,7 @@ namespace NaturalResourcesBrush.Detours
         }
 
         [RedirectMethod]
-        public new void OnClick(UIComponent comp, UIMouseEventParameter p)
+        public new void OnMouseDown(UIComponent comp, UIMouseEventParameter p)
         {
             UIButton uiButton = p.source as UIButton;
             int byIndex = this.GetByIndex((UIComponent)uiButton);
