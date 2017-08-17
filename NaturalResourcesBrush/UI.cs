@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
 using ColossalFramework;
 using ColossalFramework.UI;
-using ExtraLanscapingToolsCommon;
+using NaturalResourcesBrush.Utils;
 using UnityEngine;
 
 namespace NaturalResourcesBrush

@@ -10,7 +10,7 @@ using ColossalFramework.UI;
 using ICities;
 using UnityEngine;
 
-namespace ExtraLanscapingToolsCommon
+namespace NaturalResourcesBrush.Utils
 {
     public class Util
     {

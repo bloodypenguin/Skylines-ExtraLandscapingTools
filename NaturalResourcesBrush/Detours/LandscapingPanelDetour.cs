@@ -4,8 +4,8 @@ using ColossalFramework;
 using ColossalFramework.DataBinding;
 using ColossalFramework.Globalization;
 using ColossalFramework.UI;
-using ExtraLanscapingToolsCommon;
-using ExtraLanscapingToolsCommon.Redirection;
+using NaturalResourcesBrush.RedirectionFramework.Attributes;
+using NaturalResourcesBrush.Utils;
 using Object = System.Object;
 
 namespace NaturalResourcesBrush.Detours
@@ -13,7 +13,7 @@ namespace NaturalResourcesBrush.Detours
     [TargetType(typeof(LandscapingPanel))]
     public class LandscapingPanelDetour : GeneratedScrollPanel
     {
-        private static readonly PositionData<TerrainTool.Mode>[] kTools = Utils.GetOrderedEnumData<TerrainTool.Mode>();
+        private static readonly PositionData<TerrainTool.Mode>[] kTools = ColossalFramework.Utils.GetOrderedEnumData<TerrainTool.Mode>();
         private static UIPanel m_OptionsUndoTerrainPanel;
         private static UIPanel m_OptionsBrushPanel;
         private static UIPanel m_OptionsLevelHeightPanel;

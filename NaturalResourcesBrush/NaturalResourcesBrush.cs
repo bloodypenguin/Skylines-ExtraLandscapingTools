@@ -6,13 +6,13 @@ using System.Reflection;
 using ColossalFramework;
 using ColossalFramework.Globalization;
 using ColossalFramework.UI;
-using ExtraLanscapingToolsCommon;
-using ExtraLanscapingToolsCommon.API;
-using ExtraLanscapingToolsCommon.OptionsFramework;
 using ICities;
+using NaturalResourcesBrush.API;
+using NaturalResourcesBrush.OptionsFramework;
+using NaturalResourcesBrush.Utils;
 using UnityEngine;
 using Object = UnityEngine.Object;
-using Util = ExtraLanscapingToolsCommon.Util;
+using Util = NaturalResourcesBrush.Utils.Util;
 
 namespace NaturalResourcesBrush
 {

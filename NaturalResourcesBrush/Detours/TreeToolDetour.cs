@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Reflection;
 using ColossalFramework;
-using ExtraLanscapingToolsCommon.Redirection;
+using NaturalResourcesBrush.RedirectionFramework.Attributes;
 using UnityEngine;
 
 namespace NaturalResourcesBrush.Detours

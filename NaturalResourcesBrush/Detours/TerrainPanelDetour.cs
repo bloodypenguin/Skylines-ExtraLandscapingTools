@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using System.Reflection;
 using ColossalFramework;
 using ColossalFramework.UI;
-using ExtraLanscapingToolsCommon;
-using ExtraLanscapingToolsCommon.Redirection;
+using NaturalResourcesBrush.RedirectionFramework.Attributes;
+using NaturalResourcesBrush.Utils;
 
 namespace NaturalResourcesBrush.Detours
 {
     [TargetType(typeof(TerrainPanel))]
     public class TerrainPanelDetour : GeneratedScrollPanel
     {
-        private static readonly PositionData<TerrainTool.Mode>[] kTools = Utils.GetOrderedEnumData<TerrainTool.Mode>();
+        private static readonly PositionData<TerrainTool.Mode>[] kTools = ColossalFramework.Utils.GetOrderedEnumData<TerrainTool.Mode>();
 
         [RedirectReverse]
         private static UIButton SpawnEntry(TerrainPanel panel, string name, int index)

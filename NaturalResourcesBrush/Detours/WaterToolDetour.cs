@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Reflection;
-using ExtraLanscapingToolsCommon;
-using ExtraLanscapingToolsCommon.Redirection;
+using NaturalResourcesBrush.RedirectionFramework;
+using NaturalResourcesBrush.RedirectionFramework.Attributes;
+using NaturalResourcesBrush.Utils;
 using UnityEngine;
 
 namespace NaturalResourcesBrush.Detours

@@ -4,9 +4,10 @@ using System.Linq;
 using System.Reflection;
 using ColossalFramework.Plugins;
 using ICities;
+using NaturalResourcesBrush.Utils;
 using UnityEngine;
 
-namespace ExtraLanscapingToolsCommon.API
+namespace NaturalResourcesBrush.API
 {
     public class Plugins
     {

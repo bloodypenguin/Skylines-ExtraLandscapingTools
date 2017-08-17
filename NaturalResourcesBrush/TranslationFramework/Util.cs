@@ -32,7 +32,7 @@ namespace NaturalResourcesBrush.TranslationFramework
 
                     }
                 }
-                throw new Exception("Failed to find ExtraLanscapingToolsCommon assembly!");
+                throw new Exception("Failed to find ExtraLanscapingTools assembly!");
 
             }
         }

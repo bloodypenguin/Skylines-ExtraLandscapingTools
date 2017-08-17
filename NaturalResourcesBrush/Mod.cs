@@ -1,5 +1,5 @@
-﻿using ExtraLanscapingToolsCommon.OptionsFramework.Extensions;
-using ICities;
+﻿using ICities;
+using NaturalResourcesBrush.OptionsFramework.Extensions;
 using NaturalResourcesBrush.TranslationFramework;
 
 namespace NaturalResourcesBrush

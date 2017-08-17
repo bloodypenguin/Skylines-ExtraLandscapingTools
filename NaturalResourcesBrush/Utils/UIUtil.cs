@@ -1,7 +1,7 @@
 ﻿using ColossalFramework.UI;
 using UnityEngine;
 
-namespace ExtraLanscapingToolsCommon
+namespace NaturalResourcesBrush.Utils
 {
     public static class UIUtil
     {

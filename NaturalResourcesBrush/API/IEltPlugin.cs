@@ -2,7 +2,7 @@
 using ICities;
 using UnityEngine;
 
-namespace ExtraLanscapingToolsCommon.API
+namespace NaturalResourcesBrush.API
 {
     public interface IEltPlugin
     {

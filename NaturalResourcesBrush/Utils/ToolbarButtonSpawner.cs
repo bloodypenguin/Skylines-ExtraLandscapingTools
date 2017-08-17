@@ -4,7 +4,7 @@ using ColossalFramework.UI;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace ExtraLanscapingToolsCommon
+namespace NaturalResourcesBrush.Utils
 {
     public class ToolbarButtonSpawner
     {

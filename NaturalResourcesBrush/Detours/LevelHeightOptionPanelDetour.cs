@@ -1,5 +1,5 @@
 ﻿using ColossalFramework.UI;
-using ExtraLanscapingToolsCommon.Redirection;
+using NaturalResourcesBrush.RedirectionFramework.Attributes;
 
 namespace NaturalResourcesBrush.Detours
 {
