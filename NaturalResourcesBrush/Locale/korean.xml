@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Language UniqueName="ko" ReadableName="Korean" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Translations>
+    <Translation ID="ELT_DESCRIPTION" String="추가적인 몇 가지 맵 에디터 기능을 제공합니다" />
+    <!-- OPTIONS -->
+    <Translation ID="ELT_OPTION_RESOURCES_TOOL" String="천연자원 도구" />
+    <Translation ID="ELT_OPTION_WATER_TOOL" String="물 도구" />
+    <Translation ID="ELT_OPTION_TERRAIN_TOOL" String="지형 도구 확장" />
+    <Translation ID="ELT_OPTION_TREE_BRUSH" String="브러시 모양 모음" />
+    <Translation ID="ELT_OPTION_TREE_PENCIL" String="연필 모양 모음" />
+    <Translation ID="ELT_OPTION_TOPOGRAPHY" String="지형 지형도 랜더링" />
+    <Translation ID="ELT_DITCH_TOOL" String="도랑/수로" />
+    <!--UI-->
+    <Translation ID="ELT_BRUSH_OPTIONS" String="브러시 옵션" />
+    <Translation ID="ELT_WATER_OPTIONS" String="물 옵션" />
+    <Translation ID="ELT_DITCH_BUTTON" String="도랑/수로" />
+    <Translation ID="ELT_SAND_BUTTON" String="지면" />
+    <Translation ID="ELT_SAND_DESCRIPTION" String ="좌클릭으로 땅 브러시를 적용합니다&#13;&#10;우클릭으로 땅 브러시를 제거합니다" />
+  </Translations>
+</Language>
