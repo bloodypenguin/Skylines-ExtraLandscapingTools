@@ -18,6 +18,7 @@ namespace NaturalResourcesBrush
     {
         private const string LandscapingInfoPanel = "LandscapingInfoPanel";
         private static UIDynamicPanels.DynamicPanelInfo landscapingPanel;
+        private static Dictionary<UIComponent, bool> beautificationPanelsCachedVisible = new Dictionary<UIComponent, bool>();
 
         public override void OnCreated(ILoading loading)
         {
@@ -60,7 +61,7 @@ namespace NaturalResourcesBrush
             }
             catch (Exception e)
             {
-                UnityEngine.Debug.LogException(e);
+                Debug.LogException(e);
             }
         }
 
@@ -85,7 +86,7 @@ namespace NaturalResourcesBrush
             }
             catch (Exception e)
             {
-                UnityEngine.Debug.LogException(e);
+                Debug.LogException(e);
             }
         }
 
@@ -122,6 +123,26 @@ namespace NaturalResourcesBrush
                 }
                 LandscapingPanelDetour.Initialize();
             }
+            var beautificationPanels = Object.FindObjectsOfType<BeautificationPanel>();
+            beautificationPanels.ForEach(p =>
+            {
+                p.component.eventVisibilityChanged -= HideBrushOptionsPanel();
+                p.component.eventVisibilityChanged += HideBrushOptionsPanel();
+            });
+        }
+
+        private static PropertyChangedEventHandler<bool> HideBrushOptionsPanel()
+        {
+            return (sender, visible) =>
+            {
+
+                if (beautificationPanelsCachedVisible.TryGetValue(sender, out bool cached) && cached && !visible)
+                {
+                    var optionsPanel = Object.FindObjectOfType<BrushOptionPanel>();
+                    optionsPanel?.Hide();
+                }
+                beautificationPanelsCachedVisible[sender] = visible;
+            };
         }
 
         public override void OnLevelUnloading()
@@ -132,8 +153,12 @@ namespace NaturalResourcesBrush
                 GetPanels().Add(LandscapingInfoPanel, landscapingPanel);
             }
             landscapingPanel = null;
-            NaturalResourcesBrush.beautificationPanelsCachedVisible.Clear();
-
+            beautificationPanelsCachedVisible.Clear();
+            var beautificationPanels = Object.FindObjectsOfType<BeautificationPanel>();
+            beautificationPanels.ForEach(p =>
+            {
+                p.component.eventVisibilityChanged -= HideBrushOptionsPanel();
+            });
         }
 
         private static Dictionary<string, UIDynamicPanels.DynamicPanelInfo> GetPanels()

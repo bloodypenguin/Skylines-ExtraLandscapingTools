@@ -18,8 +18,6 @@ namespace NaturalResourcesBrush
 {
     public static class NaturalResourcesBrush
     {
-        public static Dictionary<UIComponent, bool> beautificationPanelsCachedVisible = new Dictionary<UIComponent, bool>();
-
         public static void AddExtraToolsToController(ToolController toolController, List<ToolBase> extraTools)
         {
             if (extraTools.Count < 1)
@@ -71,12 +69,6 @@ namespace NaturalResourcesBrush
                             SetUpTerrainToolExtensionss();
                         }
                     }
-                    var beautificationPanels = Object.FindObjectsOfType<BeautificationPanel>();
-                    beautificationPanels.ForEach(p =>
-                    {
-                        p.component.eventVisibilityChanged -= HideBrushOptionsPanel();
-                        p.component.eventVisibilityChanged += HideBrushOptionsPanel();
-                    });
                 }
             }
             try
@@ -89,20 +81,6 @@ namespace NaturalResourcesBrush
                 UnityEngine.Debug.LogException(e);
             }
             return extraTools;
-        }
-
-        private static PropertyChangedEventHandler<bool> HideBrushOptionsPanel()
-        {
-            return (sender, visible) =>
-            {
-                
-                if (beautificationPanelsCachedVisible.TryGetValue(sender, out bool cached) && cached && !visible)
-                {
-                    var optionsPanel = Object.FindObjectOfType<BrushOptionPanel>();
-                    optionsPanel?.Hide();
-                }
-                beautificationPanelsCachedVisible[sender] = visible;
-            };
         }
 
         private static void SetUpNaturalResourcesTool(ICollection<ToolBase> extraTools)
