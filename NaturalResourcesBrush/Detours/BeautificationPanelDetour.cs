@@ -71,12 +71,7 @@ namespace NaturalResourcesBrush.Detours
                         treeTool.m_mode = TreeTool.Mode.Single;
                     }
 
-                    if (this.m_OptionsBar != null && m_OptionsBrushPanel == null)
-                    {
-                        m_OptionsBrushPanel = this.m_OptionsBar.Find<UIPanel>("BrushPanel");
-                    }
-                    m_OptionsBrushPanel.zOrder = 1;
-                    m_OptionsBrushPanel.Show();
+                    ShowBrushOptionsPanel();
                 }
             }
             if (!(propInfo != null))
@@ -91,6 +86,21 @@ namespace NaturalResourcesBrush.Detours
             {
                 propTool.m_mode = PropTool.Mode.Single;
             }
+            ShowBrushOptionsPanel();
+        }
+
+        private void ShowBrushOptionsPanel()
+        {
+            if (this.m_OptionsBar != null && m_OptionsBrushPanel == null)
+            {
+                m_OptionsBrushPanel = this.m_OptionsBar.Find<UIPanel>("BrushPanel");
+            }
+            if (m_OptionsBrushPanel == null)
+            {
+                return;
+            }
+            m_OptionsBrushPanel.zOrder = 1;
+            m_OptionsBrushPanel.Show();
         }
     }
 }
