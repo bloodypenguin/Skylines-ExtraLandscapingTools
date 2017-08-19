@@ -1,20 +1,20 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Language UniqueName="zh" ReadableName="正體中文" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<Language UniqueName="zh" ReadableName="简体中文" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <Translations>
-    <Translation ID="ELT_DESCRIPTION" String="Provides some Map Editor tools in-game" />
+    <Translation ID="ELT_DESCRIPTION" String="启用游戏内地形编辑工具" />
     <!-- OPTIONS -->
-    <Translation ID="ELT_OPTION_RESOURCES_TOOL" String="自然资源刷" />
-    <Translation ID="ELT_OPTION_WATER_TOOL" String="水资源工具" />
-    <Translation ID="ELT_OPTION_TERRAIN_TOOL" String="扩展地形工具" />
-    <Translation ID="ELT_OPTION_TREE_BRUSH" String="树刷" />
-    <Translation ID="ELT_OPTION_TREE_PENCIL" String="树刷笔触样式" />
-    <Translation ID="ELT_OPTION_TOPOGRAPHY" String="地表纹理填涂工具" />
-    <Translation ID="ELT_DITCH_TOOL" String="沟渠工具" />
+    <Translation ID="ELT_OPTION_RESOURCES_TOOL" String="自然资源工具" />
+    <Translation ID="ELT_OPTION_WATER_TOOL" String="水体工具" />
+    <Translation ID="ELT_OPTION_TERRAIN_TOOL" String="更多地形工具" />
+    <Translation ID="ELT_OPTION_TREE_BRUSH" String="树刷子" />
+    <Translation ID="ELT_OPTION_TREE_PENCIL" String="树画笔" />
+    <Translation ID="ELT_OPTION_TOPOGRAPHY" String="地貌着色" />
+    <Translation ID="ELT_DITCH_TOOL" String="挖沟工具" />
     <!--UI-->
-    <Translation ID="ELT_BRUSH_OPTIONS" String="Brush options" />
-    <Translation ID="ELT_WATER_OPTIONS" String="Water options" />
-    <Translation ID="ELT_DITCH_BUTTON" String="沟渠工具" />
-    <Translation ID="ELT_SAND_BUTTON" String="Sand" />
-    <Translation ID="ELT_SAND_DESCRIPTION" String ="Use the primary mouse button to place decorative sand to the area under the brush&#13;&#10;Use secondary mouse button to remove decorative sand from the area under the brush" />
+    <Translation ID="ELT_BRUSH_OPTIONS" String="刷子类型选项" />
+    <Translation ID="ELT_WATER_OPTIONS" String="水体工具选项" />
+    <Translation ID="ELT_DITCH_BUTTON" String="挖沟工具" />
+    <Translation ID="ELT_SAND_BUTTON" String="沙子工具" />
+    <Translation ID="ELT_SAND_DESCRIPTION" String ="按住鼠标左键并拖动鼠标使用刷子工具铺设装饰性沙地&#13;&#10;按住鼠标右键并拖动鼠标使用刷子工具移除装饰性沙地" />
   </Translations>
 </Language>
