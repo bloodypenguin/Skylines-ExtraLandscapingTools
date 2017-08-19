@@ -132,6 +132,7 @@ namespace NaturalResourcesBrush
                 GetPanels().Add(LandscapingInfoPanel, landscapingPanel);
             }
             landscapingPanel = null;
+            NaturalResourcesBrush.beautificationPanelsCachedVisible.Clear();
 
         }
 
