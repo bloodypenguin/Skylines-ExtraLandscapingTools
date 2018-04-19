@@ -288,6 +288,11 @@ namespace NaturalResourcesBrush
                         }
                     }
                 }
+                if(mode == LoadMode.NewTheme || mode == LoadMode.LoadTheme)
+                {
+                    ToolbarButtonSpawner.SpawnSubEntry(strip, "Forest", "MAPEDITOR_TOOL", null, "ToolbarIcon", true,
+                            mainToolbar.m_OptionsBar, mainToolbar.m_DefaultInfoTooltipAtlas);
+                }
                 try
                 {
                     Plugins.CreateToolbars(mode);
@@ -306,6 +311,3 @@ namespace NaturalResourcesBrush
         }
     }
 }
-//ForestDefaultPanel
-//RoadsHighwayPanel
-//EnvironmentGeneralPanel
