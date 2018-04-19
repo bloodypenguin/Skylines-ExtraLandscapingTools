@@ -21,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -32,15 +33,27 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Assembly-CSharp" />
-    <Reference Include="ColossalManaged" />
-    <Reference Include="ICities" />
+    <Reference Include="Assembly-CSharp">
+      <HintPath>..\..\..\..\..\Modding\ReferenceStore\Assembly-CSharp.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="ColossalManaged">
+      <HintPath>..\..\..\..\..\Modding\ReferenceStore\ColossalManaged.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="ICities">
+      <HintPath>..\..\..\..\..\Modding\ReferenceStore\ICities.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="System, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\Games\Steam\steamapps\common\Cities_Skylines\Cities_Data\Managed\System.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml" />
-    <Reference Include="UnityEngine" />
+    <Reference Include="UnityEngine">
+      <HintPath>..\..\..\..\..\Modding\ReferenceStore\UnityEngine.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="API\IEltPlugin.cs" />

@@ -23,9 +23,9 @@ namespace NaturalResourcesBrush
         public override void OnCreated(ILoading loading)
         {
             base.OnCreated(loading);
-            if (loading.currentMode == AppMode.Game)
+            if (loading.currentMode == AppMode.Game || loading.currentMode == AppMode.ThemeEditor)
             {
-                if (OptionsWrapper<Options>.Options.treeBrush)
+                if (OptionsWrapper<Options>.Options.treeBrush && loading.currentMode == AppMode.Game)
                 {
                     Redirector<BeautificationPanelDetour>.Deploy();
                 }
@@ -50,8 +50,10 @@ namespace NaturalResourcesBrush
             }
             Redirector<BrushOptionPanelDetour>.Deploy();
             Util.AddLocale("LANDSCAPING", "Ditch", Mod.translation.GetTranslation("ELT_DITCH_BUTTON"), "");
-            Util.AddLocale("TERRAIN", "Ditch", Mod.translation.GetTranslation("ELT_DITCH_BUTTON"), "");
             Util.AddLocale("LANDSCAPING", "Sand", Mod.translation.GetTranslation("ELT_SAND_BUTTON"),
+                Mod.translation.GetTranslation("ELT_SAND_DESCRIPTION"));
+            Util.AddLocale("TERRAIN", "Ditch", Mod.translation.GetTranslation("ELT_DITCH_BUTTON"), "");
+            Util.AddLocale("TERRAIN", "Sand", Mod.translation.GetTranslation("ELT_SAND_BUTTON"), 
                 Mod.translation.GetTranslation("ELT_SAND_DESCRIPTION"));
             Util.AddLocale("TUTORIAL_ADVISER", "Resource", "Ground Resources Tool", "");
             Util.AddLocale("TUTORIAL_ADVISER", "Water", "Water Tool", "");

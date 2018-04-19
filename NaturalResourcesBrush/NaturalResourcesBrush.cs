@@ -46,7 +46,7 @@ namespace NaturalResourcesBrush
         public static List<ToolBase> SetUpExtraTools(LoadMode mode, ToolController toolController)
         {
             var extraTools = new List<ToolBase>();
-            if (mode == LoadMode.LoadGame || mode == LoadMode.NewGame || mode == LoadMode.NewGameFromScenario)
+            if (mode == LoadMode.LoadGame || mode == LoadMode.NewGame || mode == LoadMode.NewGameFromScenario || mode == LoadMode.NewTheme || mode == LoadMode.LoadTheme)
             {
                 LoadResources();
                 if (SetUpToolbars(mode))
@@ -149,6 +149,7 @@ namespace NaturalResourcesBrush
             try
             {
                 var spriteInfo = UIView.GetAView().defaultAtlas[originalName];
+                if (spriteInfo == null) return;
                 destAtlas.AddSprite(new UITextureAtlas.SpriteInfo
                 {
                     border = spriteInfo.border,
@@ -228,7 +229,7 @@ namespace NaturalResourcesBrush
             }
             try
             {
-                if (mode == LoadMode.NewGame || mode == LoadMode.LoadGame || mode == LoadMode.NewGameFromScenario)
+                if (mode == LoadMode.NewGame || mode == LoadMode.LoadGame || mode == LoadMode.NewGameFromScenario || mode == LoadMode.NewTheme || mode == LoadMode.LoadTheme)
                 {
                     var defaultAtlas = UIView.GetAView().defaultAtlas;
                     if (OptionsWrapper<Options>.Options.resourcesTool)
@@ -248,11 +249,19 @@ namespace NaturalResourcesBrush
                             Util.CreateAtlasFromResources(new List<string> { "WaterPlaceWater" });
                         ((UIButton)UIView.FindObjectOfType<WaterPanel>().Find("MoveSeaLevel")).atlas =
                            Util.CreateAtlasFromResources(new List<string> { "WaterMoveSeaLevel" });
-                        ((UIButton)UIView.FindObjectOfType<GameMainToolbar>().Find("Water")).atlas =
-                            Util.CreateAtlasFromResources(new List<string> { "ToolbarIconWater", "ToolbarIconBase" });
+                        if(mode == LoadMode.NewTheme || mode == LoadMode.LoadTheme )
+                        {
+                            ((UIButton)UIView.FindObjectOfType<ThemeEditorMainToolbar>().Find("Water")).atlas =
+                                Util.CreateAtlasFromResources(new List<string> { "ToolbarIconWater", "ToolbarIconBase" });
+                        }
+                        else
+                        {
+                            ((UIButton)UIView.FindObjectOfType<GameMainToolbar>().Find("Water")).atlas =
+                                Util.CreateAtlasFromResources(new List<string> { "ToolbarIconWater", "ToolbarIconBase" });
+                        }
                     }
                 }
-                else if (mode == LoadMode.NewAsset || mode == LoadMode.LoadAsset)
+                if (mode == LoadMode.NewAsset || mode == LoadMode.LoadAsset || mode == LoadMode.NewTheme || mode == LoadMode.LoadTheme)
                 {
                     if (OptionsWrapper<Options>.Options.terrainTool)
                     {
@@ -266,8 +275,17 @@ namespace NaturalResourcesBrush
                             Util.CreateAtlasFromResources(new List<string> { "TerrainLevel" });
                         ((UIButton)UIView.FindObjectOfType<TerrainPanel>().Find("Soften")).atlas =
                             Util.CreateAtlasFromResources(new List<string> { "TerrainSoften" });
-                        ((UIButton)UIView.FindObjectOfType<GameMainToolbar>().Find("Terrain")).atlas =
-                            Util.CreateAtlasFromResources(new List<string> { "ToolbarIconTerrain", "ToolbarIconBase" });
+                        
+                        if (mode == LoadMode.NewTheme || mode == LoadMode.LoadTheme)
+                        {
+                            ((UIButton)UIView.FindObjectOfType<ThemeEditorMainToolbar>().Find("Water")).atlas =
+                                Util.CreateAtlasFromResources(new List<string> { "ToolbarIconWater", "ToolbarIconBase" });
+                        }
+                        else
+                        {
+                            ((UIButton)UIView.FindObjectOfType<AssetEditorMainToolbar>().Find("Terrain")).atlas =
+                             Util.CreateAtlasFromResources(new List<string> { "ToolbarIconTerrain", "ToolbarIconBase" });
+                        }
                     }
                 }
                 try
@@ -288,3 +306,6 @@ namespace NaturalResourcesBrush
         }
     }
 }
+//ForestDefaultPanel
+//RoadsHighwayPanel
+//EnvironmentGeneralPanel
