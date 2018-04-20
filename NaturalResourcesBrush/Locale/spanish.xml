@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Language UniqueName="es" ReadableName="Español" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Translations>
+    <Translation ID="ELT_DESCRIPTION" String="Proporciona algunas herramientas del editor de mapas dentro del juego." />
+    <!-- OPTIONS -->
+    <Translation ID="ELT_OPTION_RESOURCES_TOOL" String="Herramienta de Recursos Naturales" />
+    <Translation ID="ELT_OPTION_WATER_TOOL" String="Herramienta de Agua" />
+    <Translation ID="ELT_OPTION_TERRAIN_TOOL" String="Extensiones de la Herramienta de Terreno" />
+    <Translation ID="ELT_OPTION_TREE_BRUSH" String="Pincel de Árboles" />
+    <Translation ID="ELT_OPTION_TREE_PENCIL" String="Lápiz de Árboles" />
+    <Translation ID="ELT_OPTION_TOPOGRAPHY" String="Topografía del Terreno" />
+    <Translation ID="ELT_DITCH_TOOL" String="Zanja" />
+    <!--UI-->
+    <Translation ID="ELT_BRUSH_OPTIONS" String="Opciones de Pincel" />
+    <Translation ID="ELT_WATER_OPTIONS" String="Opciones de Agua" />
+    <Translation ID="ELT_DITCH_BUTTON" String="Zanja" />
+    <Translation ID="ELT_SAND_BUTTON" String="Arena" />
+    <Translation ID="ELT_SAND_DESCRIPTION" String ="Usa el botón principal del ratón para pintar arena decorativa sobre el terreno.&#13;&#10;Usa el botón secundario del ratón para borrar la arena del terreno." />
+  </Translations>                                   
+</Language>

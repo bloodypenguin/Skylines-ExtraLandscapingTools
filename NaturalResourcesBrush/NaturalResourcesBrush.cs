@@ -278,8 +278,8 @@ namespace NaturalResourcesBrush
                         
                         if (mode == LoadMode.NewTheme || mode == LoadMode.LoadTheme)
                         {
-                            ((UIButton)UIView.FindObjectOfType<ThemeEditorMainToolbar>().Find("Water")).atlas =
-                                Util.CreateAtlasFromResources(new List<string> { "ToolbarIconWater", "ToolbarIconBase" });
+                            ((UIButton)UIView.FindObjectOfType<ThemeEditorMainToolbar>().Find("Terrain")).atlas =
+                                Util.CreateAtlasFromResources(new List<string> { "ToolbarIconTerrain", "ToolbarIconBase" });
                         }
                         else
                         {
