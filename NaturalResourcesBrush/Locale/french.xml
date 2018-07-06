@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Language UniqueName="en" ReadableName="French" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Translations>
+    <Translation ID="ELT_DESCRIPTION" String="Fournit certains outils de l'éditeur de cartes dans le jeu" />
+    <!-- OPTIONS -->
+    <Translation ID="ELT_OPTION_RESOURCES_TOOL" String="Outils de ressources naturelles" />
+    <Translation ID="ELT_OPTION_WATER_TOOL" String="Outils : Eau" />
+    <Translation ID="ELT_OPTION_TERRAIN_TOOL" String="Extensions d'outil de terrain" />
+    <Translation ID="ELT_OPTION_TREE_BRUSH" String="Brosse : Arbre" />
+    <Translation ID="ELT_OPTION_TREE_PENCIL" String="Crayon : Arbre" />
+    <Translation ID="ELT_OPTION_TOPOGRAPHY" String="Topographie du terrain" />
+    <Translation ID="ELT_DITCH_TOOL" String="Fossé" />
+    <!--UI-->
+    <Translation ID="ELT_BRUSH_OPTIONS" String="Options de la Brosse" />
+    <Translation ID="ELT_WATER_OPTIONS" String="Options de l'Eau" />
+    <Translation ID="ELT_DITCH_BUTTON" String="Fossé" />
+    <Translation ID="ELT_SAND_BUTTON" String="Sable" />
+    <Translation ID="ELT_SAND_DESCRIPTION" String ="Utilisez le bouton principal de la souris pour placer du sable décoratif sur la zone située sous la brosse&#13;&#10;Utilisez le bouton secondaire de la souris pour enlever le sable décoratif de la zone sous la brosse" />
+  </Translations>
+</Language>
