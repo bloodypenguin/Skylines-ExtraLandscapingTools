@@ -127,6 +127,7 @@
     <Content Include="Locale\english.xml">
       <SubType>Designer</SubType>
     </Content>
+    <Content Include="Locale\french.xml" />
     <Content Include="Locale\korean.xml" />
     <Content Include="Locale\simplified-chinese.xml" />
     <Content Include="Locale\traditional-chinese.xml" />
