@@ -128,8 +128,10 @@
       <SubType>Designer</SubType>
     </Content>
     <Content Include="Locale\french.xml" />
+    <Content Include="Locale\italian.xml" />
     <Content Include="Locale\korean.xml" />
     <Content Include="Locale\simplified-chinese.xml" />
+    <Content Include="Locale\spanish.xml" />
     <Content Include="Locale\traditional-chinese.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
