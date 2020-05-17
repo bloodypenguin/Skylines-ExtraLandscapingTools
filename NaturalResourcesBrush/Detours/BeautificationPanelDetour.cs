@@ -45,7 +45,9 @@ namespace NaturalResourcesBrush.Detours
                 NetTool netTool = SetTool<NetTool>();
                 if (netTool != null)
                 {
-                    if (netInfo.GetClassLevel() == ItemClass.Level.Level3)
+                    if (netInfo.m_class?.name == "Pedestrian Way")
+                        this.ShowPathsOptionPanel();
+                    else if (netInfo.GetClassLevel() == ItemClass.Level.Level3)
                         this.ShowFloodwallsOptionPanel();
                     else if (netInfo.GetClassLevel() == ItemClass.Level.Level4)
                         this.ShowQuaysOptionPanel();
