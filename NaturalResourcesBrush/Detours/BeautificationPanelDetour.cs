@@ -45,7 +45,8 @@ namespace NaturalResourcesBrush.Detours
                 NetTool netTool = SetTool<NetTool>();
                 if (netTool != null)
                 {
-                    if (netInfo.GetClassLevel() == ItemClass.Level.Level3)
+                    // The pedestrian paths introduced by Park Life are class level 3
+                    if (netInfo.GetClassLevel() == ItemClass.Level.Level3 && !netInfo.m_hasPedestrianLanes)
                         this.ShowFloodwallsOptionPanel();
                     else if (netInfo.GetClassLevel() == ItemClass.Level.Level4)
                         this.ShowQuaysOptionPanel();
