@@ -42,18 +42,18 @@ namespace NaturalResourcesBrush.Detours
             }
             if (netInfo != null)
             {
-                NetTool netTool = SetTool<NetTool>();
-                if (netTool != null)
+                NetTool netTool = ToolsModifierControl.SetTool<NetTool>();
+                if ((Object) netTool != (Object) null)
                 {
-                    if (netInfo.GetClassLevel() == ItemClass.Level.Level3)
+                    if (netInfo.GetSubService() == ItemClass.SubService.BeautificationParks)
+                        this.ShowPathsOptionPanel();
+                    else if (netInfo.GetClassLevel() == ItemClass.Level.Level3)
                         this.ShowFloodwallsOptionPanel();
                     else if (netInfo.GetClassLevel() == ItemClass.Level.Level4)
                         this.ShowQuaysOptionPanel();
-                    else if (netInfo.GetClassLevel() == ItemClass.Level.Level5)
-                        this.ShowCanalsOptionPanel();
                     else
-                        this.ShowPathsOptionPanel();
-                    netTool.m_prefab = netInfo;
+                        this.ShowCanalsOptionPanel();
+                    netTool.Prefab = netInfo;
                 }
             }
             if (treeInfo != null)
@@ -64,6 +64,7 @@ namespace NaturalResourcesBrush.Detours
                 {
                     this.HideAllOptionPanels();
                     treeTool.m_prefab = treeInfo;
+                    //begin mod
                     if (prevTreeTool == null)
                     {
                         treeTool.m_brush = toolController.m_brushes[3];
@@ -72,6 +73,7 @@ namespace NaturalResourcesBrush.Detours
                     }
 
                     ShowBrushOptionsPanel();
+                    //end mod
                 }
             }
             if (!(propInfo != null))
@@ -86,7 +88,9 @@ namespace NaturalResourcesBrush.Detours
             {
                 propTool.m_mode = PropTool.Mode.Single;
             }
+            //begin mod
             ShowBrushOptionsPanel();
+            //end mod
         }
 
         private void ShowBrushOptionsPanel()
