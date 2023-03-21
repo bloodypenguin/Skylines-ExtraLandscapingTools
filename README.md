@@ -1,2 +1,2 @@
-# Skylines-NaturalResourcesBrush
-Natural Resources Brush mod for Cities: Skylines
+# Skylines-ExtraLandscapingTools
+Extra Landscaping Tools mod for Cities: Skylines
