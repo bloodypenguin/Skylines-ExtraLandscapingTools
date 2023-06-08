@@ -1,0 +1,8 @@
+[submodule "NaturalResourcesBrush/OptionsFramework"]
+	path = NaturalResourcesBrush/OptionsFramework
+	url = git@github.com:tefracky/OptionsFramework.git
+	branch = customization/Skylines-NaturalResourcesBrush
+[submodule "NaturalResourcesBrush/RedirectionFramework"]
+	path = NaturalResourcesBrush/RedirectionFramework
+	url = git@github.com:tefracky/RedirectionFramework.git
+	branch = customization/Skylines-NaturalResourcesBrush
